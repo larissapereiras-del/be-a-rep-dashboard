@@ -1,0 +1,868 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+
+/* =========================================================
+   CONFIGURAÇÕES GERAIS
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #f2f3f5;
+  color: #071b61;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.oculto {
+  display: none !important;
+}
+
+
+/* =========================================================
+   APLICAÇÃO
+========================================================= */
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  padding: 35px 20px 70px;
+}
+
+
+/* =========================================================
+   TOPO DO SISTEMA
+========================================================= */
+
+.topo-sistema {
+  width: min(1100px, 100%);
+  margin: 0 auto 25px;
+}
+
+.topo-sistema h1 {
+  margin: 0;
+  color: #071b61;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.topo-sistema p {
+  margin: 7px 0 0;
+  color: #606879;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   CARD DE UPLOAD
+========================================================= */
+
+.card-upload {
+  width: min(1100px, 100%);
+  min-height: 120px;
+  margin: 0 auto;
+  padding: 24px 28px;
+
+  display: flex;
+  align-items: center;
+  gap: 22px;
+
+  background: #ffffff;
+
+  border: 2px dashed #d9dde7;
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 30px
+    rgba(7, 27, 97, 0.06);
+}
+
+.upload-icon {
+  width: 68px;
+  height: 68px;
+  min-width: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffe600;
+
+  border-radius: 18px;
+
+  font-size: 32px;
+}
+
+.upload-texto {
+  flex: 1;
+}
+
+.upload-texto h2 {
+  margin: 0 0 6px;
+
+  color: #071b61;
+
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.upload-texto p {
+  margin: 0;
+
+  color: #6c7280;
+
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.botao-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+
+  padding: 0 24px;
+
+  background: #071b61;
+  color: #ffffff;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.botao-upload:hover {
+  background: #0c287f;
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   STATUS DO ARQUIVO
+========================================================= */
+
+.status-arquivo {
+  width: min(1100px, 100%);
+
+  margin: 15px auto 0;
+
+  padding: 12px 16px;
+
+  color: #6c7280;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-arquivo.sucesso {
+  color: #19733c;
+}
+
+.status-arquivo.erro {
+  color: #b42318;
+}
+
+
+/* =========================================================
+   RESUMO DOS DADOS
+========================================================= */
+
+.resumo-dados {
+  width: min(1100px, 100%);
+
+  margin: 25px auto 0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 14px;
+}
+
+.card-resumo {
+  min-height: 105px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 6px 22px
+    rgba(7, 27, 97, 0.07);
+}
+
+.card-resumo:nth-child(2) {
+  background: #071b61;
+  color: #ffffff;
+}
+
+.card-resumo:nth-child(3) {
+  background: #ffe600;
+  color: #071b61;
+}
+
+.card-label {
+  margin-bottom: 5px;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.card-resumo strong {
+  font-size: 31px;
+  font-weight: 900;
+}
+
+
+/* =========================================================
+   MENU DAS ARTES
+========================================================= */
+
+.menu-artes {
+  position: sticky;
+
+  top: 15px;
+
+  z-index: 100;
+
+  width: fit-content;
+  max-width: calc(100% - 30px);
+
+  margin: 30px auto 25px;
+
+  padding: 9px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  gap: 7px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-radius: 999px;
+
+  box-shadow:
+    0 8px 28px
+    rgba(7, 27, 97, 0.12);
+
+  backdrop-filter: blur(10px);
+}
+
+.botao-arte,
+.botao-download {
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border: none;
+  border-radius: 999px;
+
+  color: #071b61;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.botao-arte {
+  background: transparent;
+}
+
+.botao-arte:hover {
+  background: #f1f2f5;
+}
+
+.botao-arte.ativo {
+  background: #ffe600;
+}
+
+.botao-download {
+  background: #071b61;
+  color: #ffffff;
+}
+
+.botao-download:hover {
+  background: #0c287f;
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ÁREA DAS ARTES
+========================================================= */
+
+.area-artes {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+   ESTRUTURA DA ARTE
+========================================================= */
+
+.arte {
+  width: 820px;
+
+  margin: 0 auto;
+
+  padding: 28px 28px 36px;
+
+  display: none;
+
+  background: #ffffff;
+
+  color: #071b61;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 14px 50px
+    rgba(0, 0, 0, 0.13);
+}
+
+.arte.ativa {
+  display: block;
+}
+
+
+/* =========================================================
+   CABEÇALHO DAS ARTES
+========================================================= */
+
+.cabecalho-arte {
+  position: relative;
+
+  width: 100%;
+  min-height: 305px;
+}
+
+.logo-meli {
+  position: absolute;
+
+  top: 5px;
+  left: 0;
+
+  width: 185px;
+  height: auto;
+
+  object-fit: contain;
+}
+
+.titulo-arte {
+  position: absolute;
+
+  left: 50%;
+  bottom: 10px;
+
+  width: 100%;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+.titulo-arte h2 {
+  margin: 0;
+
+  color: #071b61;
+
+  font-size: 50px;
+  font-weight: 900;
+
+  line-height: 1;
+
+  letter-spacing: 1px;
+}
+
+.mes-destaque {
+  display: inline-block;
+
+  margin-top: 15px;
+
+  padding: 8px 27px;
+
+  background: #ffe600;
+  color: #071b61;
+
+  border-radius: 999px;
+
+  font-size: 21px;
+  font-weight: 900;
+
+  line-height: 1.2;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.icone-decorativo {
+  position: absolute;
+
+  top: 45px;
+  right: 28px;
+
+  font-size: 90px;
+
+  line-height: 1;
+
+  filter:
+    drop-shadow(
+      0 10px 10px
+      rgba(0, 0, 0, 0.12)
+    );
+}
+
+
+/* =========================================================
+   CARD DO RESULTADO GERAL
+========================================================= */
+
+.card-geral {
+  min-height: 205px;
+
+  margin-top: 10px;
+
+  padding: 26px 44px;
+
+  display: flex;
+  align-items: center;
+
+  border: 2px solid #ffc800;
+  border-radius: 18px;
+}
+
+.icone-geral {
+  width: 115px;
+  height: 115px;
+
+  min-width: 115px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 38px;
+
+  background: #ffc800;
+
+  border-radius: 50%;
+
+  font-size: 54px;
+}
+
+.linha-vertical {
+  width: 2px;
+  height: 135px;
+
+  margin-right: 38px;
+
+  background: #ffc800;
+}
+
+.rotulo-geral {
+  display: block;
+
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.percentual-geral {
+  margin-top: 5px;
+
+  font-size: 78px;
+  font-weight: 900;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   TÍTULO DAS SEÇÕES
+========================================================= */
+
+.titulo-secao {
+  width: 100%;
+
+  margin: 30px 0 20px;
+
+  display: flex;
+  align-items: center;
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.icone-secao {
+  width: 55px;
+  height: 55px;
+
+  min-width: 55px;
+
+  margin-right: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffc800;
+
+  border-radius: 50%;
+
+  font-size: 27px;
+}
+
+.linha-secao {
+  flex: 1;
+
+  height: 2px;
+
+  margin-left: 20px;
+
+  background: #ffc800;
+}
+
+
+/* =========================================================
+   RESULTADO POR ÁREA
+========================================================= */
+
+.lista-areas {
+  padding: 5px 20px;
+
+  background: #ffffff;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 12px
+    rgba(0, 0, 0, 0.08);
+}
+
+.area-item {
+  min-height: 90px;
+
+  display: grid;
+
+  grid-template-columns:
+    180px
+    minmax(0, 1fr)
+    100px;
+
+  align-items: center;
+
+  gap: 20px;
+
+  border-bottom:
+    1px solid
+    #eeeeee;
+}
+
+.area-item:last-child {
+  border-bottom: none;
+}
+
+.area-nome {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.barra {
+  width: 100%;
+  height: 20px;
+
+  overflow: hidden;
+
+  background: #eeeeee;
+
+  border-radius: 999px;
+}
+
+.barra-preenchida {
+  height: 100%;
+
+  background: #ffc800;
+
+  border-radius: 999px;
+}
+
+.area-percentual {
+  text-align: right;
+
+  font-size: 21px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   CARDS DE CONTAGEM
+========================================================= */
+
+.card-contador {
+  min-height: 185px;
+
+  margin-top: 10px;
+
+  padding: 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  border: 2px solid #ffc800;
+  border-radius: 18px;
+}
+
+.card-contador span {
+  color: #071b61;
+
+  font-size: 25px;
+  font-weight: 900;
+
+  letter-spacing: 0.4px;
+
+  text-transform: uppercase;
+}
+
+.card-contador strong {
+  margin-top: 8px;
+
+  color: #071b61;
+
+  font-size: 72px;
+  font-weight: 900;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   LISTAS EM COLUNAS
+========================================================= */
+
+.listas-grid {
+  display: grid;
+
+  gap: 18px;
+
+  align-items: start;
+}
+
+.listas-grid.colunas-1 {
+  grid-template-columns: 1fr;
+}
+
+.listas-grid.colunas-2 {
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+}
+
+.listas-grid.colunas-3 {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   TABELAS DAS ARTES
+========================================================= */
+
+.tabela {
+  min-width: 0;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e7e7;
+  border-radius: 14px;
+}
+
+.linha-pessoa {
+  min-height: 47px;
+
+  padding: 8px 10px;
+
+  display: grid;
+  align-items: center;
+
+  border-bottom:
+    1px solid
+    #e7e7e7;
+
+  font-size: 10.5px;
+  font-weight: 500;
+
+  line-height: 1.2;
+}
+
+.linha-pessoa:last-child {
+  border-bottom: none;
+}
+
+.linha-pessoa:nth-child(even) {
+  background: #fafafa;
+}
+
+.linha-pessoa.processo {
+  grid-template-columns:
+    minmax(0, 1fr)
+    88px
+    55px;
+
+  gap: 7px;
+}
+
+.linha-pessoa.nao-realizou {
+  grid-template-columns:
+    minmax(0, 1fr)
+    95px;
+
+  gap: 7px;
+}
+
+.cabecalho-tabela {
+  min-height: 47px;
+
+  background: #071b61 !important;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.nome-pessoa {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.setor {
+  min-width: 0;
+
+  text-align: center;
+
+  text-transform: uppercase;
+
+  overflow-wrap: anywhere;
+}
+
+.tempo {
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE DO SISTEMA
+   NÃO ALTERA O TAMANHO DA ARTE PARA O PNG
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .app {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .card-upload {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .botao-upload {
+    width: 100%;
+  }
+
+  .resumo-dados {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .area-artes {
+    justify-content: flex-start;
+
+    overflow-x: auto;
+
+    padding-bottom: 20px;
+  }
+
+  .arte {
+    min-width: 820px;
+  }
+
+}
+
+
+@media (max-width: 550px) {
+
+  .resumo-dados {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-artes {
+    position: static;
+
+    width: 100%;
+
+    border-radius: 18px;
+  }
+
+  .botao-arte,
+  .botao-download {
+    width: 100%;
+  }
+
+}
