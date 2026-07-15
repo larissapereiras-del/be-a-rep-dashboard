@@ -1,170 +1,76 @@
-/* =========================================================
-   API SEGURA — BE A REP
-
-   Vercel
-      ↓
-   Verdi Flow
-      ↓
-   Google Sheets
-========================================================= */
-
-const VERDI_URL =
-  "https://api.mercadolibre.com/workspace/genai/verdi-flows/webhook/0a7356a6-9917-4435-acfe-60269391ca30/external";
-
-
 export default async function handler(req, res) {
 
-  /* =======================================================
-     PERMITIR SOMENTE GET
-  ======================================================= */
-
   if (req.method !== "GET") {
-
-    return res
-      .status(405)
-      .json({
-
-        sucesso: false,
-
-        erro:
-          "Método não permitido."
-
-      });
-
+    return res.status(405).json({
+      erro: "Método não permitido"
+    });
   }
-
 
   try {
 
-    /* =====================================================
-       CREDENCIAIS DA VERCEL
-    ===================================================== */
+    const usuario = process.env.VERDI_USER;
+    const senha = process.env.VERDI_PASSWORD;
 
-    const usuario =
-      process.env.VERDI_USER;
-
-
-    const senha =
-      process.env.VERDI_PASSWORD;
-
-
-    if (
-      !usuario ||
-      !senha
-    ) {
-
-      throw new Error(
-        "As credenciais do Verdi não foram configuradas na Vercel."
-      );
-
+    if (!usuario || !senha) {
+      return res.status(500).json({
+        erro: "Credenciais do Verdi não configuradas."
+      });
     }
 
+    const webhookUrl =
+      "https://api.mercadolibre.com/workspace/genai/verdi-flows/webhook/0a7356a6-9917-4435-acfe-60269391ca30/external";
 
-    /* =====================================================
-       BASIC AUTH
-    ===================================================== */
+    const autenticacao = Buffer
+      .from(`${usuario}:${senha}`)
+      .toString("base64");
 
-    const credencial =
-      Buffer
-        .from(
-          `${usuario}:${senha}`
-        )
-        .toString(
-          "base64"
-        );
+    const resposta = await fetch(
+      webhookUrl,
+      {
+        method: "GET",
 
-
-    /* =====================================================
-       BUSCAR DADOS
-    ===================================================== */
-
-    const resposta =
-      await fetch(
-        VERDI_URL,
-        {
-
-          method:
-            "GET",
-
-          headers: {
-
-            Authorization:
-              `Basic ${credencial}`,
-
-            Accept:
-              "application/json"
-
-          }
-
+        headers: {
+          Authorization: `Basic ${autenticacao}`,
+          Accept: "application/json"
         }
-      );
+      }
+    );
 
+    if (!resposta.ok) {
 
-    /* =====================================================
-       VALIDAR RESPOSTA
-    ===================================================== */
-
-    if (
-      !resposta.ok
-    ) {
-
-      const textoErro =
+      const detalhe =
         await resposta.text();
 
-
-      throw new Error(
-
-        `Erro do Verdi (${resposta.status}): ` +
-
-        textoErro
-
+      console.error(
+        "Erro retornado pelo Verdi:",
+        resposta.status,
+        detalhe
       );
 
-    }
+      return res.status(resposta.status).json({
+        erro: "Erro ao consultar a base no Verdi.",
+        status: resposta.status
+      });
 
+    }
 
     const dados =
       await resposta.json();
 
-
-    /* =====================================================
-       RESPOSTA PARA O DASHBOARD
-    ===================================================== */
-
-    res.setHeader(
-      "Cache-Control",
-      "no-store, max-age=0"
-    );
-
-
-    return res
-      .status(200)
-      .json(
-        dados
-      );
+    return res.status(200).json(dados);
 
   }
 
-  catch (
-    erro
-  ) {
+  catch (erro) {
 
     console.error(
-      "Erro ao buscar dados do Verdi:",
+      "Erro na API:",
       erro
     );
 
-
-    return res
-      .status(500)
-      .json({
-
-        sucesso: false,
-
-        erro:
-          erro.message
-
-      });
+    return res.status(500).json({
+      erro: "Erro interno ao carregar os dados."
+    });
 
   }
 
