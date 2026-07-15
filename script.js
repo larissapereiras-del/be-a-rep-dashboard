@@ -10,7 +10,7 @@ console.log("✅ NOVO SCRIPT.JS CARREGADO");
 ========================================================= */
 
 const API_DADOS =
-  "https://be-a-rep-dashboard-izmv.vercel.app/api/dados";
+  "/api/dados";
 
 
 const AREAS_VALIDAS = [
