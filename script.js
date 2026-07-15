@@ -9,7 +9,7 @@
 ========================================================= */
 
 const API_DADOS =
-  "/api/dados";
+  "https://be-a-rep-dashboard-izmv.vercel.app/api/dados";
 
 
 const AREAS_VALIDAS = [
