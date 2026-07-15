@@ -1,3 +1,4 @@
+console.log("✅ NOVO SCRIPT.JS CARREGADO");
 /* =========================================================
    BE A REP DASHBOARD
    CARREGAMENTO AUTOMÁTICO + BACKUP MANUAL
@@ -198,7 +199,8 @@ if (
    CARREGAR DADOS AUTOMATICAMENTE
 ========================================================= */
 
-async function carregarDadosAutomaticos() {
+async function carregarDadosAutomaticos() 
+console.log("🔄 Iniciando atualização automática...");
 
   const textoOriginalBotao =
     botaoAtualizar
