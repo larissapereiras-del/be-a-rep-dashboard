@@ -199,14 +199,14 @@ if (
    CARREGAR DADOS AUTOMATICAMENTE
 ========================================================= */
 
-async function carregarDadosAutomaticos() 
-console.log("🔄 Iniciando atualização automática...");
+async function carregarDadosAutomaticos() {
+
+  console.log("🔄 Iniciando atualização automática...");
 
   const textoOriginalBotao =
     botaoAtualizar
       ? botaoAtualizar.textContent
       : "";
-
 
   try {
 
