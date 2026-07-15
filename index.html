@@ -13,19 +13,16 @@
     Be a Rep Dashboard
   </title>
 
-  <!-- CSS PRINCIPAL -->
   <link
     rel="stylesheet"
     href="style.css"
   >
 
-  <!-- XLSX PARA LER ARQUIVOS EXCEL -->
   <script
     src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
   >
   </script>
 
-  <!-- HTML2CANVAS PARA GERAR PNG -->
   <script
     src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
   >
@@ -36,16 +33,11 @@
 
 <body>
 
-
-  <!-- =====================================================
-       ÁREA PRINCIPAL
-  ====================================================== -->
-
   <main class="app">
 
 
     <!-- ===================================================
-         CABEÇALHO DO SISTEMA
+         CABEÇALHO
     ==================================================== -->
 
     <section class="topo-sistema">
@@ -66,37 +58,68 @@
 
 
     <!-- ===================================================
-         IMPORTAÇÃO DO ARQUIVO
+         STATUS / ATUALIZAÇÃO AUTOMÁTICA
     ==================================================== -->
 
     <section class="card-upload">
 
       <div class="upload-icon">
-        📂
+        🔄
       </div>
 
 
       <div class="upload-texto">
 
         <h2>
-          Carregar base
+          Dados automáticos
         </h2>
 
-        <p>
-          Selecione a planilha atualizada em formato
-          XLSX, XLS ou CSV.
+        <p id="texto-atualizacao">
+          Buscando os dados mais recentes da planilha...
         </p>
 
       </div>
 
 
-      <label
+      <button
+        id="botao-atualizar"
         class="botao-upload"
+        type="button"
+      >
+        Atualizar dados
+      </button>
+
+    </section>
+
+
+    <!-- ===================================================
+         STATUS
+    ==================================================== -->
+
+    <section
+      id="status-arquivo"
+      class="status-arquivo"
+    >
+      Conectando à base...
+    </section>
+
+
+    <!-- ===================================================
+         BACKUP MANUAL
+    ==================================================== -->
+
+    <section class="backup-manual">
+
+      <span>
+        Problemas com a atualização automática?
+      </span>
+
+
+      <label
+        class="botao-backup"
         for="arquivo-base"
       >
-
-        Selecionar arquivo
-
+        Carregar arquivo manualmente
       </label>
 
 
@@ -111,21 +134,7 @@
 
 
     <!-- ===================================================
-         STATUS DO ARQUIVO
-    ==================================================== -->
-
-    <section
-      id="status-arquivo"
-      class="status-arquivo"
-    >
-
-      Nenhum arquivo carregado.
-
-    </section>
-
-
-    <!-- ===================================================
-         RESUMO DO PROCESSAMENTO
+         RESUMO
     ==================================================== -->
 
     <section
@@ -504,13 +513,10 @@
   </main>
 
 
-  <!-- JAVASCRIPT PRINCIPAL -->
-
   <script
     src="script.js"
   >
   </script>
-
 
 </body>
 
