@@ -1,12 +1,16 @@
 /* =========================================================
    BE A REP DASHBOARD
-   PROCESSAMENTO LOCAL NO NAVEGADOR
+   CARREGAMENTO AUTOMÁTICO + BACKUP MANUAL
 ========================================================= */
 
 
 /* =========================================================
    CONFIGURAÇÕES
 ========================================================= */
+
+const API_DADOS =
+  "/api/dados";
+
 
 const AREAS_VALIDAS = [
   "Outbound",
@@ -67,30 +71,90 @@ const botaoBaixar =
   );
 
 
+const botaoAtualizar =
+  document.getElementById(
+    "botao-atualizar"
+  );
+
+
+const textoAtualizacao =
+  document.getElementById(
+    "texto-atualizacao"
+  );
+
+
 /* =========================================================
-   EVENTOS
+   INICIAR SISTEMA
 ========================================================= */
 
-inputArquivo.addEventListener(
-  "change",
-  async evento => {
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
 
-    const arquivo =
-      evento.target.files[0];
-
-
-    if (!arquivo) {
-      return;
-    }
-
-
-    await processarArquivo(
-      arquivo
-    );
+    await carregarDadosAutomaticos();
 
   }
 );
 
+
+/* =========================================================
+   EVENTO — ATUALIZAR DADOS
+========================================================= */
+
+if (
+  botaoAtualizar
+) {
+
+  botaoAtualizar.addEventListener(
+    "click",
+    async () => {
+
+      await carregarDadosAutomaticos();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   EVENTO — UPLOAD MANUAL
+========================================================= */
+
+if (
+  inputArquivo
+) {
+
+  inputArquivo.addEventListener(
+    "change",
+    async evento => {
+
+      const arquivo =
+        evento.target.files[0];
+
+
+      if (
+        !arquivo
+      ) {
+
+        return;
+
+      }
+
+
+      await processarArquivo(
+        arquivo
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   EVENTOS — TROCAR ARTE
+========================================================= */
 
 botoesArte.forEach(
   botao => {
@@ -114,14 +178,442 @@ botoesArte.forEach(
 );
 
 
-botaoBaixar.addEventListener(
-  "click",
-  baixarArteAtual
-);
+/* =========================================================
+   EVENTO — BAIXAR PNG
+========================================================= */
+
+if (
+  botaoBaixar
+) {
+
+  botaoBaixar.addEventListener(
+    "click",
+    baixarArteAtual
+  );
+
+}
 
 
 /* =========================================================
-   PROCESSAR ARQUIVO
+   CARREGAR DADOS AUTOMATICAMENTE
+========================================================= */
+
+async function carregarDadosAutomaticos() {
+
+  const textoOriginalBotao =
+    botaoAtualizar
+      ? botaoAtualizar.textContent
+      : "";
+
+
+  try {
+
+    if (
+      botaoAtualizar
+    ) {
+
+      botaoAtualizar.disabled =
+        true;
+
+
+      botaoAtualizar.textContent =
+        "Atualizando...";
+
+    }
+
+
+    if (
+      textoAtualizacao
+    ) {
+
+      textoAtualizacao.textContent =
+        "Buscando os dados mais recentes da planilha...";
+
+    }
+
+
+    atualizarStatus(
+      "Conectando à base...",
+      ""
+    );
+
+
+    /*
+     * O parâmetro _ evita que o navegador
+     * reaproveite uma resposta antiga.
+     */
+
+    const resposta =
+      await fetch(
+        `${API_DADOS}?_=${Date.now()}`,
+        {
+
+          method:
+            "GET",
+
+          headers: {
+
+            Accept:
+              "application/json"
+
+          },
+
+          cache:
+            "no-store"
+
+        }
+      );
+
+
+    if (
+      !resposta.ok
+    ) {
+
+      let mensagem =
+        `Erro ${resposta.status} ao consultar a base.`;
+
+
+      try {
+
+        const erroApi =
+          await resposta.json();
+
+
+        if (
+          erroApi &&
+          erroApi.erro
+        ) {
+
+          mensagem =
+            erroApi.erro;
+
+        }
+
+      }
+
+      catch (
+        erroLeitura
+      ) {
+
+        console.warn(
+          "Não foi possível ler o erro da API.",
+          erroLeitura
+        );
+
+      }
+
+
+      throw new Error(
+        mensagem
+      );
+
+    }
+
+
+    const registrosApi =
+      await resposta.json();
+
+
+    if (
+      !Array.isArray(
+        registrosApi
+      )
+    ) {
+
+      throw new Error(
+        "A API não retornou uma lista válida de pessoas."
+      );
+
+    }
+
+
+    if (
+      registrosApi.length === 0
+    ) {
+
+      throw new Error(
+        "A API retornou uma base vazia."
+      );
+
+    }
+
+
+    dadosProcessados =
+      processarDadosApi(
+        registrosApi
+      );
+
+
+    preencherSistema(
+      dadosProcessados
+    );
+
+
+    exibirDashboard();
+
+
+    const horario =
+      new Date()
+        .toLocaleTimeString(
+          "pt-BR",
+          {
+
+            hour:
+              "2-digit",
+
+            minute:
+              "2-digit"
+
+          }
+        );
+
+
+    atualizarStatus(
+      `✅ Dados atualizados automaticamente às ${horario}.`,
+      "sucesso"
+    );
+
+
+    if (
+      textoAtualizacao
+    ) {
+
+      textoAtualizacao.textContent =
+        "Dados sincronizados diretamente da planilha.";
+
+    }
+
+
+    mostrarArte(
+      "geral"
+    );
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "Erro ao carregar dados automáticos:",
+      erro
+    );
+
+
+    atualizarStatus(
+      `❌ Não foi possível atualizar automaticamente: ${erro.message}`,
+      "erro"
+    );
+
+
+    if (
+      textoAtualizacao
+    ) {
+
+      textoAtualizacao.textContent =
+        "A atualização automática falhou. Use o carregamento manual como backup.";
+
+    }
+
+
+    ocultarDashboard();
+
+  }
+
+  finally {
+
+    if (
+      botaoAtualizar
+    ) {
+
+      botaoAtualizar.disabled =
+        false;
+
+
+      botaoAtualizar.textContent =
+        textoOriginalBotao ||
+        "Atualizar dados";
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   PROCESSAR DADOS RECEBIDOS DA API
+
+   CAMPOS DA API:
+   Nombre
+   Mes
+   Horas Mes
+   Gemba
+   Status BAR
+   SETOR
+   ÁREA CONSOLIDADA
+========================================================= */
+
+function processarDadosApi(
+  dadosApi
+) {
+
+  const registros =
+    dadosApi
+      .map(
+        item => {
+
+          const nome =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "Nombre",
+                  "Nome"
+                ]
+              )
+            );
+
+
+          const mes =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "Mes",
+                  "Mês"
+                ]
+              )
+            );
+
+
+          const tempo =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "Horas Mes",
+                  "Horas Mês",
+                  "Tempo"
+                ]
+              )
+            );
+
+
+          const gemba =
+            normalizarTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "Gemba"
+                ]
+              )
+            );
+
+
+          const statusBar =
+            normalizarTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "Status BAR",
+                  "Status Bar"
+                ]
+              )
+            );
+
+
+          const setor =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "SETOR",
+                  "Setor"
+                ]
+              )
+            )
+              .toUpperCase();
+
+
+          const area =
+            normalizarArea(
+              obterValorObjeto(
+                item,
+                [
+                  "ÁREA CONSOLIDADA",
+                  "AREA CONSOLIDADA",
+                  "Área Consolidada"
+                ]
+              )
+            );
+
+
+          if (
+            !nome
+          ) {
+
+            return null;
+
+          }
+
+
+          const situacao =
+            classificarSituacao(
+              gemba,
+              statusBar
+            );
+
+
+          return {
+
+            nome:
+              nome,
+
+            mes:
+              mes,
+
+            tempo:
+              tempo,
+
+            minutos:
+              converterTempoParaMinutos(
+                tempo
+              ),
+
+            gemba:
+              gemba,
+
+            statusBar:
+              statusBar,
+
+            setor:
+              setor,
+
+            area:
+              area,
+
+            situacao:
+              situacao
+
+          };
+
+        }
+      )
+      .filter(
+        Boolean
+      );
+
+
+  return processarRegistros(
+    registros
+  );
+
+}
+
+
+/* =========================================================
+   PROCESSAR ARQUIVO MANUAL
 ========================================================= */
 
 async function processarArquivo(
@@ -131,7 +623,7 @@ async function processarArquivo(
   try {
 
     atualizarStatus(
-      "Lendo arquivo...",
+      "Lendo arquivo manual...",
       ""
     );
 
@@ -142,11 +634,13 @@ async function processarArquivo(
       );
 
 
-    let linhas = [];
+    let linhas =
+      [];
 
 
     if (
-      extensao === "csv"
+      extensao ===
+      "csv"
     ) {
 
       linhas =
@@ -157,8 +651,10 @@ async function processarArquivo(
     }
 
     else if (
-      extensao === "xlsx" ||
-      extensao === "xls"
+      extensao ===
+      "xlsx" ||
+      extensao ===
+      "xls"
     ) {
 
       linhas =
@@ -200,31 +696,23 @@ async function processarArquivo(
     );
 
 
+    exibirDashboard();
+
+
     atualizarStatus(
-      `✅ Arquivo carregado com sucesso: ${arquivo.name}`,
+      `✅ Arquivo carregado manualmente com sucesso: ${arquivo.name}`,
       "sucesso"
     );
 
 
-    resumoDados
-      .classList
-      .remove(
-        "oculto"
-      );
+    if (
+      textoAtualizacao
+    ) {
 
+      textoAtualizacao.textContent =
+        "Dados carregados pelo arquivo manual.";
 
-    menuArtes
-      .classList
-      .remove(
-        "oculto"
-      );
-
-
-    areaArtes
-      .classList
-      .remove(
-        "oculto"
-      );
+    }
 
 
     mostrarArte(
@@ -249,25 +737,7 @@ async function processarArquivo(
     );
 
 
-    resumoDados
-      .classList
-      .add(
-        "oculto"
-      );
-
-
-    menuArtes
-      .classList
-      .add(
-        "oculto"
-      );
-
-
-    areaArtes
-      .classList
-      .add(
-        "oculto"
-      );
+    ocultarDashboard();
 
   }
 
@@ -290,7 +760,10 @@ async function lerExcel(
     XLSX.read(
       buffer,
       {
-        type: "array"
+
+        type:
+          "array"
+
       }
     );
 
@@ -325,19 +798,22 @@ async function lerExcel(
       ];
 
 
-  const linhas =
-    XLSX.utils
-      .sheet_to_json(
-        worksheet,
-        {
-          header: 1,
-          defval: "",
-          raw: false
-        }
-      );
+  return XLSX.utils
+    .sheet_to_json(
+      worksheet,
+      {
 
+        header:
+          1,
 
-  return linhas;
+        defval:
+          "",
+
+        raw:
+          false
+
+      }
+    );
 
 }
 
@@ -358,7 +834,10 @@ async function lerCSV(
     XLSX.read(
       texto,
       {
-        type: "string"
+
+        type:
+          "string"
+
       }
     );
 
@@ -379,9 +858,16 @@ async function lerCSV(
     .sheet_to_json(
       worksheet,
       {
-        header: 1,
-        defval: "",
-        raw: false
+
+        header:
+          1,
+
+        defval:
+          "",
+
+        raw:
+          false
+
       }
     );
 
@@ -389,7 +875,7 @@ async function lerCSV(
 
 
 /* =========================================================
-   PROCESSAR BASE
+   PROCESSAR BASE DO ARQUIVO MANUAL
 ========================================================= */
 
 function processarLinhasBase(
@@ -397,17 +883,14 @@ function processarLinhasBase(
 ) {
 
   /*
-   * Índices do array:
-   *
-   * F = 5
-   * I = 8
-   * J = 9
-   * K = 10
-   * L = 11
-   * N = 13
-   * O = 14
+   * F = Nome
+   * I = Mês
+   * J = Tempo
+   * K = Gemba
+   * L = Status BAR
+   * N = Setor
+   * O = Área Consolidada
    */
-
 
   const registros =
     linhas
@@ -469,13 +952,6 @@ function processarLinhasBase(
           }
 
 
-          const situacao =
-            classificarSituacao(
-              gemba,
-              statusBar
-            );
-
-
           return {
 
             nome:
@@ -505,7 +981,10 @@ function processarLinhasBase(
               area,
 
             situacao:
-              situacao
+              classificarSituacao(
+                gemba,
+                statusBar
+              )
 
           };
 
@@ -515,6 +994,21 @@ function processarLinhasBase(
         Boolean
       );
 
+
+  return processarRegistros(
+    registros
+  );
+
+}
+
+
+/* =========================================================
+   PROCESSAMENTO CENTRAL
+========================================================= */
+
+function processarRegistros(
+  registros
+) {
 
   if (
     registros.length === 0
@@ -549,10 +1043,9 @@ function processarLinhasBase(
     pessoa => {
 
       if (
-        !AREAS_VALIDAS
-          .includes(
-            pessoa.area
-          )
+        !AREAS_VALIDAS.includes(
+          pessoa.area
+        )
       ) {
 
         return;
@@ -659,6 +1152,11 @@ function processarLinhasBase(
   );
 
 
+  /*
+   * Em processo:
+   * maior tempo para menor tempo.
+   */
+
   processo.sort(
     (
       a,
@@ -687,18 +1185,20 @@ function processarLinhasBase(
   );
 
 
+  /*
+   * Não realizaram:
+   * ordem alfabética.
+   */
+
   naoRealizaram.sort(
     (
       a,
       b
-    ) => {
-
-      return a.nome.localeCompare(
+    ) =>
+      a.nome.localeCompare(
         b.nome,
         "pt-BR"
-      );
-
-    }
+      )
   );
 
 
@@ -736,11 +1236,6 @@ function processarLinhasBase(
 
 /* =========================================================
    CLASSIFICAR SITUAÇÃO
-
-   PRIORIDADE:
-   1. HECHO
-   2. EN PROCESO
-   3. NÃO REALIZOU
 ========================================================= */
 
 function classificarSituacao(
@@ -786,7 +1281,7 @@ function classificarSituacao(
 
 
 /* =========================================================
-   ÁREAS
+   CRIAR ESTRUTURA DE ÁREAS
 ========================================================= */
 
 function criarEstruturaAreas() {
@@ -795,60 +1290,80 @@ function criarEstruturaAreas() {
 
     Outbound: {
 
-      hc: 0,
+      hc:
+        0,
 
-      realizaram: 0,
+      realizaram:
+        0,
 
-      processo: 0,
+      processo:
+        0,
 
-      naoRealizaram: 0,
+      naoRealizaram:
+        0,
 
-      percentual: 0
+      percentual:
+        0
 
     },
 
 
     Inbound: {
 
-      hc: 0,
+      hc:
+        0,
 
-      realizaram: 0,
+      realizaram:
+        0,
 
-      processo: 0,
+      processo:
+        0,
 
-      naoRealizaram: 0,
+      naoRealizaram:
+        0,
 
-      percentual: 0
+      percentual:
+        0
 
     },
 
 
     OPEX: {
 
-      hc: 0,
+      hc:
+        0,
 
-      realizaram: 0,
+      realizaram:
+        0,
 
-      processo: 0,
+      processo:
+        0,
 
-      naoRealizaram: 0,
+      naoRealizaram:
+        0,
 
-      percentual: 0
+      percentual:
+        0
 
     },
 
 
     ICQA: {
 
-      hc: 0,
+      hc:
+        0,
 
-      realizaram: 0,
+      realizaram:
+        0,
 
-      processo: 0,
+      processo:
+        0,
 
-      naoRealizaram: 0,
+      naoRealizaram:
+        0,
 
-      percentual: 0
+      percentual:
+        0
 
     }
 
@@ -872,7 +1387,8 @@ function normalizarArea(
 
 
   if (
-    texto === "OUTBOUND"
+    texto ===
+    "OUTBOUND"
   ) {
 
     return "Outbound";
@@ -881,7 +1397,8 @@ function normalizarArea(
 
 
   if (
-    texto === "INBOUND"
+    texto ===
+    "INBOUND"
   ) {
 
     return "Inbound";
@@ -890,7 +1407,8 @@ function normalizarArea(
 
 
   if (
-    texto === "OPEX"
+    texto ===
+    "OPEX"
   ) {
 
     return "OPEX";
@@ -899,7 +1417,8 @@ function normalizarArea(
 
 
   if (
-    texto === "ICQA"
+    texto ===
+    "ICQA"
   ) {
 
     return "ICQA";
@@ -994,7 +1513,7 @@ function calcularGeral(
 
 /* =========================================================
    EXCEÇÕES DE SETOR
-   SOMENTE PARA AS ARTES
+   SOMENTE NAS ARTES
 ========================================================= */
 
 function ajustarSetorNaArte(
@@ -1413,10 +1932,9 @@ function preencherArteGeral(
 
 
   const container =
-    document
-      .getElementById(
-        "lista-areas"
-      );
+    document.getElementById(
+      "lista-areas"
+    );
 
 
   container.innerHTML =
@@ -1435,10 +1953,9 @@ function preencherArteGeral(
     area => {
 
       const info =
-        dados
-          .areas[
-            area
-          ];
+        dados.areas[
+          area
+        ];
 
 
       const percentual =
@@ -1473,7 +1990,6 @@ function preencherArteGeral(
           ${area}
         </div>
 
-
         <div class="barra">
 
           <div
@@ -1483,7 +1999,6 @@ function preencherArteGeral(
           </div>
 
         </div>
-
 
         <div class="area-percentual">
 
@@ -1604,8 +2119,12 @@ function dividirLista(
 
 
   for (
-    let i = 0;
-    i < quantidade;
+    let i =
+      0;
+
+    i <
+      quantidade;
+
     i++
   ) {
 
@@ -1613,10 +2132,12 @@ function dividirLista(
 
       lista.slice(
 
-        i * tamanho,
+        i *
+        tamanho,
 
         (
-          i + 1
+          i +
+          1
         ) *
         tamanho
 
@@ -1641,10 +2162,9 @@ function montarListasProcesso(
 ) {
 
   const container =
-    document
-      .getElementById(
-        "listas-processo"
-      );
+    document.getElementById(
+      "listas-processo"
+    );
 
 
   const colunas =
@@ -1675,7 +2195,6 @@ function montarListasProcesso(
 
   partes.forEach(
     grupo => {
-
 
       const tabela =
         document.createElement(
@@ -1717,7 +2236,6 @@ function montarListasProcesso(
       grupo.forEach(
         pessoa => {
 
-
           html += `
 
             <div
@@ -1728,23 +2246,29 @@ function montarListasProcesso(
             >
 
               <div class="nome-pessoa">
+
                 ${escaparHTML(
                   pessoa.nome
                 )}
+
               </div>
 
 
               <div class="setor">
+
                 ${escaparHTML(
                   pessoa.setor
                 )}
+
               </div>
 
 
               <div class="tempo">
+
                 ${escaparHTML(
                   pessoa.tempo
                 )}
+
               </div>
 
             </div>
@@ -1778,10 +2302,9 @@ function montarListasNaoRealizaram(
 ) {
 
   const container =
-    document
-      .getElementById(
-        "listas-nao"
-      );
+    document.getElementById(
+      "listas-nao"
+    );
 
 
   const colunas =
@@ -1812,7 +2335,6 @@ function montarListasNaoRealizaram(
 
   partes.forEach(
     grupo => {
-
 
       const tabela =
         document.createElement(
@@ -1849,7 +2371,6 @@ function montarListasNaoRealizaram(
 
       grupo.forEach(
         pessoa => {
-
 
           html += `
 
@@ -1895,6 +2416,60 @@ function montarListasNaoRealizaram(
 
     }
   );
+
+}
+
+
+/* =========================================================
+   MOSTRAR / OCULTAR DASHBOARD
+========================================================= */
+
+function exibirDashboard() {
+
+  resumoDados
+    .classList
+    .remove(
+      "oculto"
+    );
+
+
+  menuArtes
+    .classList
+    .remove(
+      "oculto"
+    );
+
+
+  areaArtes
+    .classList
+    .remove(
+      "oculto"
+    );
+
+}
+
+
+function ocultarDashboard() {
+
+  resumoDados
+    .classList
+    .add(
+      "oculto"
+    );
+
+
+  menuArtes
+    .classList
+    .add(
+      "oculto"
+    );
+
+
+  areaArtes
+    .classList
+    .add(
+      "oculto"
+    );
 
 }
 
@@ -1947,11 +2522,10 @@ function mostrarArte(
 
 
   const arte =
-    document
-      .getElementById(
-        "arte-" +
-        nome
-      );
+    document.getElementById(
+      "arte-" +
+      nome
+    );
 
 
   if (
@@ -1976,11 +2550,10 @@ function mostrarArte(
 async function baixarArteAtual() {
 
   const arte =
-    document
-      .getElementById(
-        "arte-" +
-        arteAtual
-      );
+    document.getElementById(
+      "arte-" +
+      arteAtual
+    );
 
 
   if (
@@ -2075,12 +2648,12 @@ async function baixarArteAtual() {
 
       (
         mes
+
           ? "-" +
-            mes
-              .replace(
-                /\s+/g,
-                "-"
-              )
+            mes.replace(
+              /\s+/g,
+              "-"
+            )
 
           : ""
       ) +
@@ -2104,8 +2677,7 @@ async function baixarArteAtual() {
       );
 
 
-    document
-      .body
+    document.body
       .appendChild(
         link
       );
@@ -2161,10 +2733,9 @@ async function aguardarImagens(
 
   const imagens =
     Array.from(
-      elemento
-        .querySelectorAll(
-          "img"
-        )
+      elemento.querySelectorAll(
+        "img"
+      )
     );
 
 
@@ -2188,7 +2759,8 @@ async function aguardarImagens(
               "load",
               resolve,
               {
-                once: true
+                once:
+                  true
               }
             );
 
@@ -2197,7 +2769,8 @@ async function aguardarImagens(
               "error",
               resolve,
               {
-                once: true
+                once:
+                  true
               }
             );
 
@@ -2254,6 +2827,15 @@ function atualizarStatus(
   classe
 ) {
 
+  if (
+    !statusArquivo
+  ) {
+
+    return;
+
+  }
+
+
   statusArquivo.textContent =
     texto;
 
@@ -2278,6 +2860,89 @@ function atualizarStatus(
 
 
 /* =========================================================
+   BUSCAR VALOR EM OBJETO
+========================================================= */
+
+function obterValorObjeto(
+  objeto,
+  nomesPossiveis
+) {
+
+  for (
+    const nome of
+    nomesPossiveis
+  ) {
+
+    if (
+      Object.prototype
+        .hasOwnProperty
+        .call(
+          objeto,
+          nome
+        )
+    ) {
+
+      return objeto[
+        nome
+      ];
+
+    }
+
+  }
+
+
+  /*
+   * Segunda tentativa:
+   * compara os nomes ignorando
+   * acentos e maiúsculas.
+   */
+
+  const chaves =
+    Object.keys(
+      objeto
+    );
+
+
+  for (
+    const nomeBuscado of
+    nomesPossiveis
+  ) {
+
+    const nomeNormalizado =
+      normalizarTexto(
+        nomeBuscado
+      );
+
+
+    const chaveEncontrada =
+      chaves.find(
+        chave =>
+          normalizarTexto(
+            chave
+          ) ===
+          nomeNormalizado
+      );
+
+
+    if (
+      chaveEncontrada
+    ) {
+
+      return objeto[
+        chaveEncontrada
+      ];
+
+    }
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================================
    UTILITÁRIOS
 ========================================================= */
 
@@ -2286,9 +2951,12 @@ function obterExtensao(
 ) {
 
   return String(
-    nomeArquivo || ""
+    nomeArquivo ||
+    ""
   )
-    .split(".")
+    .split(
+      "."
+    )
     .pop()
     .toLowerCase();
 
@@ -2300,7 +2968,8 @@ function limparTexto(
 ) {
 
   return String(
-    valor ?? ""
+    valor ??
+    ""
   )
     .trim();
 
@@ -2312,7 +2981,8 @@ function normalizarTexto(
 ) {
 
   return String(
-    valor ?? ""
+    valor ??
+    ""
   )
     .trim()
     .normalize(
@@ -2332,7 +3002,8 @@ function escaparHTML(
 ) {
 
   return String(
-    valor ?? ""
+    valor ??
+    ""
   )
     .replace(
       /&/g,
