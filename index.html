@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Be a Rep Dashboard
+  </title>
+
+  <!-- CSS PRINCIPAL -->
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <!-- XLSX PARA LER ARQUIVOS EXCEL -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+  >
+  </script>
+
+  <!-- HTML2CANVAS PARA GERAR PNG -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
+  >
+  </script>
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       ÁREA PRINCIPAL
+  ====================================================== -->
+
+  <main class="app">
+
+
+    <!-- ===================================================
+         CABEÇALHO DO SISTEMA
+    ==================================================== -->
+
+    <section class="topo-sistema">
+
+      <div>
+
+        <h1>
+          BE A REP
+        </h1>
+
+        <p>
+          Gerador de acompanhamento e artes
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         IMPORTAÇÃO DO ARQUIVO
+    ==================================================== -->
+
+    <section class="card-upload">
+
+      <div class="upload-icon">
+        📂
+      </div>
+
+
+      <div class="upload-texto">
+
+        <h2>
+          Carregar base
+        </h2>
+
+        <p>
+          Selecione a planilha atualizada em formato
+          XLSX, XLS ou CSV.
+        </p>
+
+      </div>
+
+
+      <label
+        class="botao-upload"
+        for="arquivo-base"
+      >
+
+        Selecionar arquivo
+
+      </label>
+
+
+      <input
+        type="file"
+        id="arquivo-base"
+        accept=".xlsx,.xls,.csv"
+        hidden
+      >
+
+    </section>
+
+
+    <!-- ===================================================
+         STATUS DO ARQUIVO
+    ==================================================== -->
+
+    <section
+      id="status-arquivo"
+      class="status-arquivo"
+    >
+
+      Nenhum arquivo carregado.
+
+    </section>
+
+
+    <!-- ===================================================
+         RESUMO DO PROCESSAMENTO
+    ==================================================== -->
+
+    <section
+      id="resumo-dados"
+      class="resumo-dados oculto"
+    >
+
+      <div class="card-resumo">
+
+        <span class="card-label">
+          HC TOTAL
+        </span>
+
+        <strong id="resumo-hc">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="card-resumo">
+
+        <span class="card-label">
+          REALIZARAM
+        </span>
+
+        <strong id="resumo-realizaram">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="card-resumo">
+
+        <span class="card-label">
+          EM PROCESSO
+        </span>
+
+        <strong id="resumo-processo">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="card-resumo">
+
+        <span class="card-label">
+          NÃO REALIZARAM
+        </span>
+
+        <strong id="resumo-nao">
+          0
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         MENU DAS ARTES
+    ==================================================== -->
+
+    <section
+      id="menu-artes"
+      class="menu-artes oculto"
+    >
+
+      <button
+        class="botao-arte ativo"
+        data-arte="geral"
+      >
+        📊 Resumo Geral
+      </button>
+
+
+      <button
+        class="botao-arte"
+        data-arte="processo"
+      >
+        ⏳ Em Processo
+      </button>
+
+
+      <button
+        class="botao-arte"
+        data-arte="nao"
+      >
+        ⚠️ Não Realizaram
+      </button>
+
+
+      <button
+        id="baixar-png"
+        class="botao-download"
+      >
+        📥 Baixar PNG
+      </button>
+
+    </section>
+
+
+    <!-- ===================================================
+         ÁREA DAS ARTES
+    ==================================================== -->
+
+    <section
+      id="area-artes"
+      class="area-artes oculto"
+    >
+
+
+      <!-- =================================================
+           ARTE 1 — RESUMO GERAL
+      ================================================== -->
+
+      <article
+        id="arte-geral"
+        class="arte ativa"
+        data-nome-arquivo="Be-a-Rep-Resumo-Geral"
+      >
+
+        <header class="cabecalho-arte">
+
+          <img
+            src="logo-meli.png"
+            class="logo-meli"
+            alt="Mercado Livre"
+          >
+
+
+          <div class="titulo-arte">
+
+            <h2>
+              BE A REP
+            </h2>
+
+
+            <div
+              class="mes-destaque"
+              data-mes
+            >
+              MÊS
+            </div>
+
+          </div>
+
+
+          <div class="icone-decorativo">
+            📦
+          </div>
+
+        </header>
+
+
+        <section class="card-geral">
+
+          <div class="icone-geral">
+            📈
+          </div>
+
+
+          <div class="linha-vertical"></div>
+
+
+          <div>
+
+            <span class="rotulo-geral">
+              Geral:
+            </span>
+
+
+            <div
+              id="percentual-geral"
+              class="percentual-geral"
+            >
+              0,0%
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <div class="titulo-secao">
+
+          <div class="icone-secao">
+            ◔
+          </div>
+
+          <strong>
+            Resultado por Área
+          </strong>
+
+          <div class="linha-secao"></div>
+
+        </div>
+
+
+        <div
+          id="lista-areas"
+          class="lista-areas"
+        >
+        </div>
+
+      </article>
+
+
+      <!-- =================================================
+           ARTE 2 — EM PROCESSO
+      ================================================== -->
+
+      <article
+        id="arte-processo"
+        class="arte"
+        data-nome-arquivo="Be-a-Rep-Em-Processo"
+      >
+
+        <header class="cabecalho-arte">
+
+          <img
+            src="logo-meli.png"
+            class="logo-meli"
+            alt="Mercado Livre"
+          >
+
+
+          <div class="titulo-arte">
+
+            <h2>
+              BE A REP
+            </h2>
+
+
+            <div
+              class="mes-destaque"
+              data-mes
+            >
+              MÊS
+            </div>
+
+          </div>
+
+
+          <div class="icone-decorativo">
+            ⏳
+          </div>
+
+        </header>
+
+
+        <section class="card-contador">
+
+          <span>
+            PESSOAS EM PROCESSO
+          </span>
+
+
+          <strong id="total-processo">
+            0
+          </strong>
+
+        </section>
+
+
+        <div class="titulo-secao">
+
+          <div class="icone-secao">
+            ⏱
+          </div>
+
+          <strong>
+            Acompanhamento
+          </strong>
+
+          <div class="linha-secao"></div>
+
+        </div>
+
+
+        <div
+          id="listas-processo"
+          class="listas-grid"
+        >
+        </div>
+
+      </article>
+
+
+      <!-- =================================================
+           ARTE 3 — NÃO REALIZARAM
+      ================================================== -->
+
+      <article
+        id="arte-nao"
+        class="arte"
+        data-nome-arquivo="Be-a-Rep-Nao-Realizaram"
+      >
+
+        <header class="cabecalho-arte">
+
+          <img
+            src="logo-meli.png"
+            class="logo-meli"
+            alt="Mercado Livre"
+          >
+
+
+          <div class="titulo-arte">
+
+            <h2>
+              BE A REP
+            </h2>
+
+
+            <div
+              class="mes-destaque"
+              data-mes
+            >
+              MÊS
+            </div>
+
+          </div>
+
+
+          <div class="icone-decorativo">
+            📋
+          </div>
+
+        </header>
+
+
+        <section class="card-contador">
+
+          <span>
+            PESSOAS QUE NÃO REALIZARAM
+          </span>
+
+
+          <strong id="total-nao">
+            0
+          </strong>
+
+        </section>
+
+
+        <div class="titulo-secao">
+
+          <div class="icone-secao">
+            🔎
+          </div>
+
+          <strong>
+            Pendentes
+          </strong>
+
+          <div class="linha-secao"></div>
+
+        </div>
+
+
+        <div
+          id="listas-nao"
+          class="listas-grid"
+        >
+        </div>
+
+      </article>
+
+
+    </section>
+
+
+  </main>
+
+
+  <!-- JAVASCRIPT PRINCIPAL -->
+
+  <script
+    src="script.js"
+  >
+  </script>
+
+
+</body>
+
+</html>
