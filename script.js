@@ -381,7 +381,7 @@ async function carregarDadosAutomaticos() {
     ) {
 
       textoAtualizacao.textContent =
-        "Clique em "Atualizar dados" para buscar as informações mais recentes.";
+  'Dados sincronizados diretamente da planilha. Clique em "Atualizar dados" para buscar as informações mais recentes.';
 
     }
 
