@@ -866,3 +866,53 @@ button {
   }
 
 }
+/* =========================================================
+   AJUSTES — CABEÇALHO E BOTÃO DE UPLOAD MANUAL
+========================================================= */
+
+/* Centraliza o título BE A REP */
+.topo-sistema {
+  text-align: center;
+}
+
+.topo-sistema > div {
+  width: 100%;
+}
+
+
+/* Área do carregamento manual */
+.backup-manual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+
+/* Botão carregar arquivo manualmente */
+.botao-backup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 24px;
+
+  background: #ffffff;
+  color: #082567;
+
+  border: 2px solid #082567;
+  border-radius: 999px;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.botao-backup:hover {
+  background: #082567;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
