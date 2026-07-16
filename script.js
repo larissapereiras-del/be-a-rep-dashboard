@@ -1944,11 +1944,25 @@ function preencherArteGeral(
 
 
   const ordem = [
-    "ICQA",
-    "OPEX",
-    "Outbound",
-    "Inbound"
-  ];
+  "ICQA",
+  "OPEX",
+  "Outbound",
+  "Inbound"
+].sort((areaA, areaB) => {
+
+  const percentualA =
+    Number(
+      dados.areas?.[areaA]?.percentual
+    ) || 0;
+
+  const percentualB =
+    Number(
+      dados.areas?.[areaB]?.percentual
+    ) || 0;
+
+  return percentualB - percentualA;
+
+});
 
 
   ordem.forEach(
