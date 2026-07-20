@@ -1,4 +1,5 @@
 console.log("✅ NOVO SCRIPT.JS CARREGADO");
+
 /* =========================================================
    BE A REP DASHBOARD
    CARREGAMENTO AUTOMÁTICO + BACKUP MANUAL
@@ -17,7 +18,8 @@ const AREAS_VALIDAS = [
   "Outbound",
   "Inbound",
   "OPEX",
-  "ICQA"
+  "ICQA",
+  "Line Haul"
 ];
 
 
@@ -201,12 +203,16 @@ if (
 
 async function carregarDadosAutomaticos() {
 
-  console.log("🔄 Iniciando atualização automática...");
+  console.log(
+    "🔄 Iniciando atualização automática..."
+  );
+
 
   const textoOriginalBotao =
     botaoAtualizar
       ? botaoAtualizar.textContent
       : "";
+
 
   try {
 
@@ -239,11 +245,6 @@ async function carregarDadosAutomaticos() {
       ""
     );
 
-
-    /*
-     * O parâmetro _ evita que o navegador
-     * reaproveite uma resposta antiga.
-     */
 
     const resposta =
       await fetch(
@@ -381,7 +382,7 @@ async function carregarDadosAutomaticos() {
     ) {
 
       textoAtualizacao.textContent =
-  'Dados sincronizados diretamente da planilha. Clique em "Atualizar dados" para buscar as informações mais recentes.';
+        'Dados sincronizados diretamente da planilha. Clique em "Atualizar dados" para buscar as informações mais recentes.';
 
     }
 
@@ -445,15 +446,6 @@ async function carregarDadosAutomaticos() {
 
 /* =========================================================
    PROCESSAR DADOS RECEBIDOS DA API
-
-   CAMPOS DA API:
-   Nombre
-   Mes
-   Horas Mes
-   Gemba
-   Status BAR
-   SETOR
-   ÁREA CONSOLIDADA
 ========================================================= */
 
 function processarDadosApi(
@@ -884,16 +876,6 @@ function processarLinhasBase(
   linhas
 ) {
 
-  /*
-   * F = Nome
-   * I = Mês
-   * J = Tempo
-   * K = Gemba
-   * L = Status BAR
-   * N = Setor
-   * O = Área Consolidada
-   */
-
   const registros =
     linhas
       .slice(
@@ -1154,11 +1136,6 @@ function processarRegistros(
   );
 
 
-  /*
-   * Em processo:
-   * maior tempo para menor tempo.
-   */
-
   processo.sort(
     (
       a,
@@ -1186,11 +1163,6 @@ function processarRegistros(
     }
   );
 
-
-  /*
-   * Não realizaram:
-   * ordem alfabética.
-   */
 
   naoRealizaram.sort(
     (
@@ -1367,6 +1339,26 @@ function criarEstruturaAreas() {
       percentual:
         0
 
+    },
+
+
+    "Line Haul": {
+
+      hc:
+        0,
+
+      realizaram:
+        0,
+
+      processo:
+        0,
+
+      naoRealizaram:
+        0,
+
+      percentual:
+        0
+
     }
 
   };
@@ -1424,6 +1416,18 @@ function normalizarArea(
   ) {
 
     return "ICQA";
+
+  }
+
+
+  if (
+    texto ===
+    "LINE HAUL" ||
+    texto ===
+    "LINEHAUL"
+  ) {
+
+    return "Line Haul";
 
   }
 
@@ -1515,7 +1519,6 @@ function calcularGeral(
 
 /* =========================================================
    EXCEÇÕES DE SETOR
-   SOMENTE NAS ARTES
 ========================================================= */
 
 function ajustarSetorNaArte(
@@ -1943,26 +1946,44 @@ function preencherArteGeral(
     "";
 
 
-  const ordem = [
-  "ICQA",
-  "OPEX",
-  "Outbound",
-  "Inbound"
-].sort((areaA, areaB) => {
+  const ordem =
+    AREAS_VALIDAS
+      .slice()
+      .sort(
+        (
+          areaA,
+          areaB
+        ) => {
 
-  const percentualA =
-    Number(
-      dados.areas?.[areaA]?.percentual
-    ) || 0;
+          const percentualA =
+            Number(
+              dados
+                .areas
+                ?.[
+                  areaA
+                ]
+                ?.percentual
+            ) || 0;
 
-  const percentualB =
-    Number(
-      dados.areas?.[areaB]?.percentual
-    ) || 0;
 
-  return percentualB - percentualA;
+          const percentualB =
+            Number(
+              dados
+                .areas
+                ?.[
+                  areaB
+                ]
+                ?.percentual
+            ) || 0;
 
-});
+
+          return (
+            percentualB -
+            percentualA
+          );
+
+        }
+      );
 
 
   ordem.forEach(
@@ -2906,12 +2927,6 @@ function obterValorObjeto(
 
   }
 
-
-  /*
-   * Segunda tentativa:
-   * compara os nomes ignorando
-   * acentos e maiúsculas.
-   */
 
   const chaves =
     Object.keys(
