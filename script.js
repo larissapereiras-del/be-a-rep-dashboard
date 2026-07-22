@@ -1,4 +1,5 @@
-console.log("✅ NOVO SCRIPT.JS CARREGADO");
+console.log("✅ SCRIPT.JS — NOVAS ARTES BAR CARREGADO");
+
 
 /* =========================================================
    BE A REP DASHBOARD
@@ -166,12 +167,8 @@ botoesArte.forEach(
       "click",
       () => {
 
-        const nomeArte =
-          botao.dataset.arte;
-
-
         mostrarArte(
-          nomeArte
+          botao.dataset.arte
         );
 
       }
@@ -552,13 +549,6 @@ function processarDadosApi(
           }
 
 
-          const situacao =
-            classificarSituacao(
-              gemba,
-              statusBar
-            );
-
-
           return {
 
             nome:
@@ -588,7 +578,10 @@ function processarDadosApi(
               area,
 
             situacao:
-              situacao
+              classificarSituacao(
+                gemba,
+                statusBar
+              )
 
           };
 
@@ -645,10 +638,8 @@ async function processarArquivo(
     }
 
     else if (
-      extensao ===
-      "xlsx" ||
-      extensao ===
-      "xls"
+      extensao === "xlsx" ||
+      extensao === "xls"
     ) {
 
       linhas =
@@ -754,10 +745,8 @@ async function lerExcel(
     XLSX.read(
       buffer,
       {
-
         type:
           "array"
-
       }
     );
 
@@ -779,17 +768,15 @@ async function lerExcel(
   ) {
 
     nomeAbaBase =
-      workbook
-        .SheetNames[0];
+      workbook.SheetNames[0];
 
   }
 
 
   const worksheet =
-    workbook
-      .Sheets[
-        nomeAbaBase
-      ];
+    workbook.Sheets[
+      nomeAbaBase
+    ];
 
 
   return XLSX.utils
@@ -828,24 +815,20 @@ async function lerCSV(
     XLSX.read(
       texto,
       {
-
         type:
           "string"
-
       }
     );
 
 
   const nomeAba =
-    workbook
-      .SheetNames[0];
+    workbook.SheetNames[0];
 
 
   const worksheet =
-    workbook
-      .Sheets[
-        nomeAba
-      ];
+    workbook.Sheets[
+      nomeAba
+    ];
 
 
   return XLSX.utils
@@ -1023,6 +1006,14 @@ function processarRegistros(
     [];
 
 
+  const guembaPendenteBeARep =
+    [];
+
+
+  const guembaProcessandoBeARep =
+    [];
+
+
   registros.forEach(
     pessoa => {
 
@@ -1045,6 +1036,12 @@ function processarRegistros(
 
       dadosArea.hc++;
 
+
+      /* ===================================================
+         RESUMO PRINCIPAL
+
+         Mantém a mesma regra original do Dashboard.
+      =================================================== */
 
       if (
         pessoa.situacao ===
@@ -1110,9 +1107,103 @@ function processarRegistros(
 
       }
 
+
+      /* ===================================================
+         REGRA DE TEMPO PARA AS NOVAS ARTES
+
+         OPEX:
+         >= 10 minutos = concluído
+
+         DEMAIS ÁREAS:
+         >= 60 minutos = concluído
+      =================================================== */
+
+      const tempoConclusao =
+        pessoa.area === "OPEX"
+          ? 10
+          : 60;
+
+
+      /* ===================================================
+         GUEMBA REALIZADO
+         MAS PENDENTE DE BE A REP
+
+         Gemba = HECHO
+         Tempo = 0h00m
+      =================================================== */
+
+      if (
+        pessoa.gemba === "HECHO" &&
+        pessoa.minutos === 0
+      ) {
+
+        guembaPendenteBeARep.push({
+
+          nome:
+            pessoa.nome,
+
+          setor:
+            ajustarSetorNaArte(
+              pessoa.nome,
+              pessoa.setor
+            ),
+
+          area:
+            pessoa.area
+
+        });
+
+      }
+
+
+      /* ===================================================
+         GUEMBA REALIZADO
+         MAS PROCESSANDO BE A REP
+
+         OPEX:
+         1 a 9 minutos
+
+         DEMAIS:
+         1 a 59 minutos
+      =================================================== */
+
+      if (
+        pessoa.gemba === "HECHO" &&
+        pessoa.minutos > 0 &&
+        pessoa.minutos < tempoConclusao
+      ) {
+
+        guembaProcessandoBeARep.push({
+
+          nome:
+            pessoa.nome,
+
+          setor:
+            ajustarSetorNaArte(
+              pessoa.nome,
+              pessoa.setor
+            ),
+
+          tempo:
+            pessoa.tempo,
+
+          minutos:
+            pessoa.minutos,
+
+          area:
+            pessoa.area
+
+        });
+
+      }
+
     }
   );
 
+
+  /* =======================================================
+     CALCULAR PERCENTUAL POR ÁREA
+  ======================================================= */
 
   AREAS_VALIDAS.forEach(
     area => {
@@ -1135,6 +1226,10 @@ function processarRegistros(
     }
   );
 
+
+  /* =======================================================
+     ORDENAÇÕES
+  ======================================================= */
 
   processo.sort(
     (
@@ -1176,6 +1271,46 @@ function processarRegistros(
   );
 
 
+  guembaPendenteBeARep.sort(
+    (
+      a,
+      b
+    ) =>
+      a.nome.localeCompare(
+        b.nome,
+        "pt-BR"
+      )
+  );
+
+
+  guembaProcessandoBeARep.sort(
+    (
+      a,
+      b
+    ) => {
+
+      if (
+        b.minutos !==
+        a.minutos
+      ) {
+
+        return (
+          b.minutos -
+          a.minutos
+        );
+
+      }
+
+
+      return a.nome.localeCompare(
+        b.nome,
+        "pt-BR"
+      );
+
+    }
+  );
+
+
   const geral =
     calcularGeral(
       areas
@@ -1201,7 +1336,13 @@ function processarRegistros(
       processo,
 
     naoRealizaram:
-      naoRealizaram
+      naoRealizaram,
+
+    guembaPendenteBeARep:
+      guembaPendenteBeARep,
+
+    guembaProcessandoBeARep:
+      guembaProcessandoBeARep
 
   };
 
@@ -1260,108 +1401,39 @@ function classificarSituacao(
 
 function criarEstruturaAreas() {
 
-  return {
-
-    Outbound: {
-
-      hc:
-        0,
-
-      realizaram:
-        0,
-
-      processo:
-        0,
-
-      naoRealizaram:
-        0,
-
-      percentual:
-        0
-
-    },
+  const areas =
+    {};
 
 
-    Inbound: {
+  AREAS_VALIDAS.forEach(
+    area => {
 
-      hc:
-        0,
+      areas[
+        area
+      ] = {
 
-      realizaram:
-        0,
+        hc:
+          0,
 
-      processo:
-        0,
+        realizaram:
+          0,
 
-      naoRealizaram:
-        0,
+        processo:
+          0,
 
-      percentual:
-        0
+        naoRealizaram:
+          0,
 
-    },
+        percentual:
+          0
 
-
-    OPEX: {
-
-      hc:
-        0,
-
-      realizaram:
-        0,
-
-      processo:
-        0,
-
-      naoRealizaram:
-        0,
-
-      percentual:
-        0
-
-    },
-
-
-    ICQA: {
-
-      hc:
-        0,
-
-      realizaram:
-        0,
-
-      processo:
-        0,
-
-      naoRealizaram:
-        0,
-
-      percentual:
-        0
-
-    },
-
-
-    "Line Haul": {
-
-      hc:
-        0,
-
-      realizaram:
-        0,
-
-      processo:
-        0,
-
-      naoRealizaram:
-        0,
-
-      percentual:
-        0
+      };
 
     }
+  );
 
-  };
+
+  return areas;
 
 }
 
@@ -1381,8 +1453,7 @@ function normalizarArea(
 
 
   if (
-    texto ===
-    "OUTBOUND"
+    texto === "OUTBOUND"
   ) {
 
     return "Outbound";
@@ -1391,8 +1462,7 @@ function normalizarArea(
 
 
   if (
-    texto ===
-    "INBOUND"
+    texto === "INBOUND"
   ) {
 
     return "Inbound";
@@ -1401,8 +1471,7 @@ function normalizarArea(
 
 
   if (
-    texto ===
-    "OPEX"
+    texto === "OPEX"
   ) {
 
     return "OPEX";
@@ -1411,8 +1480,7 @@ function normalizarArea(
 
 
   if (
-    texto ===
-    "ICQA"
+    texto === "ICQA"
   ) {
 
     return "ICQA";
@@ -1421,10 +1489,8 @@ function normalizarArea(
 
 
   if (
-    texto ===
-    "LINE HAUL" ||
-    texto ===
-    "LINEHAUL"
+    texto === "LINE HAUL" ||
+    texto === "LINEHAUL"
   ) {
 
     return "Line Haul";
@@ -1846,6 +1912,16 @@ function preencherSistema(
     dados.naoRealizaram
   );
 
+
+  preencherArteGuembaPendente(
+    dados.guembaPendenteBeARep
+  );
+
+
+  preencherArteGuembaProcessando(
+    dados.guembaProcessandoBeARep
+  );
+
 }
 
 
@@ -1957,23 +2033,17 @@ function preencherArteGeral(
 
           const percentualA =
             Number(
-              dados
-                .areas
-                ?.[
-                  areaA
-                ]
-                ?.percentual
+              dados.areas?.[
+                areaA
+              ]?.percentual
             ) || 0;
 
 
           const percentualB =
             Number(
-              dados
-                .areas
-                ?.[
-                  areaB
-                ]
-                ?.percentual
+              dados.areas?.[
+                areaB
+              ]?.percentual
             ) || 0;
 
 
@@ -2074,8 +2144,9 @@ function preencherArteProcesso(
     pessoas.length;
 
 
-  montarListasProcesso(
-    pessoas
+  montarListaComTempo(
+    pessoas,
+    "listas-processo"
   );
 
 }
@@ -2097,8 +2168,67 @@ function preencherArteNaoRealizaram(
     pessoas.length;
 
 
-  montarListasNaoRealizaram(
-    pessoas
+  montarListaSemTempo(
+    pessoas,
+    "listas-nao"
+  );
+
+}
+
+
+/* =========================================================
+   ARTE GUEMBA REALIZADO / BAR PENDENTE
+========================================================= */
+
+function preencherArteGuembaPendente(
+  pessoas
+) {
+
+  const lista =
+    pessoas ||
+    [];
+
+
+  document
+    .getElementById(
+      "total-guemba-pendente"
+    )
+    .textContent =
+    lista.length;
+
+
+  montarListaSemTempo(
+    lista,
+    "listas-guemba-pendente"
+  );
+
+}
+
+
+/* =========================================================
+   ARTE GUEMBA REALIZADO / BAR PROCESSANDO
+========================================================= */
+
+function preencherArteGuembaProcessando(
+  pessoas
+) {
+
+  const lista =
+    pessoas ||
+    [];
+
+
+  document
+    .getElementById(
+      "total-guemba-processando"
+    )
+    .textContent =
+    lista.length;
+
+
+  montarListaComTempo(
+    lista,
+    "listas-guemba-processando"
   );
 
 }
@@ -2156,12 +2286,8 @@ function dividirLista(
 
 
   for (
-    let i =
-      0;
-
-    i <
-      quantidade;
-
+    let i = 0;
+    i < quantidade;
     i++
   ) {
 
@@ -2169,14 +2295,11 @@ function dividirLista(
 
       lista.slice(
 
-        i *
-        tamanho,
+        i * tamanho,
 
         (
-          i +
-          1
-        ) *
-        tamanho
+          i + 1
+        ) * tamanho
 
       )
 
@@ -2191,17 +2314,27 @@ function dividirLista(
 
 
 /* =========================================================
-   MONTAR LISTAS EM PROCESSO
+   MONTAR LISTA COM TEMPO
 ========================================================= */
 
-function montarListasProcesso(
-  pessoas
+function montarListaComTempo(
+  pessoas,
+  idContainer
 ) {
 
   const container =
     document.getElementById(
-      "listas-processo"
+      idContainer
     );
+
+
+  if (
+    !container
+  ) {
+
+    return;
+
+  }
 
 
   const colunas =
@@ -2283,29 +2416,21 @@ function montarListasProcesso(
             >
 
               <div class="nome-pessoa">
-
                 ${escaparHTML(
                   pessoa.nome
                 )}
-
               </div>
 
-
               <div class="setor">
-
                 ${escaparHTML(
                   pessoa.setor
                 )}
-
               </div>
 
-
               <div class="tempo">
-
                 ${escaparHTML(
                   pessoa.tempo
                 )}
-
               </div>
 
             </div>
@@ -2331,17 +2456,27 @@ function montarListasProcesso(
 
 
 /* =========================================================
-   MONTAR LISTAS NÃO REALIZARAM
+   MONTAR LISTA SEM TEMPO
 ========================================================= */
 
-function montarListasNaoRealizaram(
-  pessoas
+function montarListaSemTempo(
+  pessoas,
+  idContainer
 ) {
 
   const container =
     document.getElementById(
-      "listas-nao"
+      idContainer
     );
+
+
+  if (
+    !container
+  ) {
+
+    return;
+
+  }
 
 
   const colunas =
@@ -2419,20 +2554,15 @@ function montarListasNaoRealizaram(
             >
 
               <div class="nome-pessoa">
-
                 ${escaparHTML(
                   pessoa.nome
                 )}
-
               </div>
 
-
               <div class="setor">
-
                 ${escaparHTML(
                   pessoa.setor
                 )}
-
               </div>
 
             </div>
