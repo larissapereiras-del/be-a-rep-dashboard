@@ -28,6 +28,139 @@ let dadosProcessados = null;
 
 let arteAtual = "geral";
 
+/* =========================================================
+   GESTÃO DE EXCEÇÕES
+
+   A pessoa continua contabilizando:
+   - HC total
+   - Target
+   - Percentuais
+   - Quantidade de pendentes
+
+   Apenas o nome é ocultado das listas nominais.
+========================================================= */
+
+const CHAVE_EXCECOES =
+  "be-a-rep-pessoas-ocultadas";
+
+
+let pessoasOcultadas =
+  carregarPessoasOcultadas();
+
+
+/* =========================================================
+   CARREGAR EXCEÇÕES SALVAS NO NAVEGADOR
+========================================================= */
+
+function carregarPessoasOcultadas() {
+
+  try {
+
+    const dadosSalvos =
+      localStorage.getItem(
+        CHAVE_EXCECOES
+      );
+
+
+    if (
+      !dadosSalvos
+    ) {
+
+      return [];
+
+    }
+
+
+    const lista =
+      JSON.parse(
+        dadosSalvos
+      );
+
+
+    return Array.isArray(
+      lista
+    )
+      ? lista
+      : [];
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "Erro ao carregar pessoas ocultadas:",
+      erro
+    );
+
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+   SALVAR EXCEÇÕES NO NAVEGADOR
+========================================================= */
+
+function salvarPessoasOcultadas() {
+
+  try {
+
+    localStorage.setItem(
+
+      CHAVE_EXCECOES,
+
+      JSON.stringify(
+        pessoasOcultadas
+      )
+
+    );
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "Erro ao salvar pessoas ocultadas:",
+      erro
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   VALIDAR SE A PESSOA ESTÁ OCULTADA
+========================================================= */
+
+function pessoaEstaOcultada(
+  nome
+) {
+
+  const nomeNormalizado =
+    normalizarTexto(
+      nome
+    );
+
+
+  return pessoasOcultadas
+    .some(
+      pessoa =>
+        normalizarTexto(
+          pessoa.nome
+        ) ===
+        nomeNormalizado
+    );
+
+}
+
 
 /* =========================================================
    ELEMENTOS
