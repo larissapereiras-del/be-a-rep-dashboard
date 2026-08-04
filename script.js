@@ -2855,6 +2855,132 @@ function ocultarDashboard() {
 
 }
 
+/* =========================================================
+   ADICIONAR PESSOA OCULTADA
+========================================================= */
+
+function adicionarPessoaOcultada() {
+
+  if (
+    !dadosProcessados
+  ) {
+
+    alert(
+      "Carregue os dados antes de adicionar uma exceção."
+    );
+
+    return;
+
+  }
+
+
+  const nomeDigitado =
+    limparTexto(
+      campoExcecaoNome
+        ? campoExcecaoNome.value
+        : ""
+    );
+
+
+  const motivo =
+    limparTexto(
+      campoExcecaoMotivo
+        ? campoExcecaoMotivo.value
+        : ""
+    ) ||
+    "Outro";
+
+
+  if (
+    !nomeDigitado
+  ) {
+
+    alert(
+      "Digite ou selecione o nome da pessoa."
+    );
+
+    return;
+
+  }
+
+
+  const pessoaEncontrada =
+    dadosProcessados
+      .registros
+      .find(
+        pessoa =>
+          normalizarTexto(
+            pessoa.nome
+          ) ===
+          normalizarTexto(
+            nomeDigitado
+          )
+      );
+
+
+  if (
+    !pessoaEncontrada
+  ) {
+
+    alert(
+      "Não encontrei esse nome na base atual."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    pessoaEstaOcultada(
+      pessoaEncontrada.nome
+    )
+  ) {
+
+    alert(
+      "Essa pessoa já está ocultada das listas."
+    );
+
+    return;
+
+  }
+
+
+  pessoasOcultadas.push({
+
+    nome:
+      pessoaEncontrada.nome,
+
+    motivo:
+      motivo
+
+  });
+
+
+  salvarPessoasOcultadas();
+
+
+  if (
+    campoExcecaoNome
+  ) {
+
+    campoExcecaoNome.value =
+      "";
+
+  }
+
+
+  renderizarPessoasOcultadas();
+
+
+  preencherListasComExcecoes();
+
+
+  alert(
+    "Pessoa ocultada das listas com sucesso."
+  );
+
+}
 
 /* =========================================================
    TROCAR ARTE
