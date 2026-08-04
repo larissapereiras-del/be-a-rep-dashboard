@@ -1535,34 +1535,31 @@ function processarRegistros(
   areas.Geral =
     geral;
 
+return {
 
-  return {
+  mes:
+    mes,
 
-    mes:
-      mes,
+  areas:
+    areas,
 
-    areas:
-      areas,
+  geral:
+    geral,
 
-    geral:
-      geral,
+  processo:
+    processo,
 
-    processo:
-      processo,
+  naoRealizaram:
+    naoRealizaram,
 
-    naoRealizaram:
-      naoRealizaram,
+  guembaPendenteBeARep:
+    guembaPendenteBeARep,
 
-    guembaPendenteBeARep:
-      guembaPendenteBeARep,
+  guembaProcessandoBeARep:
+    guembaProcessandoBeARep
 
-    guembaProcessandoBeARep:
-      guembaProcessandoBeARep
-
-  };
-
-}
-
+};
+ 
 
 /* =========================================================
    CLASSIFICAR SITUAÇÃO
