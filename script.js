@@ -219,6 +219,45 @@ const textoAtualizacao =
     "texto-atualizacao"
   );
 
+/* =========================================================
+   ELEMENTOS — GESTÃO DE EXCEÇÕES
+========================================================= */
+
+const campoExcecaoNome =
+  document.getElementById(
+    "excecao-nome"
+  );
+
+
+const campoExcecaoMotivo =
+  document.getElementById(
+    "excecao-motivo"
+  );
+
+
+const botaoAdicionarExcecao =
+  document.getElementById(
+    "botao-adicionar-excecao"
+  );
+
+
+const listaExcecoes =
+  document.getElementById(
+    "lista-excecoes"
+  );
+
+
+const totalExcecoes =
+  document.getElementById(
+    "total-excecoes"
+  );
+
+
+const listaPessoasExcecao =
+  document.getElementById(
+    "lista-pessoas-excecao"
+  );
+
 
 /* =========================================================
    INICIAR SISTEMA
