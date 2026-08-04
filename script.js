@@ -365,6 +365,49 @@ if (
 
 }
 
+/* =========================================================
+   EVENTO — ADICIONAR PESSOA ÀS EXCEÇÕES
+========================================================= */
+
+if (
+  botaoAdicionarExcecao
+) {
+
+  botaoAdicionarExcecao.addEventListener(
+    "click",
+    adicionarPessoaOcultada
+  );
+
+}
+
+
+/* =========================================================
+   EVENTO — ENTER NO CAMPO DE NOME
+========================================================= */
+
+if (
+  campoExcecaoNome
+) {
+
+  campoExcecaoNome.addEventListener(
+    "keydown",
+    evento => {
+
+      if (
+        evento.key === "Enter"
+      ) {
+
+        evento.preventDefault();
+
+
+        adicionarPessoaOcultada();
+
+      }
+
+    }
+  );
+
+}
 
 /* =========================================================
    CARREGAR DADOS AUTOMATICAMENTE
