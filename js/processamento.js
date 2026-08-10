@@ -48,7 +48,10 @@ export function processarDadosApi(dadosApi) {
 
 
   /* =======================================================
-     FILTRAR SOMENTE O MÊS ATUAL
+     FILTROS DA BASE
+
+     1. SOMENTE MÊS ATUAL
+     2. SOMENTE OBRIGATÓRIOS
   ======================================================= */
 
   const dadosMesAtual =
@@ -68,9 +71,23 @@ export function processarDadosApi(dadosApi) {
           );
 
 
+        const obrigatoriedade =
+          normalizarTexto(
+            obterValorObjeto(
+              item,
+              [
+                "FLAG_OBLIGATORIEDAD",
+                "FLAG OBLIGATORIEDAD",
+                "FLAG_OBRIGATORIEDADE",
+                "Obrigatoriedade"
+              ]
+            )
+          );
+
+
         return (
-          mesRegistro ===
-          referenciaAtual
+          mesRegistro === referenciaAtual &&
+          obrigatoriedade === "OBLIGATORIO"
         );
 
       }
@@ -202,10 +219,7 @@ export function processarDadosApi(dadosApi) {
 
 
           /* =================================================
-             ÁREA INTERNA
-
-             A área do dashboard será enriquecida depois
-             através da aba CADASTRO_AREAS.
+             ÁREA
           ================================================= */
 
           const area =
@@ -270,6 +284,24 @@ export function processarDadosApi(dadosApi) {
             );
 
 
+          /* =================================================
+             OBRIGATORIEDADE
+          ================================================= */
+
+          const obrigatoriedade =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "FLAG_OBLIGATORIEDAD",
+                  "FLAG OBLIGATORIEDAD",
+                  "FLAG_OBRIGATORIEDADE",
+                  "Obrigatoriedade"
+                ]
+              )
+            );
+
+
           return {
 
             nome:
@@ -286,6 +318,9 @@ export function processarDadosApi(dadosApi) {
 
             mes:
               mes,
+
+            obrigatoriedade:
+              obrigatoriedade,
 
             tempo:
               tempo,
@@ -342,7 +377,7 @@ function montarResultado(
   ) {
 
     throw new Error(
-      "Nenhuma pessoa válida foi encontrada no mês atual."
+      "Nenhuma pessoa obrigatória foi encontrada no mês atual."
     );
 
   }
@@ -678,8 +713,6 @@ function classificarSituacao(
   const statusRealizado = [
 
     "HECHO",
-
-    "CUMPLIO",
 
     "CUMPLIO",
 
