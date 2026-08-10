@@ -2016,32 +2016,67 @@ function preencherResumo(
     dados.geral;
 
 
-  const percentual =
+  $("resumo-hc").textContent =
+    geral.hc;
+
+
+  $("resumo-realizaram").textContent =
+    geral.realizaram;
+
+
+  $("resumo-processo").textContent =
+    geral.processo;
+
+
+  $("resumo-nao").textContent =
+    geral.naoRealizaram;
+
+
+  $("percentual-resumo-realizaram").textContent =
+    formatarPorcentagem(
+
+      geral.hc > 0
+
+        ? geral.realizaram /
+          geral.hc
+
+        : 0
+
+    );
+
+
+  $("percentual-resumo-processo").textContent =
+    formatarPorcentagem(
+
+      geral.hc > 0
+
+        ? geral.processo /
+          geral.hc
+
+        : 0
+
+    );
+
+
+  $("percentual-resumo-nao").textContent =
+    formatarPorcentagem(
+
+      geral.hc > 0
+
+        ? geral.naoRealizaram /
+          geral.hc
+
+        : 0
+
+    );
+
+
+  $("situacao-atual").textContent =
     formatarPorcentagem(
       geral.percentual
     );
 
-
-  $("total-hc").textContent =
-    geral.hc;
-
-
-  $("total-realizaram").textContent =
-    geral.realizaram;
-
-
-  $("total-processo").textContent =
-    geral.processo;
-
-
-  $("total-nao-realizaram").textContent =
-    geral.naoRealizaram;
-
-
-  $("percentual-geral").textContent =
-    percentual;
-
-
+}
   /* =======================================================
      RESULTADO POR ÁREA
   ======================================================= */
