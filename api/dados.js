@@ -1,6 +1,7 @@
 const VERDI_URL =
   "https://api.mercadolibre.com/workspace/genai/verdi-flows/webhook/0a7356a6-9917-4435-acfe-60269391ca30/external";
 
+
 module.exports = async function handler(req, res) {
 
   if (req.method !== "GET") {
@@ -10,6 +11,7 @@ module.exports = async function handler(req, res) {
     });
 
   }
+
 
   try {
 
@@ -54,7 +56,10 @@ module.exports = async function handler(req, res) {
             Accept:
               "application/json"
 
-          }
+          },
+
+          cache:
+            "no-store"
         }
       );
 
@@ -82,7 +87,10 @@ module.exports = async function handler(req, res) {
             "Erro ao consultar a base no Verdi.",
 
           status:
-            resposta.status
+            resposta.status,
+
+          detalhe:
+            detalhe
 
         });
 
@@ -95,7 +103,7 @@ module.exports = async function handler(req, res) {
 
     res.setHeader(
       "Cache-Control",
-      "no-store"
+      "no-store, no-cache, must-revalidate"
     );
 
 
