@@ -8,7 +8,6 @@ import {
   TEMPO_MINIMO_POR_AREA
 } from "./config.js";
 
-
 import {
   limparTexto,
   normalizarTexto,
@@ -29,11 +28,17 @@ export function processarDadosApi(dadosApi) {
       .map(
         item => {
 
+          /* =================================================
+             NOME
+          ================================================= */
+
           const nome =
             limparTexto(
               obterValorObjeto(
                 item,
                 [
+                  "FULL_NAME",
+                  "Full Name",
                   "Nombre",
                   "Nome"
                 ]
@@ -41,32 +46,42 @@ export function processarDadosApi(dadosApi) {
             );
 
 
-          if (
-            !nome
-          ) {
+          if (!nome) {
 
             return null;
 
           }
 
 
+          /* =================================================
+             MÊS
+          ================================================= */
+
           const mes =
             limparTexto(
               obterValorObjeto(
                 item,
                 [
+                  "MES",
                   "Mes",
-                  "Mês"
+                  "Mês",
+                  "MES_BE_A_REP"
                 ]
               )
             );
 
+
+          /* =================================================
+             TEMPO / HORAS
+          ================================================= */
 
           const tempo =
             limparTexto(
               obterValorObjeto(
                 item,
                 [
+                  "SUMA_HORAS_MES",
+                  "HORAS",
                   "Horas Mes",
                   "Horas Mês",
                   "Tempo"
@@ -75,28 +90,43 @@ export function processarDadosApi(dadosApi) {
             );
 
 
+          /* =================================================
+             GEMBA
+          ================================================= */
+
           const gemba =
             normalizarTexto(
               obterValorObjeto(
                 item,
                 [
+                  "GEMBA",
                   "Gemba"
                 ]
               )
             );
 
 
+          /* =================================================
+             STATUS BAR
+          ================================================= */
+
           const statusBar =
             normalizarTexto(
               obterValorObjeto(
                 item,
                 [
+                  "ESTADO_BAR",
                   "Status BAR",
-                  "Status Bar"
+                  "Status Bar",
+                  "STATUS_BAR"
                 ]
               )
             );
 
+
+          /* =================================================
+             SETOR / POSIÇÃO
+          ================================================= */
 
           const setor =
             limparTexto(
@@ -104,12 +134,26 @@ export function processarDadosApi(dadosApi) {
                 item,
                 [
                   "SETOR",
-                  "Setor"
+                  "Setor",
+                  "POSITION_PEOPLE",
+                  "ROL"
                 ]
               )
             )
               .toUpperCase();
 
+
+          /* =================================================
+             ÁREA INTERNA
+
+             IMPORTANTE:
+             Não usamos "AREA" da query oficial diretamente,
+             pois nela aparecem valores como
+             "Fulfillment Brazil", "Transportation" etc.
+
+             Nossa área será posteriormente enriquecida com
+             CADASTRO_AREAS.
+          ================================================= */
 
           const area =
             normalizarArea(
@@ -118,7 +162,48 @@ export function processarDadosApi(dadosApi) {
                 [
                   "ÁREA CONSOLIDADA",
                   "AREA CONSOLIDADA",
+                  "AREA_CONSOLIDADA",
                   "Área Consolidada"
+                ]
+              )
+            );
+
+
+          /* =================================================
+             IDENTIFICADORES EXTRAS
+          ================================================= */
+
+          const username =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "USERNAME",
+                  "LDAP_USER"
+                ]
+              )
+            );
+
+
+          const email =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "EMAIL"
+                ]
+              )
+            );
+
+
+          const cad =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "CAD_PEOPLE",
+                  "CAD_GROOT",
+                  "CAD"
                 ]
               )
             );
@@ -128,6 +213,15 @@ export function processarDadosApi(dadosApi) {
 
             nome:
               nome,
+
+            username:
+              username,
+
+            email:
+              email,
+
+            cad:
+              cad,
 
             mes:
               mes,
@@ -193,6 +287,10 @@ function montarResultado(
   }
 
 
+  /* =======================================================
+     ESTRUTURA DAS ÁREAS
+  ======================================================= */
+
   const areas =
     {};
 
@@ -225,24 +323,36 @@ function montarResultado(
   );
 
 
+  /* =======================================================
+     LISTAS
+  ======================================================= */
+
   const processo =
     [];
-
 
   const naoRealizaram =
     [];
 
-
   const guembaPendente =
     [];
-
 
   const guembaProcessando =
     [];
 
+  const semCadastro =
+    [];
+
+
+  /* =======================================================
+     PROCESSAR CADA PESSOA
+  ======================================================= */
 
   registros.forEach(
     pessoa => {
+
+      /* ===================================================
+         PESSOA SEM ÁREA CADASTRADA
+      =================================================== */
 
       if (
         !AREAS_VALIDAS.includes(
@@ -250,36 +360,69 @@ function montarResultado(
         )
       ) {
 
-        return;
+        semCadastro.push(
+          pessoa
+        );
 
       }
 
 
-      const dadosArea =
-        areas[
+      /* ===================================================
+         CONTAGEM POR ÁREA
+
+         Só entra aqui se houver uma área válida.
+      =================================================== */
+
+      if (
+        AREAS_VALIDAS.includes(
           pessoa.area
-        ];
+        )
+      ) {
+
+        const dadosArea =
+          areas[
+            pessoa.area
+          ];
 
 
-      dadosArea.hc++;
+        dadosArea.hc++;
 
+
+        if (
+          pessoa.situacao ===
+          "REALIZOU"
+        ) {
+
+          dadosArea.realizaram++;
+
+        }
+
+        else if (
+          pessoa.situacao ===
+          "EM_PROCESSO"
+        ) {
+
+          dadosArea.processo++;
+
+        }
+
+        else {
+
+          dadosArea.naoRealizaram++;
+
+        }
+
+      }
+
+
+      /* ===================================================
+         LISTA EM PROCESSO
+      =================================================== */
 
       if (
         pessoa.situacao ===
-        "REALIZOU"
-      ) {
-
-        dadosArea.realizaram++;
-
-      }
-
-      else if (
-        pessoa.situacao ===
         "EM_PROCESSO"
       ) {
-
-        dadosArea.processo++;
-
 
         processo.push(
           pessoa
@@ -287,10 +430,15 @@ function montarResultado(
 
       }
 
-      else {
 
-        dadosArea.naoRealizaram++;
+      /* ===================================================
+         LISTA NÃO REALIZARAM
+      =================================================== */
 
+      if (
+        pessoa.situacao ===
+        "NAO_REALIZOU"
+      ) {
 
         naoRealizaram.push(
           pessoa
@@ -298,6 +446,10 @@ function montarResultado(
 
       }
 
+
+      /* ===================================================
+         TEMPO MÍNIMO
+      =================================================== */
 
       const tempoConclusao =
 
@@ -309,11 +461,15 @@ function montarResultado(
           : TEMPO_MINIMO_POR_AREA.PADRAO;
 
 
+      /* ===================================================
+         GEMBA PENDENTE
+      =================================================== */
+
       if (
-        pessoa.gemba ===
-        "HECHO" &&
-        pessoa.minutos ===
-        0
+        gembaConcluido(
+          pessoa.gemba
+        ) &&
+        pessoa.minutos === 0
       ) {
 
         guembaPendente.push(
@@ -323,9 +479,14 @@ function montarResultado(
       }
 
 
+      /* ===================================================
+         GEMBA PROCESSANDO
+      =================================================== */
+
       if (
-        pessoa.gemba ===
-        "HECHO" &&
+        gembaConcluido(
+          pessoa.gemba
+        ) &&
         pessoa.minutos > 0 &&
         pessoa.minutos <
         tempoConclusao
@@ -340,6 +501,10 @@ function montarResultado(
     }
   );
 
+
+  /* =======================================================
+     PERCENTUAL POR ÁREA
+  ======================================================= */
 
   AREAS_VALIDAS.forEach(
     area => {
@@ -363,6 +528,10 @@ function montarResultado(
   );
 
 
+  /* =======================================================
+     ORDENAÇÕES
+  ======================================================= */
+
   processo.sort(
     ordenarPorTempoENome
   );
@@ -383,9 +552,24 @@ function montarResultado(
   );
 
 
+  semCadastro.sort(
+    ordenarPorNome
+  );
+
+
+  /* =======================================================
+     GERAL
+
+     IMPORTANTE:
+     Agora o GERAL considera TODAS as pessoas da base,
+     inclusive quem ainda não tem área cadastrada.
+
+     Dessa forma o Target continua correto.
+  ======================================================= */
+
   const geral =
-    calcularGeral(
-      areas
+    calcularGeralPorRegistros(
+      registros
     );
 
 
@@ -415,7 +599,10 @@ function montarResultado(
       guembaPendente,
 
     guembaProcessando:
-      guembaProcessando
+      guembaProcessando,
+
+    semCadastro:
+      semCadastro
 
   };
 
@@ -431,11 +618,34 @@ function classificarSituacao(
   statusBar
 ) {
 
+  /* =======================================================
+     REALIZOU
+  ======================================================= */
+
+  const statusRealizado = [
+
+    "HECHO",
+
+    "CUMPLIO",
+
+    "CUMPLIÓ",
+
+    "REALIZADO",
+
+    "CONCLUIDO",
+
+    "CONCLUÍDO"
+
+  ];
+
+
   if (
-    gemba ===
-    "HECHO" ||
-    statusBar ===
-    "HECHO"
+    statusRealizado.includes(
+      gemba
+    ) ||
+    statusRealizado.includes(
+      statusBar
+    )
   ) {
 
     return "REALIZOU";
@@ -443,11 +653,30 @@ function classificarSituacao(
   }
 
 
+  /* =======================================================
+     EM PROCESSO
+  ======================================================= */
+
+  const statusProcessando = [
+
+    "EN PROCESO",
+
+    "EM PROCESSO",
+
+    "EN CURSO",
+
+    "INICIADO"
+
+  ];
+
+
   if (
-    gemba ===
-    "EN PROCESO" ||
-    statusBar ===
-    "EN PROCESO"
+    statusProcessando.includes(
+      gemba
+    ) ||
+    statusProcessando.includes(
+      statusBar
+    )
   ) {
 
     return "EM_PROCESSO";
@@ -455,7 +684,44 @@ function classificarSituacao(
   }
 
 
+  /* =======================================================
+     NÃO REALIZOU
+
+     Exemplo da nova base:
+     GEMBA = NO CUMPLIO
+     ESTADO_BAR = NO INICIADO
+  ======================================================= */
+
   return "NAO_REALIZOU";
+
+}
+
+
+/* =========================================================
+   VERIFICAR GEMBA CONCLUÍDO
+========================================================= */
+
+function gembaConcluido(
+  gemba
+) {
+
+  return [
+
+    "HECHO",
+
+    "CUMPLIO",
+
+    "CUMPLIÓ",
+
+    "REALIZADO",
+
+    "CONCLUIDO",
+
+    "CONCLUÍDO"
+
+  ].includes(
+    gemba
+  );
 
 }
 
@@ -532,17 +798,17 @@ function normalizarArea(
 
 
 /* =========================================================
-   CALCULAR GERAL
+   CALCULAR GERAL DIRETO PELOS REGISTROS
 ========================================================= */
 
-function calcularGeral(
-  areas
+function calcularGeralPorRegistros(
+  registros
 ) {
 
   const geral = {
 
     hc:
-      0,
+      registros.length,
 
     realizaram:
       0,
@@ -559,29 +825,32 @@ function calcularGeral(
   };
 
 
-  AREAS_VALIDAS.forEach(
-    area => {
+  registros.forEach(
+    pessoa => {
 
-      const dadosArea =
-        areas[
-          area
-        ];
+      if (
+        pessoa.situacao ===
+        "REALIZOU"
+      ) {
 
+        geral.realizaram++;
 
-      geral.hc +=
-        dadosArea.hc;
+      }
 
+      else if (
+        pessoa.situacao ===
+        "EM_PROCESSO"
+      ) {
 
-      geral.realizaram +=
-        dadosArea.realizaram;
+        geral.processo++;
 
+      }
 
-      geral.processo +=
-        dadosArea.processo;
+      else {
 
+        geral.naoRealizaram++;
 
-      geral.naoRealizaram +=
-        dadosArea.naoRealizaram;
+      }
 
     }
   );
