@@ -24,22 +24,43 @@ import {
 export function processarDadosApi(dadosApi) {
 
   /* =======================================================
+     VALIDAR BASE
+  ======================================================= */
+
+  if (
+    !Array.isArray(
+      dadosApi
+    )
+  ) {
+
+    throw new Error(
+      "A base recebida da API não é válida."
+    );
+
+  }
+
+
+  /* =======================================================
      MÊS ATUAL
   ======================================================= */
 
   const agora =
     new Date();
 
+
   const mesAtual =
     agora.toLocaleString(
       "pt-BR",
       {
-        month: "long"
+        month:
+          "long"
       }
     );
 
+
   const anoAtual =
     agora.getFullYear();
+
 
   const referenciaAtual =
     normalizarTexto(
@@ -52,6 +73,12 @@ export function processarDadosApi(dadosApi) {
 
      1. SOMENTE MÊS ATUAL
      2. SOMENTE OBRIGATÓRIOS
+
+     IMPORTANTE:
+     NÃO FILTRAMOS POR ÁREA AQUI.
+
+     Se a pessoa não estiver no CADASTRO_AREAS,
+     ela precisa continuar na base para gerar o alerta.
   ======================================================= */
 
   const dadosMesAtual =
@@ -86,8 +113,10 @@ export function processarDadosApi(dadosApi) {
 
 
         return (
-          mesRegistro === referenciaAtual &&
-          obrigatoriedade === "OBLIGATORIO"
+          mesRegistro ===
+            referenciaAtual &&
+          obrigatoriedade ===
+            "OBLIGATORIO"
         );
 
       }
@@ -114,14 +143,17 @@ export function processarDadosApi(dadosApi) {
                 [
                   "FULL_NAME",
                   "Full Name",
-                  "Nombre",
-                  "Nome"
+                  "NOME",
+                  "Nome",
+                  "Nombre"
                 ]
               )
             );
 
 
-          if (!nome) {
+          if (
+            !nome
+          ) {
 
             return null;
 
@@ -200,7 +232,41 @@ export function processarDadosApi(dadosApi) {
 
 
           /* =================================================
-             SETOR / POSIÇÃO
+             ÁREA CONSOLIDADA
+
+             VEM DO CADASTRO_AREAS APÓS O MERGE.
+
+             Se não houver correspondência no cadastro:
+             areaOriginal = ""
+             area = ""
+          ================================================= */
+
+          const areaOriginal =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "ÁREA CONSOLIDADA",
+                  "AREA CONSOLIDADA",
+                  "AREA_CONSOLIDADA",
+                  "Área Consolidada"
+                ]
+              )
+            );
+
+
+          const area =
+            normalizarArea(
+              areaOriginal
+            );
+
+
+          /* =================================================
+             SETOR
+
+             SETOR também vem do CADASTRO_AREAS.
+
+             POSITION_PEOPLE e ROL ficam apenas como fallback.
           ================================================= */
 
           const setor =
@@ -219,18 +285,17 @@ export function processarDadosApi(dadosApi) {
 
 
           /* =================================================
-             ÁREA
+             STATUS CADASTRO
           ================================================= */
 
-          const area =
-            normalizarArea(
+          const statusCadastro =
+            limparTexto(
               obterValorObjeto(
                 item,
                 [
-                  "ÁREA CONSOLIDADA",
-                  "AREA CONSOLIDADA",
-                  "AREA_CONSOLIDADA",
-                  "Área Consolidada"
+                  "Status Cadastro",
+                  "STATUS CADASTRO",
+                  "STATUS_CADASTRO"
                 ]
               )
             );
@@ -302,6 +367,20 @@ export function processarDadosApi(dadosApi) {
             );
 
 
+          /* =================================================
+             POSSUI CADASTRO DE ÁREA?
+          ================================================= */
+
+          const temCadastroArea =
+            AREAS_VALIDAS.includes(
+              area
+            );
+
+
+          /* =================================================
+             RETORNO DA PESSOA
+          ================================================= */
+
           return {
 
             nome:
@@ -342,6 +421,15 @@ export function processarDadosApi(dadosApi) {
             area:
               area,
 
+            areaOriginal:
+              areaOriginal,
+
+            statusCadastro:
+              statusCadastro,
+
+            temCadastroArea:
+              temCadastroArea,
+
             situacao:
               classificarSituacao(
                 gemba,
@@ -373,7 +461,8 @@ function montarResultado(
 ) {
 
   if (
-    registros.length === 0
+    registros.length ===
+    0
   ) {
 
     throw new Error(
@@ -448,12 +537,15 @@ function montarResultado(
 
       /* ===================================================
          SEM CADASTRO DE ÁREA
+
+         A pessoa continua fazendo parte do HC GERAL.
+
+         Porém não entra em Outbound, Inbound, OPEX,
+         ICQA ou Line Haul até receber área no cadastro.
       =================================================== */
 
       if (
-        !AREAS_VALIDAS.includes(
-          pessoa.area
-        )
+        !pessoa.temCadastroArea
       ) {
 
         semCadastro.push(
@@ -465,12 +557,12 @@ function montarResultado(
 
       /* ===================================================
          CONTAGEM POR ÁREA
+
+         SOMENTE PESSOAS COM ÁREA VÁLIDA.
       =================================================== */
 
       if (
-        AREAS_VALIDAS.includes(
-          pessoa.area
-        )
+        pessoa.temCadastroArea
       ) {
 
         const dadosArea =
@@ -511,6 +603,9 @@ function montarResultado(
 
       /* ===================================================
          LISTA EM PROCESSO
+
+         É uma lista geral.
+         A pessoa permanece nela mesmo se estiver sem área.
       =================================================== */
 
       if (
@@ -563,7 +658,8 @@ function montarResultado(
         gembaConcluido(
           pessoa.gemba
         ) &&
-        pessoa.minutos === 0
+        pessoa.minutos ===
+        0
       ) {
 
         guembaPendente.push(
@@ -581,7 +677,8 @@ function montarResultado(
         gembaConcluido(
           pessoa.gemba
         ) &&
-        pessoa.minutos > 0 &&
+        pessoa.minutos >
+        0 &&
         pessoa.minutos <
         tempoConclusao
       ) {
@@ -611,7 +708,8 @@ function montarResultado(
 
       dadosArea.percentual =
 
-        dadosArea.hc > 0
+        dadosArea.hc >
+        0
 
           ? dadosArea.realizaram /
             dadosArea.hc
@@ -653,6 +751,13 @@ function montarResultado(
 
   /* =======================================================
      GERAL
+
+     IMPORTANTE:
+
+     O HC GERAL CONTINUA SENDO TODOS OS OBRIGATÓRIOS
+     DO MÊS.
+
+     Inclusive quem ainda está sem área cadastrada.
   ======================================================= */
 
   const geral =
@@ -660,6 +765,10 @@ function montarResultado(
       registros
     );
 
+
+  /* =======================================================
+     RETORNO FINAL
+  ======================================================= */
 
   return {
 
@@ -689,8 +798,15 @@ function montarResultado(
     guembaProcessando:
       guembaProcessando,
 
+    /* =====================================================
+       ALERTA DE CADASTRO
+    ===================================================== */
+
     semCadastro:
-      semCadastro
+      semCadastro,
+
+    quantidadeSemCadastro:
+      semCadastro.length
 
   };
 
@@ -858,9 +974,9 @@ function normalizarArea(
 
   if (
     texto ===
-    "LINE HAUL" ||
+      "LINE HAUL" ||
     texto ===
-    "LINEHAUL"
+      "LINEHAUL"
   ) {
 
     return "Line Haul";
@@ -874,7 +990,7 @@ function normalizarArea(
 
 
 /* =========================================================
-   CALCULAR GERAL DIRETO PELOS REGISTROS
+   CALCULAR GERAL
 ========================================================= */
 
 function calcularGeralPorRegistros(
@@ -934,7 +1050,8 @@ function calcularGeralPorRegistros(
 
   geral.percentual =
 
-    geral.hc > 0
+    geral.hc >
+    0
 
       ? geral.realizaram /
         geral.hc
@@ -978,7 +1095,8 @@ function descobrirMes(
         (
           contador[
             registro.mes
-          ] || 0
+          ] ||
+          0
         ) +
         1;
 
