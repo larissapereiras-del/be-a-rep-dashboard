@@ -1,19 +1,8 @@
-console.log("✅ SCRIPT.JS — NOVAS ARTES BAR CARREGADO");
+console.log("✅ CENTRAL BE A REP V2.1 — GESTÃO DE EXCEÇÕES CARREGADA");
 
-
-/* =========================================================
-   BE A REP DASHBOARD
-   CARREGAMENTO AUTOMÁTICO + BACKUP MANUAL
-========================================================= */
-
-
-/* =========================================================
-   CONFIGURAÇÕES
-========================================================= */
-
-const API_DADOS =
-  "/api/dados";
-
+const API_DADOS = "/api/dados";
+const TARGET = 0.90;
+const STORAGE_EXCECOES = "be-a-rep-excecoes-v1";
 
 const AREAS_VALIDAS = [
   "Outbound",
@@ -23,249 +12,36 @@ const AREAS_VALIDAS = [
   "Line Haul"
 ];
 
-
 let dadosProcessados = null;
-
 let arteAtual = "geral";
+let excecoes = carregarExcecoes();
 
-/* =========================================================
-   GESTÃO DE EXCEÇÕES
+const $ = id => document.getElementById(id);
 
-   A pessoa continua contabilizando:
-   - HC total
-   - Target
-   - Percentuais
-   - Quantidade de pendentes
-
-   Apenas o nome é ocultado das listas nominais.
-========================================================= */
-
-const CHAVE_EXCECOES =
-  "be-a-rep-pessoas-ocultadas";
-
-
-let pessoasOcultadas =
-  carregarPessoasOcultadas();
-
-
-/* =========================================================
-   CARREGAR EXCEÇÕES SALVAS NO NAVEGADOR
-========================================================= */
-
-function carregarPessoasOcultadas() {
-
-  try {
-
-    const dadosSalvos =
-      localStorage.getItem(
-        CHAVE_EXCECOES
-      );
-
-
-    if (
-      !dadosSalvos
-    ) {
-
-      return [];
-
-    }
-
-
-    const lista =
-      JSON.parse(
-        dadosSalvos
-      );
-
-
-    return Array.isArray(
-      lista
-    )
-      ? lista
-      : [];
-
-  }
-
-  catch (
-    erro
-  ) {
-
-    console.error(
-      "Erro ao carregar pessoas ocultadas:",
-      erro
-    );
-
-
-    return [];
-
-  }
-
-}
-
-
-/* =========================================================
-   SALVAR EXCEÇÕES NO NAVEGADOR
-========================================================= */
-
-function salvarPessoasOcultadas() {
-
-  try {
-
-    localStorage.setItem(
-
-      CHAVE_EXCECOES,
-
-      JSON.stringify(
-        pessoasOcultadas
-      )
-
-    );
-
-  }
-
-  catch (
-    erro
-  ) {
-
-    console.error(
-      "Erro ao salvar pessoas ocultadas:",
-      erro
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   VALIDAR SE A PESSOA ESTÁ OCULTADA
-========================================================= */
-
-function pessoaEstaOcultada(
-  nome
-) {
-
-  const nomeNormalizado =
-    normalizarTexto(
-      nome
-    );
-
-
-  return pessoasOcultadas
-    .some(
-      pessoa =>
-        normalizarTexto(
-          pessoa.nome
-        ) ===
-        nomeNormalizado
-    );
-
-}
-
-
-/* =========================================================
-   ELEMENTOS
-========================================================= */
-
-const inputArquivo =
-  document.getElementById(
-    "arquivo-base"
-  );
-
-
-const statusArquivo =
-  document.getElementById(
-    "status-arquivo"
-  );
-
-
-const resumoDados =
-  document.getElementById(
-    "resumo-dados"
-  );
-
-
-const menuArtes =
-  document.getElementById(
-    "menu-artes"
-  );
-
-
-const areaArtes =
-  document.getElementById(
-    "area-artes"
-  );
-
+const inputArquivo = $("arquivo-base");
+const statusArquivo = $("status-arquivo");
+const resumoDados = $("resumo-dados");
+const menuArtes = $("menu-artes");
+const areaArtes = $("area-artes");
+const botaoBaixar = $("baixar-png");
+const botaoAtualizar = $("botao-atualizar");
+const textoAtualizacao = $("texto-atualizacao");
 
 const botoesArte =
-  document.querySelectorAll(
-    ".botao-arte"
-  );
-
-
-const botaoBaixar =
-  document.getElementById(
-    "baixar-png"
-  );
-
-
-const botaoAtualizar =
-  document.getElementById(
-    "botao-atualizar"
-  );
-
-
-const textoAtualizacao =
-  document.getElementById(
-    "texto-atualizacao"
-  );
-
-/* =========================================================
-   ELEMENTOS — GESTÃO DE EXCEÇÕES
-========================================================= */
-
-const campoExcecaoNome =
-  document.getElementById(
-    "excecao-nome"
-  );
-
-
-const campoExcecaoMotivo =
-  document.getElementById(
-    "excecao-motivo"
-  );
-
-
-const botaoAdicionarExcecao =
-  document.getElementById(
-    "botao-adicionar-excecao"
-  );
-
-
-const listaExcecoes =
-  document.getElementById(
-    "lista-excecoes"
-  );
-
-
-const totalExcecoes =
-  document.getElementById(
-    "total-excecoes"
-  );
-
-
-const listaPessoasExcecao =
-  document.getElementById(
-    "lista-pessoas-excecao"
-  );
+  document.querySelectorAll(".art-tab");
 
 
 /* =========================================================
-   INICIAR SISTEMA
+   INICIALIZAÇÃO
 ========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
+
+    configurarEventos();
+
+    renderizarExcecoes();
 
     await carregarDadosAutomaticos();
 
@@ -274,140 +50,65 @@ document.addEventListener(
 
 
 /* =========================================================
-   EVENTO — ATUALIZAR DADOS
+   EVENTOS
 ========================================================= */
 
-if (
-  botaoAtualizar
-) {
+function configurarEventos() {
 
-  botaoAtualizar.addEventListener(
+  botaoAtualizar?.addEventListener(
     "click",
-    async () => {
-
-      await carregarDadosAutomaticos();
-
-    }
+    carregarDadosAutomaticos
   );
 
-}
 
-
-/* =========================================================
-   EVENTO — UPLOAD MANUAL
-========================================================= */
-
-if (
-  inputArquivo
-) {
-
-  inputArquivo.addEventListener(
+  inputArquivo?.addEventListener(
     "change",
     async evento => {
 
       const arquivo =
-        evento.target.files[0];
+        evento.target.files?.[0];
 
+      if (arquivo) {
 
-      if (
-        !arquivo
-      ) {
-
-        return;
+        await processarArquivo(
+          arquivo
+        );
 
       }
 
+    }
+  );
 
-      await processarArquivo(
-        arquivo
+
+  botoesArte.forEach(
+    botao => {
+
+      botao.addEventListener(
+        "click",
+        () =>
+          mostrarArte(
+            botao.dataset.arte
+          )
       );
 
     }
   );
 
-}
 
-
-/* =========================================================
-   EVENTOS — TROCAR ARTE
-========================================================= */
-
-botoesArte.forEach(
-  botao => {
-
-    botao.addEventListener(
-      "click",
-      () => {
-
-        mostrarArte(
-          botao.dataset.arte
-        );
-
-      }
-    );
-
-  }
-);
-
-
-/* =========================================================
-   EVENTO — BAIXAR PNG
-========================================================= */
-
-if (
-  botaoBaixar
-) {
-
-  botaoBaixar.addEventListener(
+  botaoBaixar?.addEventListener(
     "click",
     baixarArteAtual
   );
 
-}
 
-/* =========================================================
-   EVENTO — ADICIONAR PESSOA ÀS EXCEÇÕES
-========================================================= */
-
-if (
-  botaoAdicionarExcecao
-) {
-
-  botaoAdicionarExcecao.addEventListener(
-    "click",
-    adicionarPessoaOcultada
-  );
+  $("botao-adicionar-excecao")
+    ?.addEventListener(
+      "click",
+      adicionarExcecao
+    );
 
 }
 
-
-/* =========================================================
-   EVENTO — ENTER NO CAMPO DE NOME
-========================================================= */
-
-if (
-  campoExcecaoNome
-) {
-
-  campoExcecaoNome.addEventListener(
-    "keydown",
-    evento => {
-
-      if (
-        evento.key === "Enter"
-      ) {
-
-        evento.preventDefault();
-
-
-        adicionarPessoaOcultada();
-
-      }
-
-    }
-  );
-
-}
 
 /* =========================================================
    CARREGAR DADOS AUTOMATICAMENTE
@@ -415,15 +116,9 @@ if (
 
 async function carregarDadosAutomaticos() {
 
-  console.log(
-    "🔄 Iniciando atualização automática..."
-  );
-
-
-  const textoOriginalBotao =
-    botaoAtualizar
-      ? botaoAtualizar.textContent
-      : "";
+  const textoOriginal =
+    botaoAtualizar?.textContent ||
+    "↻ Atualizar dados";
 
 
   try {
@@ -435,21 +130,14 @@ async function carregarDadosAutomaticos() {
       botaoAtualizar.disabled =
         true;
 
-
       botaoAtualizar.textContent =
         "Atualizando...";
 
     }
 
 
-    if (
-      textoAtualizacao
-    ) {
-
-      textoAtualizacao.textContent =
-        "Buscando os dados mais recentes da planilha...";
-
-    }
+    textoAtualizacao.textContent =
+      "Buscando os dados mais recentes da base...";
 
 
     atualizarStatus(
@@ -490,32 +178,22 @@ async function carregarDadosAutomaticos() {
 
       try {
 
-        const erroApi =
+        const erro =
           await resposta.json();
 
 
         if (
-          erroApi &&
-          erroApi.erro
+          erro?.erro
         ) {
 
           mensagem =
-            erroApi.erro;
+            erro.erro;
 
         }
 
       }
 
-      catch (
-        erroLeitura
-      ) {
-
-        console.warn(
-          "Não foi possível ler o erro da API.",
-          erroLeitura
-        );
-
-      }
+      catch {}
 
 
       throw new Error(
@@ -525,14 +203,16 @@ async function carregarDadosAutomaticos() {
     }
 
 
-    const registrosApi =
+    const registros =
       await resposta.json();
 
 
     if (
       !Array.isArray(
-        registrosApi
-      )
+        registros
+      ) ||
+      registros.length ===
+      0
     ) {
 
       throw new Error(
@@ -542,29 +222,13 @@ async function carregarDadosAutomaticos() {
     }
 
 
-    if (
-      registrosApi.length === 0
-    ) {
-
-      throw new Error(
-        "A API retornou uma base vazia."
-      );
-
-    }
-
-
     dadosProcessados =
       processarDadosApi(
-        registrosApi
+        registros
       );
 
 
-    preencherSistema(
-      dadosProcessados
-    );
-
-
-    exibirDashboard();
+    atualizarTudo();
 
 
     const horario =
@@ -589,19 +253,8 @@ async function carregarDadosAutomaticos() {
     );
 
 
-    if (
-      textoAtualizacao
-    ) {
-
-      textoAtualizacao.textContent =
-        'Dados sincronizados diretamente da planilha. Clique em "Atualizar dados" para buscar as informações mais recentes.';
-
-    }
-
-
-    mostrarArte(
-      "geral"
-    );
+    textoAtualizacao.textContent =
+      'Dados sincronizados diretamente do Verdi. Clique em "Atualizar dados" para buscar novamente.';
 
   }
 
@@ -610,7 +263,6 @@ async function carregarDadosAutomaticos() {
   ) {
 
     console.error(
-      "Erro ao carregar dados automáticos:",
       erro
     );
 
@@ -621,14 +273,8 @@ async function carregarDadosAutomaticos() {
     );
 
 
-    if (
-      textoAtualizacao
-    ) {
-
-      textoAtualizacao.textContent =
-        "A atualização automática falhou. Use o carregamento manual como backup.";
-
-    }
+    textoAtualizacao.textContent =
+      "A atualização automática falhou. Use o carregamento manual como backup.";
 
 
     ocultarDashboard();
@@ -644,10 +290,8 @@ async function carregarDadosAutomaticos() {
       botaoAtualizar.disabled =
         false;
 
-
       botaoAtualizar.textContent =
-        textoOriginalBotao ||
-        "Atualizar dados";
+        textoOriginal;
 
     }
 
@@ -657,35 +301,82 @@ async function carregarDadosAutomaticos() {
 
 
 /* =========================================================
-   PROCESSAR DADOS RECEBIDOS DA API
+   PROCESSAR DADOS DA API
 ========================================================= */
 
 function processarDadosApi(
   dadosApi
 ) {
 
+  if (
+    !Array.isArray(
+      dadosApi
+    )
+  ) {
+
+    throw new Error(
+      "A base recebida da API não é válida."
+    );
+
+  }
+
+
+  /* =======================================================
+     DESCOBRIR MÊS ATUAL
+  ======================================================= */
+
+  const agora =
+    new Date();
+
+
+  const mesAtual =
+    agora.toLocaleString(
+      "pt-BR",
+      {
+
+        month:
+          "long"
+
+      }
+    );
+
+
+  const anoAtual =
+    agora.getFullYear();
+
+
+  const referenciaAtual =
+    normalizarTexto(
+      `${mesAtual}-${anoAtual}`
+    );
+
+
+  /* =======================================================
+     TRAVAS PRINCIPAIS
+
+     SOMENTE:
+     - MÊS ATUAL
+     - OBRIGATÓRIO
+
+     NÃO FILTRAMOS POR ÁREA AQUI.
+
+     Isso é proposital:
+     quem não estiver no CADASTRO_AREAS precisa continuar
+     chegando para aparecer no alerta.
+  ======================================================= */
+
   const registros =
     dadosApi
-      .map(
+
+      .filter(
         item => {
 
-          const nome =
-            limparTexto(
+          const mesRegistro =
+            normalizarTexto(
               obterValorObjeto(
                 item,
                 [
-                  "Nombre",
-                  "Nome"
-                ]
-              )
-            );
-
-
-          const mes =
-            limparTexto(
-              obterValorObjeto(
-                item,
-                [
+                  "MES",
                   "Mes",
                   "Mês"
                 ]
@@ -693,63 +384,51 @@ function processarDadosApi(
             );
 
 
-          const tempo =
-            limparTexto(
-              obterValorObjeto(
-                item,
-                [
-                  "Horas Mes",
-                  "Horas Mês",
-                  "Tempo"
-                ]
-              )
-            );
-
-
-          const gemba =
+          const obrigatoriedade =
             normalizarTexto(
               obterValorObjeto(
                 item,
                 [
-                  "Gemba"
+                  "FLAG_OBLIGATORIEDAD",
+                  "FLAG OBLIGATORIEDAD",
+                  "FLAG_OBRIGATORIEDADE",
+                  "Obrigatoriedade"
                 ]
               )
             );
 
 
-          const statusBar =
-            normalizarTexto(
-              obterValorObjeto(
-                item,
-                [
-                  "Status BAR",
-                  "Status Bar"
-                ]
-              )
-            );
+          return (
+
+            mesRegistro ===
+              referenciaAtual &&
+
+            obrigatoriedade ===
+              "OBLIGATORIO"
+
+          );
+
+        }
+      )
 
 
-          const setor =
+      .map(
+        item => {
+
+          /* ===============================================
+             NOME
+          =============================================== */
+
+          const nome =
             limparTexto(
               obterValorObjeto(
                 item,
                 [
-                  "SETOR",
-                  "Setor"
-                ]
-              )
-            )
-              .toUpperCase();
-
-
-          const area =
-            normalizarArea(
-              obterValorObjeto(
-                item,
-                [
-                  "ÁREA CONSOLIDADA",
-                  "AREA CONSOLIDADA",
-                  "Área Consolidada"
+                  "FULL_NAME",
+                  "Full Name",
+                  "NOME",
+                  "Nome",
+                  "Nombre"
                 ]
               )
             );
@@ -764,13 +443,224 @@ function processarDadosApi(
           }
 
 
+          /* ===============================================
+             USERNAME
+          =============================================== */
+
+          const username =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "USERNAME",
+                  "LDAP_USER"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             EMAIL
+          =============================================== */
+
+          const email =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "EMAIL"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             CAD
+          =============================================== */
+
+          const cad =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "CAD_PEOPLE",
+                  "CAD_GROOT",
+                  "CAD"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             MÊS
+          =============================================== */
+
+          const mes =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "MES",
+                  "Mes",
+                  "Mês",
+                  "MES_BE_A_REP"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             OBRIGATORIEDADE
+          =============================================== */
+
+          const obrigatoriedade =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "FLAG_OBLIGATORIEDAD",
+                  "FLAG OBLIGATORIEDAD",
+                  "FLAG_OBRIGATORIEDADE",
+                  "Obrigatoriedade"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             TEMPO
+          =============================================== */
+
+          const tempo =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "SUMA_HORAS_MES",
+                  "HORAS",
+                  "Horas Mes",
+                  "Horas Mês",
+                  "Tempo"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             GEMBA
+          =============================================== */
+
+          const gemba =
+            normalizarTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "GEMBA",
+                  "Gemba"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             STATUS BAR
+          =============================================== */
+
+          const statusBar =
+            normalizarTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "ESTADO_BAR",
+                  "STATUS_BAR",
+                  "Status BAR",
+                  "Status Bar"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             ÁREA CONSOLIDADA
+
+             Vem do CADASTRO_AREAS pelo Merge.
+          =============================================== */
+
+          const areaOriginal =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "ÁREA CONSOLIDADA",
+                  "AREA CONSOLIDADA",
+                  "AREA_CONSOLIDADA",
+                  "Área Consolidada"
+                ]
+              )
+            );
+
+
+          const area =
+            normalizarArea(
+              areaOriginal
+            );
+
+
+          /* ===============================================
+             SETOR
+          =============================================== */
+
+          const setor =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "SETOR",
+                  "Setor",
+                  "POSITION_PEOPLE",
+                  "ROL"
+                ]
+              )
+            )
+              .toUpperCase();
+
+
+          /* ===============================================
+             STATUS CADASTRO
+          =============================================== */
+
+          const statusCadastro =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "Status Cadastro",
+                  "STATUS CADASTRO",
+                  "STATUS_CADASTRO"
+                ]
+              )
+            );
+
+
           return {
 
             nome:
               nome,
 
+            username:
+              username,
+
+            email:
+              email,
+
+            cad:
+              cad,
+
             mes:
               mes,
+
+            obrigatoriedade:
+              obrigatoriedade,
 
             tempo:
               tempo,
@@ -792,6 +682,17 @@ function processarDadosApi(
             area:
               area,
 
+            areaOriginal:
+              areaOriginal,
+
+            statusCadastro:
+              statusCadastro,
+
+            temCadastroArea:
+              AREAS_VALIDAS.includes(
+                area
+              ),
+
             situacao:
               classificarSituacao(
                 gemba,
@@ -802,13 +703,124 @@ function processarDadosApi(
 
         }
       )
+
+
       .filter(
         Boolean
       );
 
 
   return processarRegistros(
-    registros
+    removerDuplicidades(
+      registros
+    )
+  );
+
+}
+
+
+/* =========================================================
+   REMOVER DUPLICIDADES
+========================================================= */
+
+function removerDuplicidades(
+  registros
+) {
+
+  const mapa =
+    new Map();
+
+
+  registros.forEach(
+    pessoa => {
+
+      const chave =
+        normalizarTexto(
+
+          pessoa.username ||
+
+          pessoa.email ||
+
+          pessoa.nome
+
+        );
+
+
+      if (
+        !chave
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        !mapa.has(
+          chave
+        )
+      ) {
+
+        mapa.set(
+          chave,
+          pessoa
+        );
+
+        return;
+
+      }
+
+
+      const atual =
+        mapa.get(
+          chave
+        );
+
+
+      /*
+       * Se existir mais de um registro,
+       * priorizamos aquele que recebeu
+       * a ÁREA CONSOLIDADA no Merge.
+       */
+
+      if (
+        !atual.temCadastroArea &&
+        pessoa.temCadastroArea
+      ) {
+
+        mapa.set(
+          chave,
+          pessoa
+        );
+
+        return;
+
+      }
+
+
+      /*
+       * Se os dois forem equivalentes,
+       * mantém o registro com maior tempo.
+       */
+
+      if (
+        pessoa.minutos >
+        atual.minutos
+      ) {
+
+        mapa.set(
+          chave,
+          pessoa
+        );
+
+      }
+
+    }
+  );
+
+
+  return Array.from(
+    mapa.values()
   );
 
 }
@@ -853,8 +865,12 @@ async function processarArquivo(
     }
 
     else if (
-      extensao === "xlsx" ||
-      extensao === "xls"
+      [
+        "xlsx",
+        "xls"
+      ].includes(
+        extensao
+      )
     ) {
 
       linhas =
@@ -874,8 +890,7 @@ async function processarArquivo(
 
 
     if (
-      !linhas ||
-      linhas.length === 0
+      !linhas?.length
     ) {
 
       throw new Error(
@@ -891,12 +906,7 @@ async function processarArquivo(
       );
 
 
-    preencherSistema(
-      dadosProcessados
-    );
-
-
-    exibirDashboard();
+    atualizarTudo();
 
 
     atualizarStatus(
@@ -905,19 +915,8 @@ async function processarArquivo(
     );
 
 
-    if (
-      textoAtualizacao
-    ) {
-
-      textoAtualizacao.textContent =
-        "Dados carregados pelo arquivo manual.";
-
-    }
-
-
-    mostrarArte(
-      "geral"
-    );
+    textoAtualizacao.textContent =
+      "Dados carregados pelo arquivo manual.";
 
   }
 
@@ -931,8 +930,7 @@ async function processarArquivo(
 
 
     atualizarStatus(
-      "❌ " +
-      erro.message,
+      `❌ ${erro.message}`,
       "erro"
     );
 
@@ -966,50 +964,34 @@ async function lerExcel(
     );
 
 
-  let nomeAbaBase =
-    workbook
-      .SheetNames
-      .find(
-        nome =>
-          normalizarTexto(
-            nome
-          ) ===
-          "BASE"
-      );
+  const nomeAba =
+    workbook.SheetNames.find(
+      nome =>
+        normalizarTexto(
+          nome
+        ) ===
+        "BASE"
+    ) ||
+    workbook.SheetNames[0];
 
 
-  if (
-    !nomeAbaBase
-  ) {
-
-    nomeAbaBase =
-      workbook.SheetNames[0];
-
-  }
-
-
-  const worksheet =
+  return XLSX.utils.sheet_to_json(
     workbook.Sheets[
-      nomeAbaBase
-    ];
+      nomeAba
+    ],
+    {
 
+      header:
+        1,
 
-  return XLSX.utils
-    .sheet_to_json(
-      worksheet,
-      {
+      defval:
+        "",
 
-        header:
-          1,
+      raw:
+        false
 
-        defval:
-          "",
-
-        raw:
-          false
-
-      }
-    );
+    }
+  );
 
 }
 
@@ -1040,34 +1022,29 @@ async function lerCSV(
     workbook.SheetNames[0];
 
 
-  const worksheet =
+  return XLSX.utils.sheet_to_json(
     workbook.Sheets[
       nomeAba
-    ];
+    ],
+    {
 
+      header:
+        1,
 
-  return XLSX.utils
-    .sheet_to_json(
-      worksheet,
-      {
+      defval:
+        "",
 
-        header:
-          1,
+      raw:
+        false
 
-        defval:
-          "",
-
-        raw:
-          false
-
-      }
-    );
+    }
+  );
 
 }
 
 
 /* =========================================================
-   PROCESSAR BASE DO ARQUIVO MANUAL
+   PROCESSAR ARQUIVO MANUAL
 ========================================================= */
 
 function processarLinhasBase(
@@ -1086,6 +1063,15 @@ function processarLinhasBase(
             limparTexto(
               linha[5]
             );
+
+
+          if (
+            !nome
+          ) {
+
+            return null;
+
+          }
 
 
           const mes =
@@ -1125,15 +1111,6 @@ function processarLinhasBase(
             );
 
 
-          if (
-            !nome
-          ) {
-
-            return null;
-
-          }
-
-
           return {
 
             nome:
@@ -1162,6 +1139,11 @@ function processarLinhasBase(
             area:
               area,
 
+            temCadastroArea:
+              AREAS_VALIDAS.includes(
+                area
+              ),
+
             situacao:
               classificarSituacao(
                 gemba,
@@ -1182,10 +1164,8 @@ function processarLinhasBase(
   );
 
 }
-
-
 /* =========================================================
-   PROCESSAMENTO CENTRAL
+   PROCESSAR REGISTROS
 ========================================================= */
 
 function processarRegistros(
@@ -1193,11 +1173,11 @@ function processarRegistros(
 ) {
 
   if (
-    registros.length === 0
+    !registros.length
   ) {
 
     throw new Error(
-      "Nenhuma pessoa válida foi encontrada na BASE."
+      "Nenhuma pessoa obrigatória foi encontrada no mês atual."
     );
 
   }
@@ -1216,21 +1196,35 @@ function processarRegistros(
   const processo =
     [];
 
-
   const naoRealizaram =
     [];
-
 
   const guembaPendenteBeARep =
     [];
 
-
   const guembaProcessandoBeARep =
     [];
 
+  const semCadastro =
+    [];
+
+
+  /* =======================================================
+     PROCESSAR CADA PESSOA
+  ======================================================= */
 
   registros.forEach(
     pessoa => {
+
+      /* ===================================================
+         SEM CADASTRO DE ÁREA
+
+         IMPORTANTE:
+         A pessoa NÃO desaparece do dashboard.
+
+         Ela continua fazendo parte do HC Geral,
+         mas não entra em nenhuma área até ser cadastrada.
+      =================================================== */
 
       if (
         !AREAS_VALIDAS.includes(
@@ -1238,177 +1232,163 @@ function processarRegistros(
         )
       ) {
 
-        return;
+        semCadastro.push(
+          pessoa
+        );
 
       }
-
-
-      const dadosArea =
-        areas[
-          pessoa.area
-        ];
-
-
-      dadosArea.hc++;
 
 
       /* ===================================================
-         RESUMO PRINCIPAL
+         RESULTADO POR ÁREA
 
-         Mantém a mesma regra original do Dashboard.
+         SOMENTE quem possui ÁREA CONSOLIDADA válida.
       =================================================== */
 
       if (
-        pessoa.situacao ===
-        "REALIZOU"
+        AREAS_VALIDAS.includes(
+          pessoa.area
+        )
       ) {
 
-        dadosArea.realizaram++;
+        const dadosArea =
+          areas[
+            pessoa.area
+          ];
+
+
+        dadosArea.hc++;
+
+
+        if (
+          pessoa.situacao ===
+          "REALIZOU"
+        ) {
+
+          dadosArea.realizaram++;
+
+        }
+
+        else if (
+          pessoa.situacao ===
+          "EM_PROCESSO"
+        ) {
+
+          dadosArea.processo++;
+
+        }
+
+        else {
+
+          dadosArea.naoRealizaram++;
+
+        }
 
       }
 
-      else if (
+
+      /* ===================================================
+         LISTA EM PROCESSO
+
+         Essa lista é GERAL.
+
+         Mesmo quem estiver sem cadastro de área continua
+         aparecendo aqui.
+      =================================================== */
+
+      if (
         pessoa.situacao ===
         "EM_PROCESSO"
       ) {
 
-        dadosArea.processo++;
-
-
-        processo.push({
-
-          nome:
-            pessoa.nome,
-
-          setor:
-            ajustarSetorNaArte(
-              pessoa.nome,
-              pessoa.setor
-            ),
-
-          tempo:
-            pessoa.tempo,
-
-          minutos:
-            pessoa.minutos,
-
-          area:
-            pessoa.area
-
-        });
-
-      }
-
-      else {
-
-        dadosArea.naoRealizaram++;
-
-
-        naoRealizaram.push({
-
-          nome:
-            pessoa.nome,
-
-          setor:
-            ajustarSetorNaArte(
-              pessoa.nome,
-              pessoa.setor
-            ),
-
-          area:
-            pessoa.area
-
-        });
+        processo.push(
+          criarPessoaLista(
+            pessoa,
+            true
+          )
+        );
 
       }
 
 
       /* ===================================================
-         REGRA DE TEMPO PARA AS NOVAS ARTES
+         LISTA NÃO REALIZARAM
+      =================================================== */
 
-         OPEX:
-         >= 10 minutos = concluído
+      else if (
+        pessoa.situacao ===
+        "NAO_REALIZOU"
+      ) {
 
-         DEMAIS ÁREAS:
-         >= 60 minutos = concluído
+        naoRealizaram.push(
+          criarPessoaLista(
+            pessoa,
+            false
+          )
+        );
+
+      }
+
+
+      /* ===================================================
+         TEMPO MÍNIMO PARA CONCLUSÃO
+
+         OPEX = 10 minutos
+         Demais áreas = 60 minutos
       =================================================== */
 
       const tempoConclusao =
-        pessoa.area === "OPEX"
+
+        pessoa.area ===
+        "OPEX"
+
           ? 10
+
           : 60;
 
 
       /* ===================================================
-         GUEMBA REALIZADO
-         MAS PENDENTE DE BE A REP
-
-         Gemba = HECHO
-         Tempo = 0h00m
+         GUEMBA PENDENTE
       =================================================== */
 
       if (
-        pessoa.gemba === "HECHO" &&
-        pessoa.minutos === 0
+        gembaConcluido(
+          pessoa.gemba
+        ) &&
+        pessoa.minutos ===
+        0
       ) {
 
-        guembaPendenteBeARep.push({
-
-          nome:
-            pessoa.nome,
-
-          setor:
-            ajustarSetorNaArte(
-              pessoa.nome,
-              pessoa.setor
-            ),
-
-          area:
-            pessoa.area
-
-        });
+        guembaPendenteBeARep.push(
+          criarPessoaLista(
+            pessoa,
+            false
+          )
+        );
 
       }
 
 
       /* ===================================================
-         GUEMBA REALIZADO
-         MAS PROCESSANDO BE A REP
-
-         OPEX:
-         1 a 9 minutos
-
-         DEMAIS:
-         1 a 59 minutos
+         GUEMBA PROCESSANDO
       =================================================== */
 
       if (
-        pessoa.gemba === "HECHO" &&
-        pessoa.minutos > 0 &&
-        pessoa.minutos < tempoConclusao
+        gembaConcluido(
+          pessoa.gemba
+        ) &&
+        pessoa.minutos >
+        0 &&
+        pessoa.minutos <
+        tempoConclusao
       ) {
 
-        guembaProcessandoBeARep.push({
-
-          nome:
-            pessoa.nome,
-
-          setor:
-            ajustarSetorNaArte(
-              pessoa.nome,
-              pessoa.setor
-            ),
-
-          tempo:
-            pessoa.tempo,
-
-          minutos:
-            pessoa.minutos,
-
-          area:
-            pessoa.area
-
-        });
+        guembaProcessandoBeARep.push(
+          criarPessoaLista(
+            pessoa,
+            true
+          )
+        );
 
       }
 
@@ -1417,24 +1397,25 @@ function processarRegistros(
 
 
   /* =======================================================
-     CALCULAR PERCENTUAL POR ÁREA
+     PERCENTUAL POR ÁREA
   ======================================================= */
 
   AREAS_VALIDAS.forEach(
-    area => {
+    nomeArea => {
 
-      const dados =
+      const area =
         areas[
-          area
+          nomeArea
         ];
 
 
-      dados.percentual =
+      area.percentual =
 
-        dados.hc > 0
+        area.hc >
+        0
 
-          ? dados.realizaram /
-            dados.hc
+          ? area.realizaram /
+            area.hc
 
           : 0;
 
@@ -1447,144 +1428,1020 @@ function processarRegistros(
   ======================================================= */
 
   processo.sort(
-    (
-      a,
-      b
-    ) => {
-
-      if (
-        b.minutos !==
-        a.minutos
-      ) {
-
-        return (
-          b.minutos -
-          a.minutos
-        );
-
-      }
-
-
-      return a.nome.localeCompare(
-        b.nome,
-        "pt-BR"
-      );
-
-    }
+    ordenarTempoNome
   );
 
 
   naoRealizaram.sort(
-    (
-      a,
-      b
-    ) =>
-      a.nome.localeCompare(
-        b.nome,
-        "pt-BR"
-      )
+    ordenarNome
   );
 
 
   guembaPendenteBeARep.sort(
-    (
-      a,
-      b
-    ) =>
-      a.nome.localeCompare(
-        b.nome,
-        "pt-BR"
-      )
+    ordenarNome
   );
 
 
   guembaProcessandoBeARep.sort(
-    (
-      a,
-      b
-    ) => {
+    ordenarTempoNome
+  );
+
+
+  semCadastro.sort(
+    ordenarNome
+  );
+
+
+  /* =======================================================
+     RESULTADO GERAL
+
+     ESSA É A PARTE IMPORTANTE:
+
+     O GERAL NÃO É MAIS CALCULADO SOMANDO AS ÁREAS.
+
+     Ele é calculado diretamente com TODOS os obrigatórios
+     do mês.
+
+     Portanto:
+
+     áreas cadastradas + sem cadastro = HC GERAL
+  ======================================================= */
+
+  const geral =
+    calcularGeralPorRegistros(
+      registros
+    );
+
+
+  /*
+   * Mantemos também areas.Geral
+   * para não quebrar nenhuma função antiga do dashboard.
+   */
+
+  areas.Geral =
+    geral;
+
+
+  /* =======================================================
+     RETORNO
+  ======================================================= */
+
+  return {
+
+    mes:
+      mes,
+
+    areas:
+      areas,
+
+    geral:
+      geral,
+
+    registros:
+      registros,
+
+    processo:
+      processo,
+
+    naoRealizaram:
+      naoRealizaram,
+
+    guembaPendenteBeARep:
+      guembaPendenteBeARep,
+
+    guembaProcessandoBeARep:
+      guembaProcessandoBeARep,
+
+    /* =====================================================
+       NOVO — PESSOAS SEM CADASTRO DE ÁREA
+    ===================================================== */
+
+    semCadastro:
+      semCadastro,
+
+    quantidadeSemCadastro:
+      semCadastro.length
+
+  };
+
+}
+
+
+/* =========================================================
+   CRIAR PESSOA PARA AS LISTAS
+========================================================= */
+
+function criarPessoaLista(
+  pessoa,
+  comTempo
+) {
+
+  return {
+
+    nome:
+      pessoa.nome,
+
+    setor:
+
+      ajustarSetorNaArte(
+        pessoa.nome,
+        pessoa.setor
+      ) ||
+
+      "SEM SETOR",
+
+    area:
+
+      pessoa.area ||
+
+      "SEM ÁREA",
+
+    situacao:
+      pessoa.situacao,
+
+    ...(comTempo
+
+      ? {
+
+          tempo:
+            pessoa.tempo,
+
+          minutos:
+            pessoa.minutos
+
+        }
+
+      : {})
+
+  };
+
+}
+
+
+/* =========================================================
+   ATUALIZAR TODO O DASHBOARD
+========================================================= */
+
+function atualizarTudo() {
+
+  preencherMes(
+    dadosProcessados.mes
+  );
+
+
+  preencherResumo(
+    dadosProcessados
+  );
+
+
+  preencherMeta(
+    dadosProcessados
+  );
+
+
+  /* =======================================================
+     NOVO ALERTA
+  ======================================================= */
+
+  preencherAlertaSemCadastro(
+    dadosProcessados
+  );
+
+
+  preencherArteGeral(
+    dadosProcessados
+  );
+
+
+  preencherListasComExcecoes();
+
+
+  preencherDatalistExcecoes();
+
+
+  renderizarExcecoes();
+
+
+  exibirDashboard();
+
+
+  mostrarArte(
+    "geral"
+  );
+
+}
+
+
+/* =========================================================
+   ALERTA — PESSOAS SEM CADASTRO DE ÁREA
+========================================================= */
+
+function preencherAlertaSemCadastro(
+  dados
+) {
+
+  const pessoas =
+
+    Array.isArray(
+      dados?.semCadastro
+    )
+
+      ? dados.semCadastro
+
+      : [];
+
+
+  let card =
+    document.getElementById(
+      "alerta-sem-cadastro-area"
+    );
+
+
+  /* =======================================================
+     CRIAR O CARD AUTOMATICAMENTE
+
+     Não precisa alterar o index.html.
+  ======================================================= */
+
+  if (
+    !card
+  ) {
+
+    card =
+      document.createElement(
+        "section"
+      );
+
+
+    card.id =
+      "alerta-sem-cadastro-area";
+
+
+    card.style.cssText = `
+
+      margin: 18px 0;
+
+      padding: 18px 20px;
+
+      border: 1px solid #f3c44e;
+
+      border-left: 6px solid #f4b400;
+
+      border-radius: 16px;
+
+      background: #fff9e6;
+
+      color: #332600;
+
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+
+    `;
+
+
+    const referencia =
+      document.getElementById(
+        "resumo-dados"
+      );
+
+
+    if (
+      referencia &&
+      referencia.parentNode
+    ) {
+
+      referencia.parentNode.insertBefore(
+        card,
+        referencia
+      );
+
+    }
+
+  }
+
+
+  if (
+    !card
+  ) {
+
+    return;
+
+  }
+
+
+  /* =======================================================
+     NINGUÉM PENDENTE
+  ======================================================= */
+
+  if (
+    pessoas.length ===
+    0
+  ) {
+
+    card.innerHTML = `
+
+      <div
+        style="
+          display:flex;
+          align-items:center;
+          gap:10px;
+          font-weight:700;
+        "
+      >
+
+        <span>
+          ✅
+        </span>
+
+        <span>
+          Todas as pessoas obrigatórias do mês possuem área cadastrada.
+        </span>
+
+      </div>
+
+    `;
+
+
+    return;
+
+  }
+
+
+  /* =======================================================
+     LISTA DE NOMES
+  ======================================================= */
+
+  const nomes =
+
+    pessoas
+
+      .slice()
+
+      .sort(
+        (
+          pessoaA,
+          pessoaB
+        ) =>
+
+          pessoaA.nome.localeCompare(
+            pessoaB.nome,
+            "pt-BR"
+          )
+      )
+
+      .map(
+        pessoa => `
+
+          <li
+            style="
+              margin:4px 0;
+              break-inside:avoid;
+            "
+          >
+
+            ${escaparHTML(
+              pessoa.nome
+            )}
+
+          </li>
+
+        `
+      )
+
+      .join(
+        ""
+      );
+
+
+  /* =======================================================
+     CARD DE ALERTA
+  ======================================================= */
+
+  card.innerHTML = `
+
+    <div
+      style="
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:16px;
+        flex-wrap:wrap;
+      "
+    >
+
+      <div>
+
+        <span
+          style="
+            display:block;
+            font-size:12px;
+            font-weight:800;
+            letter-spacing:.06em;
+            color:#9a6b00;
+            margin-bottom:4px;
+          "
+        >
+
+          ⚠️ CADASTRO DE ÁREAS PENDENTE
+
+        </span>
+
+
+        <strong
+          style="
+            display:block;
+            font-size:18px;
+            margin-bottom:4px;
+          "
+        >
+
+          ${pessoas.length}
+          pessoa${pessoas.length === 1 ? "" : "s"}
+          sem área cadastrada
+
+        </strong>
+
+
+        <span
+          style="
+            font-size:14px;
+            color:#67551f;
+          "
+        >
+
+          ${pessoas.length === 1 ? "Ela está" : "Elas estão"}
+          contabilizada${pessoas.length === 1 ? "" : "s"}
+          no HC Geral, mas ainda não
+          ${pessoas.length === 1 ? "foi distribuída" : "foram distribuídas"}
+          entre Outbound, Inbound, OPEX, ICQA ou Line Haul.
+
+        </span>
+
+      </div>
+
+
+      <button
+
+        id="botao-toggle-sem-cadastro"
+
+        type="button"
+
+        style="
+          border:0;
+          border-radius:10px;
+          padding:10px 14px;
+          background:#071b61;
+          color:white;
+          font-weight:700;
+          cursor:pointer;
+        "
+
+      >
+
+        Ver
+        ${pessoas.length === 1 ? "pessoa" : "pessoas"}
+
+      </button>
+
+    </div>
+
+
+    <div
+
+      id="lista-sem-cadastro-area"
+
+      style="
+        display:none;
+        margin-top:14px;
+        padding-top:12px;
+        border-top:1px solid #ecd88b;
+      "
+
+    >
+
+      <p
+        style="
+          margin:0 0 8px;
+          font-size:13px;
+          color:#67551f;
+        "
+      >
+
+        Inclua
+        ${pessoas.length === 1 ? "este nome" : "estes nomes"}
+        na aba
+
+        <strong>
+          CADASTRO_AREAS
+        </strong>.
+
+      </p>
+
+
+      <ul
+        style="
+          margin:0;
+          padding-left:20px;
+          columns:2;
+          column-gap:32px;
+        "
+      >
+
+        ${nomes}
+
+      </ul>
+
+    </div>
+
+  `;
+
+
+  /* =======================================================
+     ABRIR / FECHAR LISTA
+  ======================================================= */
+
+  const botao =
+    document.getElementById(
+      "botao-toggle-sem-cadastro"
+    );
+
+
+  const lista =
+    document.getElementById(
+      "lista-sem-cadastro-area"
+    );
+
+
+  botao?.addEventListener(
+    "click",
+    () => {
+
+      const aberto =
+
+        lista.style.display !==
+        "none";
+
+
+      lista.style.display =
+
+        aberto
+
+          ? "none"
+
+          : "block";
+
+
+      botao.textContent =
+
+        aberto
+
+          ? `Ver ${pessoas.length === 1 ? "pessoa" : "pessoas"}`
+
+          : "Ocultar lista";
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PREENCHER RESUMO
+========================================================= */
+
+function preencherResumo(
+  dados
+) {
+
+  const geral =
+    dados.geral;
+
+
+  const percentual =
+    formatarPorcentagem(
+      geral.percentual
+    );
+
+
+  $("total-hc").textContent =
+    geral.hc;
+
+
+  $("total-realizaram").textContent =
+    geral.realizaram;
+
+
+  $("total-processo").textContent =
+    geral.processo;
+
+
+  $("total-nao-realizaram").textContent =
+    geral.naoRealizaram;
+
+
+  $("percentual-geral").textContent =
+    percentual;
+
+
+  /* =======================================================
+     RESULTADO POR ÁREA
+  ======================================================= */
+
+  const container =
+    $("lista-areas");
+
+
+  if (
+    !container
+  ) {
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  const ordem = [
+
+    "OPEX",
+
+    "Inbound",
+
+    "Outbound",
+
+    "ICQA",
+
+    "Line Haul"
+
+  ];
+
+
+  /* =======================================================
+     ÁREAS NORMAIS
+  ======================================================= */
+
+  ordem.forEach(
+    areaNome => {
+
+      const area =
+        dados.areas[
+          areaNome
+        ];
+
 
       if (
-        b.minutos !==
-        a.minutos
+        !area
       ) {
 
-        return (
-          b.minutos -
-          a.minutos
-        );
+        return;
 
       }
 
 
-      return a.nome.localeCompare(
-        b.nome,
-        "pt-BR"
+      const linha =
+        document.createElement(
+          "div"
+        );
+
+
+      linha.className =
+        "area-row";
+
+
+      linha.innerHTML = `
+
+        <span>
+          ${escaparHTML(
+            areaNome
+          )}
+        </span>
+
+        <span>
+          ${area.realizaram}
+        </span>
+
+        <span>
+          ${area.processo}
+        </span>
+
+        <span>
+          ${area.naoRealizaram}
+        </span>
+
+        <span>
+          ${area.hc}
+        </span>
+
+        <strong>
+          ${formatarPorcentagem(
+            area.percentual
+          )}
+        </strong>
+
+      `;
+
+
+      container.appendChild(
+        linha
       );
 
     }
   );
 
 
-  const geral =
-    calcularGeral(
-      areas
+  /* =======================================================
+     SEM CADASTRO DE ÁREA
+
+     ESSA LINHA FAZ A CONFERÊNCIA:
+
+     OPEX
+     + INBOUND
+     + OUTBOUND
+     + ICQA
+     + LINE HAUL
+     + SEM CADASTRO
+     = HC GERAL
+  ======================================================= */
+
+  const semCadastro =
+
+    Array.isArray(
+      dados.semCadastro
+    )
+
+      ? dados.semCadastro
+
+      : [];
+
+
+  if (
+    semCadastro.length >
+    0
+  ) {
+
+    const realizaram =
+
+      semCadastro.filter(
+        pessoa =>
+
+          pessoa.situacao ===
+          "REALIZOU"
+      ).length;
+
+
+    const processo =
+
+      semCadastro.filter(
+        pessoa =>
+
+          pessoa.situacao ===
+          "EM_PROCESSO"
+      ).length;
+
+
+    const naoRealizaram =
+
+      semCadastro.filter(
+        pessoa =>
+
+          pessoa.situacao ===
+          "NAO_REALIZOU"
+      ).length;
+
+
+    const percentual =
+
+      semCadastro.length >
+      0
+
+        ? realizaram /
+          semCadastro.length
+
+        : 0;
+
+
+    const linha =
+      document.createElement(
+        "div"
+      );
+
+
+    linha.className =
+      "area-row";
+
+
+    linha.style.cssText = `
+
+      background:#fff9e6;
+
+      color:#6b5200;
+
+      border-left:4px solid #f4b400;
+
+    `;
+
+
+    linha.innerHTML = `
+
+      <span>
+        ⚠️ Sem cadastro de área
+      </span>
+
+      <span>
+        ${realizaram}
+      </span>
+
+      <span>
+        ${processo}
+      </span>
+
+      <span>
+        ${naoRealizaram}
+      </span>
+
+      <span>
+        ${semCadastro.length}
+      </span>
+
+      <strong>
+        ${formatarPorcentagem(
+          percentual
+        )}
+      </strong>
+
+    `;
+
+
+    container.appendChild(
+      linha
     );
 
+  }
 
-  areas.Geral =
-    geral;
+}
 
-return {
 
-  mes:
-    mes,
+/* =========================================================
+   CALCULAR GERAL DIRETAMENTE PELOS REGISTROS
+========================================================= */
 
-  areas:
-    areas,
+function calcularGeralPorRegistros(
+  registros
+) {
 
-  geral:
-    geral,
+  const geral = {
 
-  processo:
-    processo,
+    hc:
+      registros.length,
 
-  naoRealizaram:
-    naoRealizaram,
+    realizaram:
+      0,
 
-  guembaPendenteBeARep:
-    guembaPendenteBeARep,
+    processo:
+      0,
 
-  guembaProcessandoBeARep:
-    guembaProcessandoBeARep
+    naoRealizaram:
+      0,
 
-};
- 
+    percentual:
+      0
+
+  };
+
+
+  registros.forEach(
+    pessoa => {
+
+      if (
+        pessoa.situacao ===
+        "REALIZOU"
+      ) {
+
+        geral.realizaram++;
+
+      }
+
+      else if (
+        pessoa.situacao ===
+        "EM_PROCESSO"
+      ) {
+
+        geral.processo++;
+
+      }
+
+      else {
+
+        geral.naoRealizaram++;
+
+      }
+
+    }
+  );
+
+
+  geral.percentual =
+
+    geral.hc >
+    0
+
+      ? geral.realizaram /
+        geral.hc
+
+      : 0;
+
+
+  return geral;
+
+}
+
+
+/* =========================================================
+   GEMBA CONCLUÍDO
+========================================================= */
+
+function gembaConcluido(
+  gemba
+) {
+
+  return [
+
+    "HECHO",
+
+    "CUMPLIO",
+
+    "REALIZADO",
+
+    "CONCLUIDO"
+
+  ].includes(
+    normalizarTexto(
+      gemba
+    )
+  );
+
+}
+
 
 /* =========================================================
    CLASSIFICAR SITUAÇÃO
 ========================================================= */
 
 function classificarSituacao(
-  valorK,
-  valorL
+  valorGemba,
+  valorBar
 ) {
 
-  const k =
+  const gemba =
     normalizarTexto(
-      valorK
+      valorGemba
     );
 
 
-  const l =
+  const bar =
     normalizarTexto(
-      valorL
+      valorBar
     );
+
+
+  const realizado = [
+
+    "HECHO",
+
+    "CUMPLIO",
+
+    "REALIZADO",
+
+    "CONCLUIDO"
+
+  ];
+
+
+  const processando = [
+
+    "EN PROCESO",
+
+    "EM PROCESSO",
+
+    "EN CURSO",
+
+    "INICIADO"
+
+  ];
 
 
   if (
-    k === "HECHO" ||
-    l === "HECHO"
+
+    realizado.includes(
+      gemba
+    ) ||
+
+    realizado.includes(
+      bar
+    )
+
   ) {
 
     return "REALIZOU";
@@ -1593,8 +2450,15 @@ function classificarSituacao(
 
 
   if (
-    k === "EN PROCESO" ||
-    l === "EN PROCESO"
+
+    processando.includes(
+      gemba
+    ) ||
+
+    processando.includes(
+      bar
+    )
+
   ) {
 
     return "EM_PROCESSO";
@@ -1608,7 +2472,7 @@ function classificarSituacao(
 
 
 /* =========================================================
-   CRIAR ESTRUTURA DE ÁREAS
+   CRIAR ESTRUTURA DAS ÁREAS
 ========================================================= */
 
 function criarEstruturaAreas() {
@@ -1665,7 +2529,8 @@ function normalizarArea(
 
 
   if (
-    texto === "OUTBOUND"
+    texto ===
+    "OUTBOUND"
   ) {
 
     return "Outbound";
@@ -1674,7 +2539,8 @@ function normalizarArea(
 
 
   if (
-    texto === "INBOUND"
+    texto ===
+    "INBOUND"
   ) {
 
     return "Inbound";
@@ -1683,7 +2549,8 @@ function normalizarArea(
 
 
   if (
-    texto === "OPEX"
+    texto ===
+    "OPEX"
   ) {
 
     return "OPEX";
@@ -1692,7 +2559,8 @@ function normalizarArea(
 
 
   if (
-    texto === "ICQA"
+    texto ===
+    "ICQA"
   ) {
 
     return "ICQA";
@@ -1701,8 +2569,13 @@ function normalizarArea(
 
 
   if (
-    texto === "LINE HAUL" ||
-    texto === "LINEHAUL"
+
+    texto ===
+      "LINE HAUL" ||
+
+    texto ===
+      "LINEHAUL"
+
   ) {
 
     return "Line Haul";
@@ -1713,90 +2586,1356 @@ function normalizarArea(
   return "";
 
 }
-
-
 /* =========================================================
-   CALCULAR GERAL
+   META
 ========================================================= */
 
-function calcularGeral(
-  areas
-) {
+function preencherMeta(dados) {
 
-  let hc =
-    0;
-
-
-  let realizaram =
-    0;
+  const {
+    hc,
+    realizaram,
+    percentual
+  } = dados.geral;
 
 
-  let processo =
-    0;
+  const minimo =
+    Math.ceil(
+      hc * TARGET
+    );
 
 
-  let naoRealizaram =
-    0;
+  const faltam =
+    Math.max(
+      0,
+      minimo - realizaram
+    );
 
 
-  AREAS_VALIDAS.forEach(
-    area => {
-
-      const dados =
-        areas[
-          area
-        ];
+  $("percentual-meta-dashboard").textContent =
+    formatarPorcentagem(
+      percentual
+    );
 
 
-      hc +=
-        dados.hc;
+  $("texto-progresso-meta").textContent =
+    `${formatarPorcentagem(percentual)} de 90%`;
 
 
-      realizaram +=
-        dados.realizaram;
+  $("barra-meta-preenchida").style.width =
+    `${Math.min(
+      100,
+      percentual * 100
+    )}%`;
 
 
-      processo +=
-        dados.processo;
+  $("situacao-faltam").textContent =
+    faltam;
 
 
-      naoRealizaram +=
-        dados.naoRealizaram;
+  if (
+    faltam === 0
+  ) {
 
-    }
-  );
+    $("status-meta").textContent =
+      "🏆 META BATIDA";
 
 
-  return {
+    $("mensagem-meta").textContent =
+      `Meta atingida com ${realizaram} pessoas realizando.`;
 
-    hc:
-      hc,
 
-    realizaram:
-      realizaram,
+    $("titulo-situacao").textContent =
+      "Meta do mês atingida";
 
-    processo:
-      processo,
 
-    naoRealizaram:
-      naoRealizaram,
+    $("descricao-situacao").textContent =
+      "O resultado já alcançou ou superou o target de 90%.";
 
-    percentual:
+  }
 
-      hc > 0
+  else {
 
-        ? realizaram /
-          hc
+    $("status-meta").textContent =
+      "Target: 90%";
 
-        : 0
 
-  };
+    $("mensagem-meta").textContent =
+      `Faltam ${faltam} pessoa${faltam === 1 ? "" : "s"} para atingir o target.`;
+
+
+    $("titulo-situacao").textContent =
+      "Meta em andamento";
+
+
+    $("descricao-situacao").textContent =
+      `${realizaram} pessoas realizaram. Faltam ${faltam} para chegar aos 90%.`;
+
+  }
 
 }
 
 
 /* =========================================================
-   EXCEÇÕES DE SETOR
+   PREENCHER MÊS
+========================================================= */
+
+function preencherMes(
+  mes
+) {
+
+  document
+    .querySelectorAll(
+      "[data-mes]"
+    )
+    .forEach(
+      elemento => {
+
+        elemento.textContent =
+          mes ||
+          "MÊS";
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   PREENCHER ARTE GERAL
+========================================================= */
+
+function preencherArteGeral(
+  dados
+) {
+
+  const {
+
+    hc,
+    realizaram,
+    processo,
+    naoRealizaram,
+    percentual
+
+  } = dados.geral;
+
+
+  $("percentual-geral").textContent =
+    formatarPorcentagem(
+      percentual
+    );
+
+
+  $("arte-geral-realizaram").textContent =
+    realizaram;
+
+
+  $("arte-geral-processo").textContent =
+    processo;
+
+
+  $("arte-geral-nao").textContent =
+    naoRealizaram;
+
+
+  $("arte-geral-hc").textContent =
+    hc;
+
+
+  $("arte-percentual-realizaram").textContent =
+    formatarPorcentagem(
+
+      hc
+        ? realizaram / hc
+        : 0
+
+    );
+
+
+  $("arte-percentual-processo").textContent =
+    formatarPorcentagem(
+
+      hc
+        ? processo / hc
+        : 0
+
+    );
+
+
+  $("arte-percentual-nao").textContent =
+    formatarPorcentagem(
+
+      hc
+        ? naoRealizaram / hc
+        : 0
+
+    );
+
+}
+
+
+/* =========================================================
+   PREENCHER LISTAS CONSIDERANDO EXCEÇÕES
+========================================================= */
+
+function preencherListasComExcecoes() {
+
+  const ocultados =
+    new Set(
+
+      excecoes.map(
+        excecao =>
+          normalizarTexto(
+            excecao.nome
+          )
+      )
+
+    );
+
+
+  const filtrar =
+    lista =>
+
+      (
+        lista ||
+        []
+      ).filter(
+        pessoa =>
+
+          !ocultados.has(
+            normalizarTexto(
+              pessoa.nome
+            )
+          )
+
+      );
+
+
+  const processo =
+    filtrar(
+      dadosProcessados.processo
+    );
+
+
+  const nao =
+    filtrar(
+      dadosProcessados.naoRealizaram
+    );
+
+
+  const guembaPendente =
+    filtrar(
+      dadosProcessados.guembaPendenteBeARep
+    );
+
+
+  const guembaProcessando =
+    filtrar(
+      dadosProcessados.guembaProcessandoBeARep
+    );
+
+
+  $("total-processo").textContent =
+    processo.length;
+
+
+  $("total-nao").textContent =
+    nao.length;
+
+
+  $("total-guemba-pendente").textContent =
+    guembaPendente.length;
+
+
+  $("total-guemba-processando").textContent =
+    guembaProcessando.length;
+
+
+  montarListaComTempo(
+    processo,
+    "listas-processo"
+  );
+
+
+  montarListaSemTempo(
+    nao,
+    "listas-nao"
+  );
+
+
+  montarListaSemTempo(
+    guembaPendente,
+    "listas-guemba-pendente"
+  );
+
+
+  montarListaComTempo(
+    guembaProcessando,
+    "listas-guemba-processando"
+  );
+
+}
+
+
+/* =========================================================
+   QUANTIDADE DE COLUNAS
+========================================================= */
+
+function quantidadeColunas(
+  total
+) {
+
+  if (
+    total <= 14
+  ) {
+
+    return 1;
+
+  }
+
+
+  if (
+    total <= 28
+  ) {
+
+    return 2;
+
+  }
+
+
+  return 3;
+
+}
+
+
+/* =========================================================
+   DIVIDIR LISTA
+========================================================= */
+
+function dividirLista(
+  lista,
+  quantidade
+) {
+
+  const tamanho =
+    Math.ceil(
+      lista.length /
+      quantidade
+    );
+
+
+  return Array.from(
+    {
+      length:
+        quantidade
+    },
+    (
+      _,
+      indice
+    ) =>
+
+      lista.slice(
+
+        indice *
+          tamanho,
+
+        (
+          indice +
+          1
+        ) *
+          tamanho
+
+      )
+  );
+
+}
+
+
+/* =========================================================
+   LISTA COM TEMPO
+========================================================= */
+
+function montarListaComTempo(
+  pessoas,
+  idContainer
+) {
+
+  const container =
+    $(
+      idContainer
+    );
+
+
+  if (
+    !container
+  ) {
+
+    return;
+
+  }
+
+
+  const colunas =
+    quantidadeColunas(
+      pessoas.length
+    );
+
+
+  container.className =
+    `listas-grid colunas-${colunas}`;
+
+
+  container.innerHTML =
+    "";
+
+
+  dividirLista(
+    pessoas,
+    colunas
+  )
+    .forEach(
+      grupo => {
+
+        const tabela =
+          document.createElement(
+            "div"
+          );
+
+
+        tabela.className =
+          "tabela";
+
+
+        let html = `
+
+          <div
+            class="linha-pessoa processo cabecalho-tabela"
+          >
+
+            <div>
+              NOME
+            </div>
+
+            <div class="setor">
+              SETOR
+            </div>
+
+            <div class="tempo">
+              TEMPO
+            </div>
+
+          </div>
+
+        `;
+
+
+        grupo.forEach(
+          pessoa => {
+
+            html += `
+
+              <div
+                class="linha-pessoa processo"
+              >
+
+                <div class="nome-pessoa">
+                  ${escaparHTML(
+                    pessoa.nome
+                  )}
+                </div>
+
+                <div class="setor">
+                  ${escaparHTML(
+                    pessoa.setor
+                  )}
+                </div>
+
+                <div class="tempo">
+                  ${escaparHTML(
+                    pessoa.tempo ||
+                    ""
+                  )}
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        );
+
+
+        tabela.innerHTML =
+          html;
+
+
+        container.appendChild(
+          tabela
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   LISTA SEM TEMPO
+========================================================= */
+
+function montarListaSemTempo(
+  pessoas,
+  idContainer
+) {
+
+  const container =
+    $(
+      idContainer
+    );
+
+
+  if (
+    !container
+  ) {
+
+    return;
+
+  }
+
+
+  const colunas =
+    quantidadeColunas(
+      pessoas.length
+    );
+
+
+  container.className =
+    `listas-grid colunas-${colunas}`;
+
+
+  container.innerHTML =
+    "";
+
+
+  dividirLista(
+    pessoas,
+    colunas
+  )
+    .forEach(
+      grupo => {
+
+        const tabela =
+          document.createElement(
+            "div"
+          );
+
+
+        tabela.className =
+          "tabela";
+
+
+        let html = `
+
+          <div
+            class="linha-pessoa nao-realizou cabecalho-tabela"
+          >
+
+            <div>
+              NOME
+            </div>
+
+            <div class="setor">
+              SETOR
+            </div>
+
+          </div>
+
+        `;
+
+
+        grupo.forEach(
+          pessoa => {
+
+            html += `
+
+              <div
+                class="linha-pessoa nao-realizou"
+              >
+
+                <div class="nome-pessoa">
+                  ${escaparHTML(
+                    pessoa.nome
+                  )}
+                </div>
+
+                <div class="setor">
+                  ${escaparHTML(
+                    pessoa.setor
+                  )}
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        );
+
+
+        tabela.innerHTML =
+          html;
+
+
+        container.appendChild(
+          tabela
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   ADICIONAR EXCEÇÃO
+========================================================= */
+
+function adicionarExcecao() {
+
+  if (
+    !dadosProcessados
+  ) {
+
+    return alert(
+      "Carregue os dados antes de adicionar uma exceção."
+    );
+
+  }
+
+
+  const nomeDigitado =
+    limparTexto(
+      $("excecao-nome").value
+    );
+
+
+  const motivo =
+    $("excecao-motivo").value;
+
+
+  if (
+    !nomeDigitado
+  ) {
+
+    return alert(
+      "Selecione ou digite o nome da pessoa."
+    );
+
+  }
+
+
+  const pessoa =
+    dadosProcessados.registros.find(
+      pessoa =>
+
+        normalizarTexto(
+          pessoa.nome
+        ) ===
+
+        normalizarTexto(
+          nomeDigitado
+        )
+    );
+
+
+  if (
+    !pessoa
+  ) {
+
+    return alert(
+      "Nome não encontrado na base atual."
+    );
+
+  }
+
+
+  if (
+    excecoes.some(
+      excecao =>
+
+        normalizarTexto(
+          excecao.nome
+        ) ===
+
+        normalizarTexto(
+          pessoa.nome
+        )
+    )
+  ) {
+
+    return alert(
+      "Essa pessoa já está ocultada das listas."
+    );
+
+  }
+
+
+  excecoes.push(
+    {
+
+      nome:
+        pessoa.nome,
+
+      motivo:
+        motivo
+
+    }
+  );
+
+
+  salvarExcecoes();
+
+
+  $("excecao-nome").value =
+    "";
+
+
+  renderizarExcecoes();
+
+
+  preencherListasComExcecoes();
+
+}
+
+
+/* =========================================================
+   REMOVER EXCEÇÃO
+========================================================= */
+
+function removerExcecao(
+  nome
+) {
+
+  excecoes =
+    excecoes.filter(
+      excecao =>
+
+        normalizarTexto(
+          excecao.nome
+        ) !==
+
+        normalizarTexto(
+          nome
+        )
+    );
+
+
+  salvarExcecoes();
+
+
+  renderizarExcecoes();
+
+
+  if (
+    dadosProcessados
+  ) {
+
+    preencherListasComExcecoes();
+
+  }
+
+}
+
+
+/* =========================================================
+   DATALIST DE EXCEÇÕES
+========================================================= */
+
+function preencherDatalistExcecoes() {
+
+  const lista =
+    $("lista-pessoas-excecao");
+
+
+  if (
+    !lista
+  ) {
+
+    return;
+
+  }
+
+
+  lista.innerHTML =
+    "";
+
+
+  dadosProcessados.registros
+
+    .slice()
+
+    .sort(
+      (
+        pessoaA,
+        pessoaB
+      ) =>
+
+        pessoaA.nome.localeCompare(
+          pessoaB.nome,
+          "pt-BR"
+        )
+    )
+
+    .forEach(
+      pessoa => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          pessoa.nome;
+
+
+        /*
+         * Se a pessoa ainda não tiver área,
+         * mostramos SEM ÁREA.
+         */
+
+        option.label =
+
+          `${pessoa.area || "SEM ÁREA"} • ${pessoa.setor || "SEM SETOR"}`;
+
+
+        lista.appendChild(
+          option
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   RENDERIZAR EXCEÇÕES
+========================================================= */
+
+function renderizarExcecoes() {
+
+  const container =
+    $("lista-excecoes");
+
+
+  const contador =
+    $("total-excecoes");
+
+
+  if (
+    !container ||
+    !contador
+  ) {
+
+    return;
+
+  }
+
+
+  contador.textContent =
+
+    `${excecoes.length} ocultada${excecoes.length === 1 ? "" : "s"}`;
+
+
+  if (
+    !excecoes.length
+  ) {
+
+    container.innerHTML = `
+
+      <p class="empty-state">
+
+        Nenhuma pessoa ocultada das listas.
+
+      </p>
+
+    `;
+
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  excecoes
+
+    .slice()
+
+    .sort(
+      (
+        excecaoA,
+        excecaoB
+      ) =>
+
+        excecaoA.nome.localeCompare(
+          excecaoB.nome,
+          "pt-BR"
+        )
+    )
+
+    .forEach(
+      excecao => {
+
+        const linha =
+          document.createElement(
+            "div"
+          );
+
+
+        linha.className =
+          "exception-row";
+
+
+        linha.innerHTML = `
+
+          <strong>
+            ${escaparHTML(
+              excecao.nome
+            )}
+          </strong>
+
+          <span>
+            ${escaparHTML(
+              excecao.motivo
+            )}
+          </span>
+
+          <button type="button">
+            Reativar nome
+          </button>
+
+        `;
+
+
+        linha
+          .querySelector(
+            "button"
+          )
+          .addEventListener(
+            "click",
+            () =>
+
+              removerExcecao(
+                excecao.nome
+              )
+          );
+
+
+        container.appendChild(
+          linha
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   CARREGAR EXCEÇÕES
+========================================================= */
+
+function carregarExcecoes() {
+
+  try {
+
+    const valor =
+      JSON.parse(
+
+        localStorage.getItem(
+          STORAGE_EXCECOES
+        ) ||
+
+        "[]"
+
+      );
+
+
+    return Array.isArray(
+      valor
+    )
+
+      ? valor
+
+      : [];
+
+  }
+
+  catch {
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+   SALVAR EXCEÇÕES
+========================================================= */
+
+function salvarExcecoes() {
+
+  localStorage.setItem(
+
+    STORAGE_EXCECOES,
+
+    JSON.stringify(
+      excecoes
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+   EXIBIR DASHBOARD
+========================================================= */
+
+function exibirDashboard() {
+
+  resumoDados
+    ?.classList
+    .remove(
+      "oculto"
+    );
+
+
+  menuArtes
+    ?.classList
+    .remove(
+      "oculto"
+    );
+
+
+  areaArtes
+    ?.classList
+    .remove(
+      "oculto"
+    );
+
+}
+
+
+/* =========================================================
+   OCULTAR DASHBOARD
+========================================================= */
+
+function ocultarDashboard() {
+
+  resumoDados
+    ?.classList
+    .add(
+      "oculto"
+    );
+
+
+  menuArtes
+    ?.classList
+    .add(
+      "oculto"
+    );
+
+
+  areaArtes
+    ?.classList
+    .add(
+      "oculto"
+    );
+
+}
+
+
+/* =========================================================
+   MOSTRAR ARTE
+========================================================= */
+
+function mostrarArte(
+  nome
+) {
+
+  arteAtual =
+    nome;
+
+
+  document
+    .querySelectorAll(
+      ".arte"
+    )
+    .forEach(
+      arte =>
+
+        arte.classList.remove(
+          "ativa"
+        )
+    );
+
+
+  botoesArte.forEach(
+    botao => {
+
+      botao.classList.toggle(
+
+        "ativo",
+
+        botao.dataset.arte ===
+          nome
+
+      );
+
+    }
+  );
+
+
+  $(
+    `arte-${nome}`
+  )
+    ?.classList
+    .add(
+      "ativa"
+    );
+
+}
+
+
+/* =========================================================
+   BAIXAR ARTE ATUAL
+========================================================= */
+
+async function baixarArteAtual() {
+
+  const arte =
+    $(
+      `arte-${arteAtual}`
+    );
+
+
+  if (
+    !arte
+  ) {
+
+    return alert(
+      "Arte não encontrada."
+    );
+
+  }
+
+
+  if (
+    typeof html2canvas ===
+    "undefined"
+  ) {
+
+    return alert(
+      "Não foi possível carregar o gerador de PNG."
+    );
+
+  }
+
+
+  const textoOriginal =
+    botaoBaixar.textContent;
+
+
+  try {
+
+    botaoBaixar.disabled =
+      true;
+
+
+    botaoBaixar.textContent =
+      "⏳ Gerando PNG...";
+
+
+    await aguardarImagens(
+      arte
+    );
+
+
+    const canvas =
+      await html2canvas(
+        arte,
+        {
+
+          backgroundColor:
+            "#ffffff",
+
+          scale:
+            2,
+
+          useCORS:
+            true,
+
+          logging:
+            false,
+
+          scrollX:
+            0,
+
+          scrollY:
+            0
+
+        }
+      );
+
+
+    const nomeBase =
+
+      arte.dataset.nomeArquivo ||
+
+      "Be-a-Rep";
+
+
+    const mes =
+
+      dadosProcessados?.mes ||
+
+      "";
+
+
+    const nomeArquivo =
+
+      `${nomeBase}${mes ? "-" + mes.replace(/\s+/g, "-") : ""}.png`;
+
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+
+    link.download =
+      nomeArquivo;
+
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+
+    document.body.appendChild(
+      link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      erro
+    );
+
+
+    alert(
+      `Não foi possível gerar o PNG.\n\n${erro.message}`
+    );
+
+  }
+
+  finally {
+
+    botaoBaixar.disabled =
+      false;
+
+
+    botaoBaixar.textContent =
+      textoOriginal;
+
+  }
+
+}
+
+
+/* =========================================================
+   AGUARDAR IMAGENS
+========================================================= */
+
+async function aguardarImagens(
+  elemento
+) {
+
+  const imagens =
+    Array.from(
+      elemento.querySelectorAll(
+        "img"
+      )
+    );
+
+
+  await Promise.all(
+
+    imagens.map(
+      imagem => {
+
+        if (
+          imagem.complete
+        ) {
+
+          return Promise.resolve();
+
+        }
+
+
+        return new Promise(
+          resolve => {
+
+            imagem.addEventListener(
+              "load",
+              resolve,
+              {
+                once:
+                  true
+              }
+            );
+
+
+            imagem.addEventListener(
+              "error",
+              resolve,
+              {
+                once:
+                  true
+              }
+            );
+
+          }
+        );
+
+      }
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+   AJUSTAR SETOR NA ARTE
 ========================================================= */
 
 function ajustarSetorNaArte(
@@ -1839,7 +3978,7 @@ function ajustarSetorNaArte(
 
 
 /* =========================================================
-   TEMPO → MINUTOS
+   CONVERTER TEMPO PARA MINUTOS
 ========================================================= */
 
 function converterTempoParaMinutos(
@@ -1862,53 +4001,36 @@ function converterTempoParaMinutos(
   }
 
 
-  let horas =
-    0;
+  const horas =
 
+    Number(
 
-  let minutos =
-    0;
+      texto.match(
+        /(\d+)\s*h/
+      )?.[1] ||
 
+      0
 
-  const matchHoras =
-    texto.match(
-      /(\d+)\s*h/
     );
 
 
-  const matchMinutos =
-    texto.match(
-      /(\d+)\s*m/
+  const minutos =
+
+    Number(
+
+      texto.match(
+        /(\d+)\s*m/
+      )?.[1] ||
+
+      0
+
     );
-
-
-  if (
-    matchHoras
-  ) {
-
-    horas =
-      Number(
-        matchHoras[1]
-      ) || 0;
-
-  }
-
-
-  if (
-    matchMinutos
-  ) {
-
-    minutos =
-      Number(
-        matchMinutos[1]
-      ) || 0;
-
-  }
 
 
   return (
     horas * 60
-  ) + minutos;
+  ) +
+  minutos;
 
 }
 
@@ -1935,56 +4057,51 @@ function obterMesPredominante(
 
 
       if (
-        !mes
+        mes
       ) {
 
-        return;
+        contagem[
+          mes
+        ] =
+
+          (
+            contagem[
+              mes
+            ] ||
+            0
+          ) +
+
+          1;
 
       }
-
-
-      contagem[
-        mes
-      ] =
-        (
-          contagem[
-            mes
-          ] || 0
-        ) +
-        1;
 
     }
   );
 
 
-  const entradas =
+  const maior =
+
     Object.entries(
       contagem
-    );
+    )
+      .sort(
+        (
+          itemA,
+          itemB
+        ) =>
+
+          itemB[1] -
+          itemA[1]
+      )[0];
 
 
-  if (
-    entradas.length === 0
-  ) {
+  return maior
 
-    return "";
+    ? formatarMes(
+        maior[0]
+      )
 
-  }
-
-
-  entradas.sort(
-    (
-      a,
-      b
-    ) =>
-      b[1] -
-      a[1]
-  );
-
-
-  return formatarMes(
-    entradas[0][0]
-  );
+    : "";
 
 }
 
@@ -1997,15 +4114,13 @@ function formatarMes(
   valor
 ) {
 
-  const texto =
+  const nome =
     normalizarTexto(
       valor
-    );
-
-
-  const nome =
-    texto
-      .split("-")[0]
+    )
+      .split(
+        "-"
+      )[0]
       .trim();
 
 
@@ -2081,1250 +4196,22 @@ function formatarMes(
 
 
   return (
+
     meses[
       nome
     ] ||
+
     limparTexto(
       valor
     )
+
   );
 
 }
 
 
 /* =========================================================
-   PREENCHER SISTEMA
-========================================================= */
-
-function preencherSistema(
-  dados
-) {
-
-  preencherResumo(
-    dados
-  );
-
-
-  preencherMes(
-    dados.mes
-  );
-
-
-  preencherArteGeral(
-    dados
-  );
-
-
-  preencherArteProcesso(
-    dados.processo
-  );
-
-
-  preencherArteNaoRealizaram(
-    dados.naoRealizaram
-  );
-
-
-  preencherArteGuembaPendente(
-    dados.guembaPendenteBeARep
-  );
-
-
-  preencherArteGuembaProcessando(
-    dados.guembaProcessandoBeARep
-  );
-
-}
-
-
-/* =========================================================
-   RESUMO SUPERIOR
-========================================================= */
-
-function preencherResumo(
-  dados
-) {
-
-  document
-    .getElementById(
-      "resumo-hc"
-    )
-    .textContent =
-    dados.geral.hc;
-
-
-  document
-    .getElementById(
-      "resumo-realizaram"
-    )
-    .textContent =
-    dados.geral.realizaram;
-
-
-  document
-    .getElementById(
-      "resumo-processo"
-    )
-    .textContent =
-    dados.geral.processo;
-
-
-  document
-    .getElementById(
-      "resumo-nao"
-    )
-    .textContent =
-    dados.geral.naoRealizaram;
-
-}
-
-
-/* =========================================================
-   MÊS
-========================================================= */
-
-function preencherMes(
-  mes
-) {
-
-  document
-    .querySelectorAll(
-      "[data-mes]"
-    )
-    .forEach(
-      elemento => {
-
-        elemento.textContent =
-          mes ||
-          "MÊS";
-
-      }
-    );
-
-}
-
-
-/* =========================================================
-   ARTE GERAL
-========================================================= */
-
-function preencherArteGeral(
-  dados
-) {
-
-  document
-    .getElementById(
-      "percentual-geral"
-    )
-    .textContent =
-    formatarPorcentagem(
-      dados
-        .geral
-        .percentual
-    );
-
-
-  const container =
-    document.getElementById(
-      "lista-areas"
-    );
-
-
-  container.innerHTML =
-    "";
-
-
-  const ordem =
-    AREAS_VALIDAS
-      .slice()
-      .sort(
-        (
-          areaA,
-          areaB
-        ) => {
-
-          const percentualA =
-            Number(
-              dados.areas?.[
-                areaA
-              ]?.percentual
-            ) || 0;
-
-
-          const percentualB =
-            Number(
-              dados.areas?.[
-                areaB
-              ]?.percentual
-            ) || 0;
-
-
-          return (
-            percentualB -
-            percentualA
-          );
-
-        }
-      );
-
-
-  ordem.forEach(
-    area => {
-
-      const info =
-        dados.areas[
-          area
-        ];
-
-
-      const percentual =
-        info
-          ? info.percentual
-          : 0;
-
-
-      const largura =
-        Math.max(
-          0,
-          Math.min(
-            100,
-            percentual * 100
-          )
-        );
-
-
-      const item =
-        document.createElement(
-          "div"
-        );
-
-
-      item.className =
-        "area-item";
-
-
-      item.innerHTML = `
-
-        <div class="area-nome">
-          ${area}
-        </div>
-
-        <div class="barra">
-
-          <div
-            class="barra-preenchida"
-            style="width: ${largura}%;"
-          >
-          </div>
-
-        </div>
-
-        <div class="area-percentual">
-
-          ${formatarPorcentagem(
-            percentual
-          )}
-
-        </div>
-
-      `;
-
-
-      container.appendChild(
-        item
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   ARTE EM PROCESSO
-========================================================= */
-
-function preencherArteProcesso(
-  pessoas
-) {
-
-  document
-    .getElementById(
-      "total-processo"
-    )
-    .textContent =
-    pessoas.length;
-
-
-  montarListaComTempo(
-    pessoas,
-    "listas-processo"
-  );
-
-}
-
-
-/* =========================================================
-   ARTE NÃO REALIZARAM
-========================================================= */
-
-function preencherArteNaoRealizaram(
-  pessoas
-) {
-
-  document
-    .getElementById(
-      "total-nao"
-    )
-    .textContent =
-    pessoas.length;
-
-
-  montarListaSemTempo(
-    pessoas,
-    "listas-nao"
-  );
-
-}
-
-
-/* =========================================================
-   ARTE GUEMBA REALIZADO / BAR PENDENTE
-========================================================= */
-
-function preencherArteGuembaPendente(
-  pessoas
-) {
-
-  const lista =
-    pessoas ||
-    [];
-
-
-  document
-    .getElementById(
-      "total-guemba-pendente"
-    )
-    .textContent =
-    lista.length;
-
-
-  montarListaSemTempo(
-    lista,
-    "listas-guemba-pendente"
-  );
-
-}
-
-
-/* =========================================================
-   ARTE GUEMBA REALIZADO / BAR PROCESSANDO
-========================================================= */
-
-function preencherArteGuembaProcessando(
-  pessoas
-) {
-
-  const lista =
-    pessoas ||
-    [];
-
-
-  document
-    .getElementById(
-      "total-guemba-processando"
-    )
-    .textContent =
-    lista.length;
-
-
-  montarListaComTempo(
-    lista,
-    "listas-guemba-processando"
-  );
-
-}
-
-
-/* =========================================================
-   QUANTIDADE DE COLUNAS
-========================================================= */
-
-function quantidadeColunas(
-  total
-) {
-
-  if (
-    total <= 14
-  ) {
-
-    return 1;
-
-  }
-
-
-  if (
-    total <= 28
-  ) {
-
-    return 2;
-
-  }
-
-
-  return 3;
-
-}
-
-
-/* =========================================================
-   DIVIDIR LISTA
-========================================================= */
-
-function dividirLista(
-  lista,
-  quantidade
-) {
-
-  const tamanho =
-    Math.ceil(
-      lista.length /
-      quantidade
-    );
-
-
-  const partes =
-    [];
-
-
-  for (
-    let i = 0;
-    i < quantidade;
-    i++
-  ) {
-
-    partes.push(
-
-      lista.slice(
-
-        i * tamanho,
-
-        (
-          i + 1
-        ) * tamanho
-
-      )
-
-    );
-
-  }
-
-
-  return partes;
-
-}
-
-
-/* =========================================================
-   MONTAR LISTA COM TEMPO
-========================================================= */
-
-function montarListaComTempo(
-  pessoas,
-  idContainer
-) {
-
-  const container =
-    document.getElementById(
-      idContainer
-    );
-
-
-  if (
-    !container
-  ) {
-
-    return;
-
-  }
-
-
-  const colunas =
-    quantidadeColunas(
-      pessoas.length
-    );
-
-
-  container.className =
-
-    "listas-grid " +
-
-    "colunas-" +
-
-    colunas;
-
-
-  container.innerHTML =
-    "";
-
-
-  const partes =
-    dividirLista(
-      pessoas,
-      colunas
-    );
-
-
-  partes.forEach(
-    grupo => {
-
-      const tabela =
-        document.createElement(
-          "div"
-        );
-
-
-      tabela.className =
-        "tabela";
-
-
-      let html = `
-
-        <div
-          class="
-            linha-pessoa
-            processo
-            cabecalho-tabela
-          "
-        >
-
-          <div>
-            NOME
-          </div>
-
-          <div class="setor">
-            SETOR
-          </div>
-
-          <div class="tempo">
-            TEMPO
-          </div>
-
-        </div>
-
-      `;
-
-
-      grupo.forEach(
-        pessoa => {
-
-          html += `
-
-            <div
-              class="
-                linha-pessoa
-                processo
-              "
-            >
-
-              <div class="nome-pessoa">
-                ${escaparHTML(
-                  pessoa.nome
-                )}
-              </div>
-
-              <div class="setor">
-                ${escaparHTML(
-                  pessoa.setor
-                )}
-              </div>
-
-              <div class="tempo">
-                ${escaparHTML(
-                  pessoa.tempo
-                )}
-              </div>
-
-            </div>
-
-          `;
-
-        }
-      );
-
-
-      tabela.innerHTML =
-        html;
-
-
-      container.appendChild(
-        tabela
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   MONTAR LISTA SEM TEMPO
-========================================================= */
-
-function montarListaSemTempo(
-  pessoas,
-  idContainer
-) {
-
-  const container =
-    document.getElementById(
-      idContainer
-    );
-
-
-  if (
-    !container
-  ) {
-
-    return;
-
-  }
-
-
-  const colunas =
-    quantidadeColunas(
-      pessoas.length
-    );
-
-
-  container.className =
-
-    "listas-grid " +
-
-    "colunas-" +
-
-    colunas;
-
-
-  container.innerHTML =
-    "";
-
-
-  const partes =
-    dividirLista(
-      pessoas,
-      colunas
-    );
-
-
-  partes.forEach(
-    grupo => {
-
-      const tabela =
-        document.createElement(
-          "div"
-        );
-
-
-      tabela.className =
-        "tabela";
-
-
-      let html = `
-
-        <div
-          class="
-            linha-pessoa
-            nao-realizou
-            cabecalho-tabela
-          "
-        >
-
-          <div>
-            NOME
-          </div>
-
-          <div class="setor">
-            SETOR
-          </div>
-
-        </div>
-
-      `;
-
-
-      grupo.forEach(
-        pessoa => {
-
-          html += `
-
-            <div
-              class="
-                linha-pessoa
-                nao-realizou
-              "
-            >
-
-              <div class="nome-pessoa">
-                ${escaparHTML(
-                  pessoa.nome
-                )}
-              </div>
-
-              <div class="setor">
-                ${escaparHTML(
-                  pessoa.setor
-                )}
-              </div>
-
-            </div>
-
-          `;
-
-        }
-      );
-
-
-      tabela.innerHTML =
-        html;
-
-
-      container.appendChild(
-        tabela
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   MOSTRAR / OCULTAR DASHBOARD
-========================================================= */
-
-function exibirDashboard() {
-
-  resumoDados
-    .classList
-    .remove(
-      "oculto"
-    );
-
-
-  menuArtes
-    .classList
-    .remove(
-      "oculto"
-    );
-
-
-  areaArtes
-    .classList
-    .remove(
-      "oculto"
-    );
-
-}
-
-
-function ocultarDashboard() {
-
-  resumoDados
-    .classList
-    .add(
-      "oculto"
-    );
-
-
-  menuArtes
-    .classList
-    .add(
-      "oculto"
-    );
-
-
-  areaArtes
-    .classList
-    .add(
-      "oculto"
-    );
-
-}
-
-/* =========================================================
-   ADICIONAR PESSOA OCULTADA
-========================================================= */
-
-function adicionarPessoaOcultada() {
-
-  if (
-    !dadosProcessados
-  ) {
-
-    alert(
-      "Carregue os dados antes de adicionar uma exceção."
-    );
-
-    return;
-
-  }
-
-
-  const nomeDigitado =
-    limparTexto(
-      campoExcecaoNome
-        ? campoExcecaoNome.value
-        : ""
-    );
-
-
-  const motivo =
-    limparTexto(
-      campoExcecaoMotivo
-        ? campoExcecaoMotivo.value
-        : ""
-    ) ||
-    "Outro";
-
-
-  if (
-    !nomeDigitado
-  ) {
-
-    alert(
-      "Digite ou selecione o nome da pessoa."
-    );
-
-    return;
-
-  }
-
-
-  const pessoaEncontrada =
-    dadosProcessados
-      .registros
-      .find(
-        pessoa =>
-          normalizarTexto(
-            pessoa.nome
-          ) ===
-          normalizarTexto(
-            nomeDigitado
-          )
-      );
-
-
-  if (
-    !pessoaEncontrada
-  ) {
-
-    alert(
-      "Não encontrei esse nome na base atual."
-    );
-
-    return;
-
-  }
-
-
-  if (
-    pessoaEstaOcultada(
-      pessoaEncontrada.nome
-    )
-  ) {
-
-    alert(
-      "Essa pessoa já está ocultada das listas."
-    );
-
-    return;
-
-  }
-
-
-  pessoasOcultadas.push({
-
-    nome:
-      pessoaEncontrada.nome,
-
-    motivo:
-      motivo
-
-  });
-
-
-  salvarPessoasOcultadas();
-
-
-  if (
-    campoExcecaoNome
-  ) {
-
-    campoExcecaoNome.value =
-      "";
-
-  }
-
-
-  renderizarPessoasOcultadas();
-
-
-  preencherListasComExcecoes();
-
-
-  alert(
-    "Pessoa ocultada das listas com sucesso."
-  );
-
-}
-
-/* =========================================================
-   TROCAR ARTE
-========================================================= */
-
-function mostrarArte(
-  nome
-) {
-
-  arteAtual =
-    nome;
-
-
-  document
-    .querySelectorAll(
-      ".arte"
-    )
-    .forEach(
-      arte => {
-
-        arte
-          .classList
-          .remove(
-            "ativa"
-          );
-
-      }
-    );
-
-
-  botoesArte.forEach(
-    botao => {
-
-      botao
-        .classList
-        .toggle(
-
-          "ativo",
-
-          botao.dataset.arte ===
-          nome
-
-        );
-
-    }
-  );
-
-
-  const arte =
-    document.getElementById(
-      "arte-" +
-      nome
-    );
-
-
-  if (
-    arte
-  ) {
-
-    arte
-      .classList
-      .add(
-        "ativa"
-      );
-
-  }
-
-}
-
-
-/* =========================================================
-   BAIXAR PNG
-========================================================= */
-
-async function baixarArteAtual() {
-
-  const arte =
-    document.getElementById(
-      "arte-" +
-      arteAtual
-    );
-
-
-  if (
-    !arte
-  ) {
-
-    alert(
-      "Arte não encontrada."
-    );
-
-    return;
-
-  }
-
-
-  if (
-    typeof html2canvas ===
-    "undefined"
-  ) {
-
-    alert(
-      "Não foi possível carregar o gerador de PNG."
-    );
-
-    return;
-
-  }
-
-
-  const textoOriginal =
-    botaoBaixar.textContent;
-
-
-  try {
-
-    botaoBaixar.disabled =
-      true;
-
-
-    botaoBaixar.textContent =
-      "⏳ Gerando PNG...";
-
-
-    await aguardarImagens(
-      arte
-    );
-
-
-    const canvas =
-      await html2canvas(
-        arte,
-        {
-
-          backgroundColor:
-            "#ffffff",
-
-          scale:
-            2,
-
-          useCORS:
-            true,
-
-          logging:
-            false,
-
-          scrollX:
-            0,
-
-          scrollY:
-            0
-
-        }
-      );
-
-
-    const nomeBase =
-      arte
-        .dataset
-        .nomeArquivo ||
-      "Be-a-Rep";
-
-
-    const mes =
-      dadosProcessados
-        ?.mes ||
-      "";
-
-
-    const nomeArquivo =
-
-      nomeBase +
-
-      (
-        mes
-
-          ? "-" +
-            mes.replace(
-              /\s+/g,
-              "-"
-            )
-
-          : ""
-      ) +
-
-      ".png";
-
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
-
-    link.download =
-      nomeArquivo;
-
-
-    link.href =
-      canvas.toDataURL(
-        "image/png"
-      );
-
-
-    document.body
-      .appendChild(
-        link
-      );
-
-
-    link.click();
-
-
-    link.remove();
-
-  }
-
-  catch (
-    erro
-  ) {
-
-    console.error(
-      erro
-    );
-
-
-    alert(
-
-      "Não foi possível gerar o PNG.\n\n" +
-
-      erro.message
-
-    );
-
-  }
-
-  finally {
-
-    botaoBaixar.disabled =
-      false;
-
-
-    botaoBaixar.textContent =
-      textoOriginal;
-
-  }
-
-}
-
-
-/* =========================================================
-   AGUARDAR IMAGENS
-========================================================= */
-
-async function aguardarImagens(
-  elemento
-) {
-
-  const imagens =
-    Array.from(
-      elemento.querySelectorAll(
-        "img"
-      )
-    );
-
-
-  const promessas =
-    imagens.map(
-      imagem => {
-
-        if (
-          imagem.complete
-        ) {
-
-          return Promise.resolve();
-
-        }
-
-
-        return new Promise(
-          resolve => {
-
-            imagem.addEventListener(
-              "load",
-              resolve,
-              {
-                once:
-                  true
-              }
-            );
-
-
-            imagem.addEventListener(
-              "error",
-              resolve,
-              {
-                once:
-                  true
-              }
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-  await Promise.all(
-    promessas
-  );
-
-}
-
-
-/* =========================================================
-   PORCENTAGEM
-========================================================= */
-
-function formatarPorcentagem(
-  valor
-) {
-
-  return (
-
-    (
-      Number(
-        valor
-      ) || 0
-    ) *
-    100
-
-  )
-    .toFixed(
-      1
-    )
-    .replace(
-      ".",
-      ","
-    ) +
-    "%";
-
-}
-
-
-/* =========================================================
-   STATUS
+   ATUALIZAR STATUS
 ========================================================= */
 
 function atualizarStatus(
@@ -3353,11 +4240,9 @@ function atualizarStatus(
     classe
   ) {
 
-    statusArquivo
-      .classList
-      .add(
-        classe
-      );
+    statusArquivo.classList.add(
+      classe
+    );
 
   }
 
@@ -3365,7 +4250,7 @@ function atualizarStatus(
 
 
 /* =========================================================
-   BUSCAR VALOR EM OBJETO
+   OBTER VALOR DO OBJETO
 ========================================================= */
 
 function obterValorObjeto(
@@ -3403,32 +4288,30 @@ function obterValorObjeto(
 
 
   for (
-    const nomeBuscado of
+    const nome of
     nomesPossiveis
   ) {
 
-    const nomeNormalizado =
-      normalizarTexto(
-        nomeBuscado
-      );
-
-
-    const chaveEncontrada =
+    const chave =
       chaves.find(
-        chave =>
+        chaveAtual =>
+
           normalizarTexto(
-            chave
+            chaveAtual
           ) ===
-          nomeNormalizado
+
+          normalizarTexto(
+            nome
+          )
       );
 
 
     if (
-      chaveEncontrada
+      chave
     ) {
 
       return objeto[
-        chaveEncontrada
+        chave
       ];
 
     }
@@ -3442,15 +4325,60 @@ function obterValorObjeto(
 
 
 /* =========================================================
-   UTILITÁRIOS
+   ORDENAÇÕES
+========================================================= */
+
+function ordenarNome(
+  pessoaA,
+  pessoaB
+) {
+
+  return pessoaA.nome.localeCompare(
+    pessoaB.nome,
+    "pt-BR"
+  );
+
+}
+
+
+function ordenarTempoNome(
+  pessoaA,
+  pessoaB
+) {
+
+  if (
+    pessoaB.minutos !==
+    pessoaA.minutos
+  ) {
+
+    return (
+
+      pessoaB.minutos -
+      pessoaA.minutos
+
+    );
+
+  }
+
+
+  return ordenarNome(
+    pessoaA,
+    pessoaB
+  );
+
+}
+
+
+/* =========================================================
+   EXTENSÃO DO ARQUIVO
 ========================================================= */
 
 function obterExtensao(
-  nomeArquivo
+  nome
 ) {
 
   return String(
-    nomeArquivo ||
+    nome ||
     ""
   )
     .split(
@@ -3461,6 +4389,10 @@ function obterExtensao(
 
 }
 
+
+/* =========================================================
+   LIMPAR TEXTO
+========================================================= */
 
 function limparTexto(
   valor
@@ -3474,6 +4406,10 @@ function limparTexto(
 
 }
 
+
+/* =========================================================
+   NORMALIZAR TEXTO
+========================================================= */
 
 function normalizarTexto(
   valor
@@ -3496,6 +4432,41 @@ function normalizarTexto(
 }
 
 
+/* =========================================================
+   FORMATAR PORCENTAGEM
+========================================================= */
+
+function formatarPorcentagem(
+  valor
+) {
+
+  return `${(
+
+    (
+      Number(
+        valor
+      ) ||
+      0
+    ) *
+
+    100
+
+  )
+    .toFixed(
+      1
+    )
+    .replace(
+      ".",
+      ","
+    )}%`;
+
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
 function escaparHTML(
   valor
 ) {
@@ -3504,22 +4475,27 @@ function escaparHTML(
     valor ??
     ""
   )
+
     .replace(
       /&/g,
       "&amp;"
     )
+
     .replace(
       /</g,
       "&lt;"
     )
+
     .replace(
       />/g,
       "&gt;"
     )
+
     .replace(
       /"/g,
       "&quot;"
     )
+
     .replace(
       /'/g,
       "&#039;"
