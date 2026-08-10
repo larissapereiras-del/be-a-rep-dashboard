@@ -23,8 +23,66 @@ import {
 
 export function processarDadosApi(dadosApi) {
 
+  /* =======================================================
+     MÊS ATUAL
+  ======================================================= */
+
+  const agora =
+    new Date();
+
+  const mesAtual =
+    agora.toLocaleString(
+      "pt-BR",
+      {
+        month: "long"
+      }
+    );
+
+  const anoAtual =
+    agora.getFullYear();
+
+  const referenciaAtual =
+    normalizarTexto(
+      `${mesAtual}-${anoAtual}`
+    );
+
+
+  /* =======================================================
+     FILTRAR SOMENTE O MÊS ATUAL
+  ======================================================= */
+
+  const dadosMesAtual =
+    dadosApi.filter(
+      item => {
+
+        const mesRegistro =
+          normalizarTexto(
+            obterValorObjeto(
+              item,
+              [
+                "MES",
+                "Mes",
+                "Mês"
+              ]
+            )
+          );
+
+
+        return (
+          mesRegistro ===
+          referenciaAtual
+        );
+
+      }
+    );
+
+
+  /* =======================================================
+     NORMALIZAR REGISTROS
+  ======================================================= */
+
   const registros =
-    dadosApi
+    dadosMesAtual
       .map(
         item => {
 
@@ -146,13 +204,8 @@ export function processarDadosApi(dadosApi) {
           /* =================================================
              ÁREA INTERNA
 
-             IMPORTANTE:
-             Não usamos "AREA" da query oficial diretamente,
-             pois nela aparecem valores como
-             "Fulfillment Brazil", "Transportation" etc.
-
-             Nossa área será posteriormente enriquecida com
-             CADASTRO_AREAS.
+             A área do dashboard será enriquecida depois
+             através da aba CADASTRO_AREAS.
           ================================================= */
 
           const area =
@@ -170,7 +223,7 @@ export function processarDadosApi(dadosApi) {
 
 
           /* =================================================
-             IDENTIFICADORES EXTRAS
+             USERNAME
           ================================================= */
 
           const username =
@@ -185,6 +238,10 @@ export function processarDadosApi(dadosApi) {
             );
 
 
+          /* =================================================
+             EMAIL
+          ================================================= */
+
           const email =
             limparTexto(
               obterValorObjeto(
@@ -195,6 +252,10 @@ export function processarDadosApi(dadosApi) {
               )
             );
 
+
+          /* =================================================
+             CAD
+          ================================================= */
 
           const cad =
             limparTexto(
@@ -281,7 +342,7 @@ function montarResultado(
   ) {
 
     throw new Error(
-      "Nenhuma pessoa válida foi encontrada na base."
+      "Nenhuma pessoa válida foi encontrada no mês atual."
     );
 
   }
@@ -351,7 +412,7 @@ function montarResultado(
     pessoa => {
 
       /* ===================================================
-         PESSOA SEM ÁREA CADASTRADA
+         SEM CADASTRO DE ÁREA
       =================================================== */
 
       if (
@@ -369,8 +430,6 @@ function montarResultado(
 
       /* ===================================================
          CONTAGEM POR ÁREA
-
-         Só entra aqui se houver uma área válida.
       =================================================== */
 
       if (
@@ -559,12 +618,6 @@ function montarResultado(
 
   /* =======================================================
      GERAL
-
-     IMPORTANTE:
-     Agora o GERAL considera TODAS as pessoas da base,
-     inclusive quem ainda não tem área cadastrada.
-
-     Dessa forma o Target continua correto.
   ======================================================= */
 
   const geral =
@@ -628,13 +681,11 @@ function classificarSituacao(
 
     "CUMPLIO",
 
-    "CUMPLIÓ",
+    "CUMPLIO",
 
     "REALIZADO",
 
-    "CONCLUIDO",
-
-    "CONCLUÍDO"
+    "CONCLUIDO"
 
   ];
 
@@ -686,10 +737,6 @@ function classificarSituacao(
 
   /* =======================================================
      NÃO REALIZOU
-
-     Exemplo da nova base:
-     GEMBA = NO CUMPLIO
-     ESTADO_BAR = NO INICIADO
   ======================================================= */
 
   return "NAO_REALIZOU";
@@ -711,13 +758,9 @@ function gembaConcluido(
 
     "CUMPLIO",
 
-    "CUMPLIÓ",
-
     "REALIZADO",
 
-    "CONCLUIDO",
-
-    "CONCLUÍDO"
+    "CONCLUIDO"
 
   ].includes(
     gemba
