@@ -191,11 +191,53 @@
       </div>
 
       <div class="art-tabs">
-        <button class="art-tab ativo" data-arte="geral" type="button"><span>📊</span><div><strong>Resumo Geral</strong><small>Indicadores e áreas</small></div></button>
-        <button class="art-tab" data-arte="processo" type="button"><span>⏳</span><div><strong>Em Processo</strong><small>Pessoas em andamento</small></div></button>
-        <button class="art-tab" data-arte="nao" type="button"><span>⚠️</span><div><strong>Não Realizaram</strong><small>Lista de pendentes</small></div></button>
-        <button class="art-tab" data-arte="guemba-pendente" type="button"><span>✅</span><div><strong>Guemba feito</strong><small>Be a Rep não iniciado</small></div></button>
-        <button class="art-tab" data-arte="guemba-processando" type="button"><span>🔄</span><div><strong>Guemba processando</strong><small>Be a Rep em andamento</small></div></button>
+        <button class="art-tab ativo" data-arte="geral" type="button">
+          <span>📊</span>
+          <div>
+            <strong>Resumo Geral</strong>
+            <small>Indicadores e áreas</small>
+          </div>
+        </button>
+
+        <button class="art-tab" data-arte="realizaram" type="button">
+          <span>✅</span>
+          <div>
+            <strong>Realizaram</strong>
+            <small>Local, tempo e peças</small>
+          </div>
+        </button>
+
+        <button class="art-tab" data-arte="processo" type="button">
+          <span>⏳</span>
+          <div>
+            <strong>Em Processo</strong>
+            <small>Pessoas em andamento</small>
+          </div>
+        </button>
+
+        <button class="art-tab" data-arte="nao" type="button">
+          <span>⚠️</span>
+          <div>
+            <strong>Não Realizaram</strong>
+            <small>Lista de pendentes</small>
+          </div>
+        </button>
+
+        <button class="art-tab" data-arte="guemba-pendente" type="button">
+          <span>✅</span>
+          <div>
+            <strong>Guemba feito</strong>
+            <small>Be a Rep não iniciado</small>
+          </div>
+        </button>
+
+        <button class="art-tab" data-arte="guemba-processando" type="button">
+          <span>🔄</span>
+          <div>
+            <strong>Guemba processando</strong>
+            <small>Be a Rep em andamento</small>
+          </div>
+        </button>
       </div>
     </section>
 
@@ -204,8 +246,13 @@
       <article id="arte-geral" class="arte arte-geral ativa" data-nome-arquivo="Be-a-Rep-Resumo-Geral">
         <header class="arte-header">
           <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
-          <div class="arte-title"><h2>BE A REP</h2><p>ACOMPANHAMENTO</p></div>
-          <div class="month-pill month-yellow">📅 <strong data-mes>MÊS</strong></div>
+          <div class="arte-title">
+            <h2>BE A REP</h2>
+            <p>ACOMPANHAMENTO</p>
+          </div>
+          <div class="month-pill month-yellow">
+            📅 <strong data-mes>MÊS</strong>
+          </div>
         </header>
 
         <section class="summary-top">
@@ -216,82 +263,396 @@
           </div>
 
           <div class="summary-cards">
-            <div><span>✅</span><small>REALIZARAM</small><strong id="arte-geral-realizaram">0</strong><em id="arte-percentual-realizaram">0,0%</em></div>
-            <div><span>🕘</span><small>EM PROCESSO</small><strong id="arte-geral-processo">0</strong><em id="arte-percentual-processo">0,0%</em></div>
-            <div><span>❌</span><small>NÃO REALIZARAM</small><strong id="arte-geral-nao">0</strong><em id="arte-percentual-nao">0,0%</em></div>
-            <div><span>👥</span><small>HC TOTAL</small><strong id="arte-geral-hc">0</strong><em>100%</em></div>
+            <div>
+              <span>✅</span>
+              <small>REALIZARAM</small>
+              <strong id="arte-geral-realizaram">0</strong>
+              <em id="arte-percentual-realizaram">0,0%</em>
+            </div>
+
+            <div>
+              <span>🕘</span>
+              <small>EM PROCESSO</small>
+              <strong id="arte-geral-processo">0</strong>
+              <em id="arte-percentual-processo">0,0%</em>
+            </div>
+
+            <div>
+              <span>❌</span>
+              <small>NÃO REALIZARAM</small>
+              <strong id="arte-geral-nao">0</strong>
+              <em id="arte-percentual-nao">0,0%</em>
+            </div>
+
+            <div>
+              <span>👥</span>
+              <small>HC TOTAL</small>
+              <strong id="arte-geral-hc">0</strong>
+              <em>100%</em>
+            </div>
           </div>
         </section>
 
         <section class="area-section">
-          <div class="section-heading yellow-heading"><span>📊</span><h3>RESULTADO POR ÁREA</h3></div>
+          <div class="section-heading yellow-heading">
+            <span>📊</span>
+            <h3>RESULTADO POR ÁREA</h3>
+          </div>
+
           <div class="areas-table">
             <div class="areas-table-head">
-              <span>ÁREA</span><span>REALIZARAM</span><span>EM PROCESSO</span><span>NÃO REALIZARAM</span><span>HC TOTAL</span><span>% REALIZAÇÃO</span>
+              <span>ÁREA</span>
+              <span>REALIZARAM</span>
+              <span>EM PROCESSO</span>
+              <span>NÃO REALIZARAM</span>
+              <span>HC TOTAL</span>
+              <span>% REALIZAÇÃO</span>
             </div>
+
             <div id="lista-areas"></div>
           </div>
         </section>
 
-        <footer class="arte-footer footer-yellow">★ <strong>Gente que se desenvolve, transforma o negócio.</strong></footer>
+        <footer class="arte-footer footer-yellow">
+          ★ <strong>Gente que se desenvolve, transforma o negócio.</strong>
+        </footer>
       </article>
+
+
+      <!-- =====================================================
+           NOVA ABA — REALIZARAM
+      ====================================================== -->
+
+      <article
+        id="arte-realizaram"
+        class="arte arte-listagem"
+        data-nome-arquivo="Be-a-Rep-Realizaram"
+      >
+
+        <header class="arte-header">
+          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <div class="arte-title">
+            <h2>BE A REP</h2>
+            <p>REALIZARAM</p>
+          </div>
+
+          <div class="month-pill month-green">
+            📅 <strong data-mes>MÊS</strong>
+          </div>
+        </header>
+
+
+        <section class="list-hero hero-green">
+
+          <div class="hero-icon">
+            ✅
+          </div>
+
+          <div>
+            <h3>PESSOAS QUE REALIZARAM O BE A REP</h3>
+
+            <strong id="total-realizaram-lista">
+              0
+            </strong>
+
+            <p>
+              Detalhamento de local, tempo, peças processadas e produtividade.
+            </p>
+          </div>
+
+          <div class="hero-side">
+            📦
+          </div>
+
+        </section>
+
+
+        <section class="list-section">
+
+          <div class="section-heading green-heading">
+            <span>📋</span>
+            <h3>DETALHAMENTO</h3>
+          </div>
+
+
+          <div
+            style="
+              border:1px solid #e2e5ea;
+              border-radius:14px;
+              overflow:hidden;
+              background:#ffffff;
+            "
+          >
+
+            <div
+              style="
+                display:grid;
+                grid-template-columns:
+                  2fr
+                  1fr
+                  1.35fr
+                  1.45fr
+                  .8fr
+                  .9fr
+                  1fr;
+                gap:8px;
+                padding:12px;
+                background:#071b61;
+                color:#ffffff;
+                font-size:11px;
+                font-weight:900;
+                letter-spacing:.02em;
+                align-items:center;
+              "
+            >
+
+              <span>NOME</span>
+
+              <span>ÁREA</span>
+
+              <span>SETOR</span>
+
+              <span>LOCAL</span>
+
+              <span style="text-align:center;">
+                TEMPO
+              </span>
+
+              <span style="text-align:center;">
+                PEÇAS
+              </span>
+
+              <span style="text-align:center;">
+                PRODUTIVIDADE
+              </span>
+
+            </div>
+
+
+            <div id="lista-realizaram-detalhe"></div>
+
+          </div>
+
+        </section>
+
+
+        <footer class="arte-footer footer-green">
+          ★ <strong>Desenvolvimento na prática, resultado na operação.</strong>
+        </footer>
+
+      </article>
+
 
       <article id="arte-processo" class="arte arte-listagem" data-nome-arquivo="Be-a-Rep-Em-Processo">
+
         <header class="arte-header">
           <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
-          <div class="arte-title"><h2>BE A REP</h2><p>ACOMPANHAMENTO</p></div>
-          <div class="month-pill month-orange">📅 <strong data-mes>MÊS</strong></div>
+
+          <div class="arte-title">
+            <h2>BE A REP</h2>
+            <p>ACOMPANHAMENTO</p>
+          </div>
+
+          <div class="month-pill month-orange">
+            📅 <strong data-mes>MÊS</strong>
+          </div>
         </header>
-        <section class="list-hero hero-orange"><div class="hero-icon">⏳</div><div><h3>PESSOAS EM PROCESSO</h3><strong id="total-processo">0</strong><p>Continue evoluindo! Você já está no caminho.</p></div><div class="hero-side">📈</div></section>
-        <section class="list-section"><div class="section-heading orange-heading"><span>◷</span><h3>ACOMPANHAMENTO</h3></div><div id="listas-processo" class="listas-grid"></div></section>
-        <footer class="arte-footer footer-orange">★ <strong>Pequenas ações todos os dias geram grandes conquistas.</strong></footer>
+
+        <section class="list-hero hero-orange">
+          <div class="hero-icon">⏳</div>
+
+          <div>
+            <h3>PESSOAS EM PROCESSO</h3>
+            <strong id="total-processo">0</strong>
+            <p>Continue evoluindo! Você já está no caminho.</p>
+          </div>
+
+          <div class="hero-side">📈</div>
+        </section>
+
+        <section class="list-section">
+          <div class="section-heading orange-heading">
+            <span>◷</span>
+            <h3>ACOMPANHAMENTO</h3>
+          </div>
+
+          <div id="listas-processo" class="listas-grid"></div>
+        </section>
+
+        <footer class="arte-footer footer-orange">
+          ★ <strong>Pequenas ações todos os dias geram grandes conquistas.</strong>
+        </footer>
+
       </article>
+
 
       <article id="arte-nao" class="arte arte-listagem" data-nome-arquivo="Be-a-Rep-Nao-Realizaram">
+
         <header class="arte-header">
           <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
-          <div class="arte-title"><h2>BE A REP</h2><p>ACOMPANHAMENTO</p></div>
-          <div class="month-pill month-red">📅 <strong data-mes>MÊS</strong></div>
+
+          <div class="arte-title">
+            <h2>BE A REP</h2>
+            <p>ACOMPANHAMENTO</p>
+          </div>
+
+          <div class="month-pill month-red">
+            📅 <strong data-mes>MÊS</strong>
+          </div>
         </header>
-        <section class="list-hero hero-red"><div class="hero-icon">⚠️</div><div><h3>PESSOAS QUE NÃO REALIZARAM</h3><strong id="total-nao">0</strong><p>O desenvolvimento começa com a decisão de agir.</p></div><div class="hero-side">📋</div></section>
-        <section class="list-section"><div class="section-heading red-heading"><span>🔎</span><h3>PENDENTES</h3></div><div id="listas-nao" class="listas-grid"></div></section>
-        <footer class="arte-footer footer-red">★ <strong>Não é sobre ter tempo, é sobre fazer acontecer.</strong></footer>
+
+        <section class="list-hero hero-red">
+          <div class="hero-icon">⚠️</div>
+
+          <div>
+            <h3>PESSOAS QUE NÃO REALIZARAM</h3>
+            <strong id="total-nao">0</strong>
+            <p>O desenvolvimento começa com a decisão de agir.</p>
+          </div>
+
+          <div class="hero-side">📋</div>
+        </section>
+
+        <section class="list-section">
+          <div class="section-heading red-heading">
+            <span>🔎</span>
+            <h3>PENDENTES</h3>
+          </div>
+
+          <div id="listas-nao" class="listas-grid"></div>
+        </section>
+
+        <footer class="arte-footer footer-red">
+          ★ <strong>Não é sobre ter tempo, é sobre fazer acontecer.</strong>
+        </footer>
+
       </article>
 
-      <article id="arte-guemba-pendente" class="arte arte-listagem" data-nome-arquivo="Be-a-Rep-Guemba-Realizado-Pendente">
+
+      <article
+        id="arte-guemba-pendente"
+        class="arte arte-listagem"
+        data-nome-arquivo="Be-a-Rep-Guemba-Realizado-Pendente"
+      >
+
         <header class="arte-header">
           <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
-          <div class="arte-title"><h2>BE A REP</h2><p>ACOMPANHAMENTO</p></div>
-          <div class="month-pill month-green">📅 <strong data-mes>MÊS</strong></div>
+
+          <div class="arte-title">
+            <h2>BE A REP</h2>
+            <p>ACOMPANHAMENTO</p>
+          </div>
+
+          <div class="month-pill month-green">
+            📅 <strong data-mes>MÊS</strong>
+          </div>
         </header>
-        <section class="list-hero hero-green"><div class="hero-icon">✅</div><div><h3>PESSOAS COM GUEMBA REALIZADO MAS<br>PENDENTE DE BE A REP</h3><strong id="total-guemba-pendente">0</strong><p>Guemba concluído, porém sem início do Be a Rep.</p></div><div class="hero-side">📋</div></section>
-        <section class="list-section"><div class="section-heading green-heading"><span>👥</span><h3>ACOMPANHAMENTO</h3></div><div id="listas-guemba-pendente" class="listas-grid"></div></section>
-        <footer class="arte-footer footer-green">★ <strong>O próximo passo depende de você!</strong></footer>
+
+        <section class="list-hero hero-green">
+          <div class="hero-icon">✅</div>
+
+          <div>
+            <h3>
+              PESSOAS COM GUEMBA REALIZADO MAS<br>
+              PENDENTE DE BE A REP
+            </h3>
+
+            <strong id="total-guemba-pendente">0</strong>
+
+            <p>
+              Guemba concluído, porém sem início do Be a Rep.
+            </p>
+          </div>
+
+          <div class="hero-side">📋</div>
+        </section>
+
+        <section class="list-section">
+          <div class="section-heading green-heading">
+            <span>👥</span>
+            <h3>ACOMPANHAMENTO</h3>
+          </div>
+
+          <div id="listas-guemba-pendente" class="listas-grid"></div>
+        </section>
+
+        <footer class="arte-footer footer-green">
+          ★ <strong>O próximo passo depende de você!</strong>
+        </footer>
+
       </article>
 
-      <article id="arte-guemba-processando" class="arte arte-listagem" data-nome-arquivo="Be-a-Rep-Guemba-Realizado-Processando">
+
+      <article
+        id="arte-guemba-processando"
+        class="arte arte-listagem"
+        data-nome-arquivo="Be-a-Rep-Guemba-Realizado-Processando"
+      >
+
         <header class="arte-header">
           <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
-          <div class="arte-title"><h2>BE A REP</h2><p>ACOMPANHAMENTO</p></div>
-          <div class="month-pill month-blue">📅 <strong data-mes>MÊS</strong></div>
+
+          <div class="arte-title">
+            <h2>BE A REP</h2>
+            <p>ACOMPANHAMENTO</p>
+          </div>
+
+          <div class="month-pill month-blue">
+            📅 <strong data-mes>MÊS</strong>
+          </div>
         </header>
-        <section class="list-hero hero-blue"><div class="hero-icon">🔄</div><div><h3>PESSOAS COM GUEMBA REALIZADO MAS<br>PROCESSANDO BE A REP</h3><strong id="total-guemba-processando">0</strong><p>Guemba concluído e Be a Rep em andamento.</p></div><div class="hero-side">⚙️</div></section>
-        <section class="list-section"><div class="section-heading blue-heading"><span>◷</span><h3>ACOMPANHAMENTO</h3></div><div id="listas-guemba-processando" class="listas-grid"></div></section>
-        <footer class="arte-footer footer-blue">★ <strong>Você está no caminho certo. Continue assim!</strong></footer>
+
+        <section class="list-hero hero-blue">
+          <div class="hero-icon">🔄</div>
+
+          <div>
+            <h3>
+              PESSOAS COM GUEMBA REALIZADO MAS<br>
+              PROCESSANDO BE A REP
+            </h3>
+
+            <strong id="total-guemba-processando">0</strong>
+
+            <p>
+              Guemba concluído e Be a Rep em andamento.
+            </p>
+          </div>
+
+          <div class="hero-side">⚙️</div>
+        </section>
+
+        <section class="list-section">
+          <div class="section-heading blue-heading">
+            <span>◷</span>
+            <h3>ACOMPANHAMENTO</h3>
+          </div>
+
+          <div id="listas-guemba-processando" class="listas-grid"></div>
+        </section>
+
+        <footer class="arte-footer footer-blue">
+          ★ <strong>Você está no caminho certo. Continue assim!</strong>
+        </footer>
+
       </article>
 
     </section>
+
 
     <footer class="site-footer">
       <span>Central Be a Rep</span>
       <span>Dados sincronizados pelo Verdi</span>
     </footer>
+
   </main>
 
+
   <script
-  type="module"
-  src="js/script.js?v=20260804-04"
->
-</script>
+    type="module"
+    src="js/script.js?v=20260826-05"
+  >
+  </script>
+
 </body>
 </html>
