@@ -236,7 +236,10 @@ async function carregarDadosAutomaticos() {
           dadosProcessados.areas,
 
         semCadastro:
-          dadosProcessados.semCadastro
+          dadosProcessados.semCadastro,
+
+        realizaramDetalhe:
+          dadosProcessados.realizaramDetalhe
       }
     );
 
@@ -431,7 +434,6 @@ function processarDadosApi(
   /* =======================================================
      NORMALIZAR PESSOAS
   ======================================================= */
-
   const registros =
     filtrados
       .map(
@@ -440,8 +442,7 @@ function processarDadosApi(
           /* ===============================================
              NOME
 
-             FULL_NAME = Query
-             NOME      = CADASTRO_AREAS
+             NOME vem do CADASTRO_AREAS
           =============================================== */
 
           const nome =
@@ -570,6 +571,69 @@ function processarDadosApi(
 
 
           /* ===============================================
+             LOCAL DO BE A REP
+
+             QUERY:
+             PROCESOS_LMS = coluna BC
+          =============================================== */
+
+          const local =
+            limparTexto(
+              obterValorObjeto(
+                item,
+                [
+                  "PROCESOS_LMS",
+                  "PROCESOS LMS",
+                  "PROCESSOS_LMS",
+                  "PROCESSOS LMS"
+                ]
+              )
+            );
+
+
+          /* ===============================================
+             PEÇAS PROCESSADAS
+          =============================================== */
+
+          const unidadesValor =
+            obterValorObjeto(
+              item,
+              [
+                "UNIDADES",
+                "Unidades"
+              ]
+            );
+
+
+          const unidades =
+            numeroSeguroBeARep(
+              unidadesValor
+            );
+
+
+          /* ===============================================
+             PRODUTIVIDADE
+          =============================================== */
+
+          const produtividadeValor =
+            obterValorObjeto(
+              item,
+              [
+                "PRODUCTIVIDAD",
+                "PRODUTIVIDADE",
+                "Productividad",
+                "Produtividade"
+              ]
+            );
+
+
+          const produtividade =
+            numeroSeguroBeARep(
+              produtividadeValor
+            );
+
+
+          /* ===============================================
              GEMBA
           =============================================== */
 
@@ -606,7 +670,7 @@ function processarDadosApi(
           /* ===============================================
              ÁREA CONSOLIDADA
 
-             Esse é o campo vindo do CADASTRO_AREAS.
+             Campo vindo do CADASTRO_AREAS.
           =============================================== */
 
           const areaOriginal =
@@ -653,6 +717,7 @@ function processarDadosApi(
                 item,
                 [
                   "POSITION_PEOPLE",
+                  "POSICION_PEOPLE",
                   "ROL"
                 ]
               )
@@ -684,6 +749,10 @@ function processarDadosApi(
             );
 
 
+          /* ===============================================
+             REGISTRO NORMALIZADO
+          =============================================== */
+
           return {
 
             nome:
@@ -711,6 +780,19 @@ function processarDadosApi(
               converterTempoParaMinutos(
                 tempo
               ),
+
+            /* NOVOS CAMPOS */
+
+            local:
+              local,
+
+            unidades:
+              unidades,
+
+            produtividade:
+              produtividade,
+
+            /* CAMPOS EXISTENTES */
 
             gemba:
               gemba,
@@ -770,11 +852,9 @@ function processarDadosApi(
   console.table(
     registrosUnicos.map(
       pessoa => ({
+
         nome:
           pessoa.nome,
-
-        areaOriginal:
-          pessoa.areaOriginal,
 
         area:
           pessoa.area,
@@ -782,8 +862,24 @@ function processarDadosApi(
         setor:
           pessoa.setor,
 
+        local:
+          pessoa.local,
+
+        tempo:
+          pessoa.tempo,
+
+        unidades:
+          pessoa.unidades,
+
+        produtividade:
+          pessoa.produtividade,
+
+        situacao:
+          pessoa.situacao,
+
         cadastro:
           pessoa.temCadastroArea
+
       })
     )
   );
@@ -792,6 +888,97 @@ function processarDadosApi(
   return processarRegistros(
     registrosUnicos
   );
+
+}
+
+
+/* =========================================================
+   CONVERTER VALOR NUMÉRICO DA QUERY
+
+   Aceita:
+   125
+   "125"
+   "125,5"
+   "125.5"
+========================================================= */
+
+function numeroSeguroBeARep(
+  valor
+) {
+
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+
+    return 0;
+
+  }
+
+
+  if (
+    typeof valor ===
+    "number"
+  ) {
+
+    return Number.isFinite(
+      valor
+    )
+      ? valor
+      : 0;
+
+  }
+
+
+  let texto =
+    String(
+      valor
+    )
+      .trim();
+
+
+  if (!texto) {
+
+    return 0;
+
+  }
+
+
+  /*
+   * Se vier no padrão brasileiro:
+   * 1.234,56
+   */
+
+  if (
+    texto.includes(",")
+  ) {
+
+    texto =
+      texto
+        .replace(
+          /\./g,
+          ""
+        )
+        .replace(
+          ",",
+          "."
+        );
+
+  }
+
+
+  const numero =
+    Number(
+      texto
+    );
+
+
+  return Number.isFinite(
+    numero
+  )
+    ? numero
+    : 0;
 
 }
 
@@ -846,7 +1033,7 @@ function removerDuplicidades(
 
       /*
        * Se um registro tem área e outro não,
-       * sempre mantém o registro que possui área.
+       * mantém o registro que possui área.
        */
 
       if (
@@ -876,7 +1063,7 @@ function removerDuplicidades(
 
       /*
        * Em igualdade de cadastro,
-       * mantém o registro com mais informação de área/setor.
+       * mantém o registro com mais informação.
        */
 
       const pontuacaoAtual =
@@ -893,6 +1080,16 @@ function removerDuplicidades(
         (
           atual.areaOriginal
             ? 2
+            : 0
+        ) +
+        (
+          atual.local
+            ? 2
+            : 0
+        ) +
+        (
+          atual.unidades > 0
+            ? 1
             : 0
         );
 
@@ -911,6 +1108,16 @@ function removerDuplicidades(
         (
           pessoa.areaOriginal
             ? 2
+            : 0
+        ) +
+        (
+          pessoa.local
+            ? 2
+            : 0
+        ) +
+        (
+          pessoa.unidades > 0
+            ? 1
             : 0
         );
 
@@ -932,7 +1139,7 @@ function removerDuplicidades(
 
       /*
        * Último critério:
-       * mantém o maior tempo.
+       * mantém o registro com maior tempo.
        */
 
       if (
@@ -958,8 +1165,6 @@ function removerDuplicidades(
   );
 
 }
-
-
 /* =========================================================
    PROCESSAR REGISTROS
 ========================================================= */
@@ -986,6 +1191,13 @@ function processarRegistros(
   const areas =
     criarEstruturaAreas();
 
+
+  /* =======================================================
+     LISTAS
+  ======================================================= */
+
+  const realizaramDetalhe =
+    [];
 
   const processo =
     [];
@@ -1069,7 +1281,63 @@ function processarRegistros(
 
 
       /* ===================================================
-         LISTAS
+         NOVA LISTA — REALIZARAM
+
+         Mantém exatamente a mesma regra atual:
+         situacao === REALIZOU
+      =================================================== */
+
+      if (
+        pessoa.situacao ===
+        "REALIZOU"
+      ) {
+
+        realizaramDetalhe.push({
+
+          nome:
+            pessoa.nome,
+
+          username:
+            pessoa.username,
+
+          area:
+            pessoa.area ||
+            "SEM ÁREA",
+
+          setor:
+            ajustarSetorNaArte(
+              pessoa.nome,
+              pessoa.setor
+            ) ||
+            "SEM SETOR",
+
+          local:
+            pessoa.local ||
+            "-",
+
+          tempo:
+            pessoa.tempo ||
+            "-",
+
+          minutos:
+            pessoa.minutos ||
+            0,
+
+          unidades:
+            pessoa.unidades ||
+            0,
+
+          produtividade:
+            pessoa.produtividade ||
+            0
+
+        });
+
+      }
+
+
+      /* ===================================================
+         EM PROCESSO / NÃO REALIZARAM
       =================================================== */
 
       if (
@@ -1150,6 +1418,10 @@ function processarRegistros(
   );
 
 
+  /* =======================================================
+     PERCENTUAL POR ÁREA
+  ======================================================= */
+
   AREAS_VALIDAS.forEach(
     nomeArea => {
 
@@ -1164,6 +1436,61 @@ function processarRegistros(
           ? area.realizaram /
             area.hc
           : 0;
+
+    }
+  );
+
+
+  /* =======================================================
+     ORDENAÇÃO DAS LISTAS
+  ======================================================= */
+
+  realizaramDetalhe.sort(
+    (
+      a,
+      b
+    ) => {
+
+      const areaA =
+        String(
+          a.area ||
+          ""
+        );
+
+      const areaB =
+        String(
+          b.area ||
+          ""
+        );
+
+
+      const comparacaoArea =
+        areaA.localeCompare(
+          areaB,
+          "pt-BR"
+        );
+
+
+      if (
+        comparacaoArea !==
+        0
+      ) {
+
+        return comparacaoArea;
+
+      }
+
+
+      return String(
+        a.nome ||
+        ""
+      ).localeCompare(
+        String(
+          b.nome ||
+          ""
+        ),
+        "pt-BR"
+      );
 
     }
   );
@@ -1218,6 +1545,12 @@ function processarRegistros(
 
 
   console.log(
+    "✅ Realizaram detalhados:",
+    realizaramDetalhe.length
+  );
+
+
+  console.log(
     "✅ Soma áreas:",
     AREAS_VALIDAS.reduce(
       (
@@ -1237,6 +1570,10 @@ function processarRegistros(
   );
 
 
+  /* =======================================================
+     RETORNO
+  ======================================================= */
+
   return {
 
     mes:
@@ -1250,6 +1587,11 @@ function processarRegistros(
 
     registros:
       registros,
+
+    /* NOVA LISTA */
+
+    realizaramDetalhe:
+      realizaramDetalhe,
 
     processo:
       processo,
@@ -1304,17 +1646,21 @@ function criarPessoaLista(
 
     ...(comTempo
       ? {
+
           tempo:
             pessoa.tempo,
 
           minutos:
             pessoa.minutos
+
         }
       : {})
 
   };
 
 }
+
+
 /* =========================================================
    ATUALIZAR TODO O DASHBOARD
 ========================================================= */
@@ -1346,6 +1692,15 @@ function atualizarTudo() {
   );
 
 
+  /* =======================================================
+     NOVA ABA — REALIZARAM
+  ======================================================= */
+
+  preencherArteRealizaram(
+    dadosProcessados
+  );
+
+
   preencherListasComExcecoes();
 
 
@@ -1363,8 +1718,313 @@ function atualizarTudo() {
   );
 
 }
+/* =========================================================
+   NOVA ABA — REALIZARAM
+========================================================= */
+
+function preencherArteRealizaram(
+  dados
+) {
+
+  const lista =
+    Array.isArray(
+      dados?.realizaramDetalhe
+    )
+      ? dados.realizaramDetalhe
+      : [];
 
 
+  const total =
+    $("total-realizaram-lista");
+
+
+  const container =
+    $("lista-realizaram-detalhe");
+
+
+  /* =======================================================
+     TOTAL
+  ======================================================= */
+
+  if (total) {
+
+    total.textContent =
+      lista.length;
+
+  }
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  /* =======================================================
+     SEM DADOS
+  ======================================================= */
+
+  if (
+    lista.length ===
+    0
+  ) {
+
+    container.innerHTML = `
+
+      <div
+        style="
+          padding:30px 20px;
+          text-align:center;
+          color:#667085;
+          font-size:14px;
+        "
+      >
+
+        Nenhuma pessoa realizada encontrada para o mês atual.
+
+      </div>
+
+    `;
+
+
+    return;
+
+  }
+
+
+  /* =======================================================
+     CRIAR LINHAS
+  ======================================================= */
+
+  lista.forEach(
+    (
+      pessoa,
+      indice
+    ) => {
+
+      const linha =
+        document.createElement(
+          "div"
+        );
+
+
+      const fundo =
+        indice % 2 === 0
+          ? "#ffffff"
+          : "#f8f9fb";
+
+
+      linha.style.cssText = `
+
+        display:grid;
+
+        grid-template-columns:
+          2fr
+          1fr
+          1.35fr
+          1.45fr
+          .8fr
+          .9fr
+          1fr;
+
+        gap:8px;
+
+        padding:12px;
+
+        align-items:center;
+
+        border-bottom:1px solid #eceef2;
+
+        background:${fundo};
+
+        color:#1f2937;
+
+        font-size:12px;
+
+        box-sizing:border-box;
+
+      `;
+
+
+      /* =====================================================
+         DADOS
+      ===================================================== */
+
+      const nome =
+        pessoa.nome ||
+        "-";
+
+
+      const area =
+        pessoa.area ||
+        "SEM ÁREA";
+
+
+      const setor =
+        pessoa.setor ||
+        "SEM SETOR";
+
+
+      const local =
+        pessoa.local ||
+        "-";
+
+
+      const tempo =
+        pessoa.tempo ||
+        "-";
+
+
+      const unidades =
+        formatarNumeroRealizaram(
+          pessoa.unidades,
+          0
+        );
+
+
+      const produtividade =
+        formatarNumeroRealizaram(
+          pessoa.produtividade,
+          1
+        );
+
+
+      linha.innerHTML = `
+
+        <span
+          style="
+            font-weight:800;
+            color:#071b61;
+            line-height:1.3;
+          "
+        >
+          ${escaparHTML(
+            nome
+          )}
+        </span>
+
+
+        <span
+          style="
+            font-weight:700;
+          "
+        >
+          ${escaparHTML(
+            area
+          )}
+        </span>
+
+
+        <span>
+          ${escaparHTML(
+            setor
+          )}
+        </span>
+
+
+        <span
+          style="
+            font-weight:700;
+            color:#344054;
+          "
+        >
+          ${escaparHTML(
+            local
+          )}
+        </span>
+
+
+        <span
+          style="
+            text-align:center;
+            font-weight:700;
+          "
+        >
+          ${escaparHTML(
+            tempo
+          )}
+        </span>
+
+
+        <span
+          style="
+            text-align:center;
+            font-weight:800;
+            color:#071b61;
+          "
+        >
+          ${unidades}
+        </span>
+
+
+        <span
+          style="
+            text-align:center;
+            font-weight:800;
+            color:#147a4b;
+          "
+        >
+          ${produtividade}
+        </span>
+
+      `;
+
+
+      container.appendChild(
+        linha
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FORMATAR NÚMEROS — REALIZARAM
+========================================================= */
+
+function formatarNumeroRealizaram(
+  valor,
+  casasDecimais = 0
+) {
+
+  const numero =
+    Number(
+      valor
+    );
+
+
+  if (
+    !Number.isFinite(
+      numero
+    )
+  ) {
+
+    return "0";
+
+  }
+
+
+  return numero.toLocaleString(
+    "pt-BR",
+    {
+
+      minimumFractionDigits:
+        casasDecimais,
+
+      maximumFractionDigits:
+        casasDecimais
+
+    }
+  );
+
+}
 /* =========================================================
    PREENCHER RESUMO
 ========================================================= */
@@ -1421,6 +2081,10 @@ function preencherResumo(
 
   }
 
+
+  /* =======================================================
+     PERCENTUAIS DOS CARDS
+  ======================================================= */
 
   const percentualRealizaram =
     $("percentual-resumo-realizaram");
@@ -1856,17 +2520,16 @@ function preencherTabelaAreas(
 
   /* =======================================================
      ORDEM FIXA
-
-     Não vamos ordenar por percentual porque queremos
-     manter a leitura visual estável.
   ======================================================= */
 
   const ordem = [
+
     "Outbound",
     "Inbound",
     "OPEX",
     "ICQA",
     "Line Haul"
+
   ];
 
 
@@ -1939,16 +2602,6 @@ function preencherTabelaAreas(
 
   /* =======================================================
      SEM CADASTRO DE ÁREA
-
-     HC Geral deve fechar:
-
-     Outbound
-     + Inbound
-     + OPEX
-     + ICQA
-     + Line Haul
-     + Sem cadastro
-     = HC Geral
   ======================================================= */
 
   const semCadastro =
@@ -1989,8 +2642,7 @@ function preencherTabelaAreas(
 
 
     const percentual =
-      semCadastro.length >
-      0
+      semCadastro.length > 0
         ? realizaram /
           semCadastro.length
         : 0;
@@ -2006,22 +2658,10 @@ function preencherTabelaAreas(
       "area-row";
 
 
-    linha.style.background =
-      "#fff9e6";
-
-
-    linha.style.borderLeft =
-      "4px solid #f4b400";
-
-
-    linha.style.color =
-      "#6b5200";
-
-
     linha.innerHTML = `
 
       <span>
-        ⚠️ Sem cadastro de área
+        ⚠️ SEM CADASTRO
       </span>
 
       <span>
@@ -2055,49 +2695,7 @@ function preencherTabelaAreas(
 
   }
 
-
-  /* =======================================================
-     LOG DE CONFERÊNCIA
-  ======================================================= */
-
-  const somaAreas =
-    AREAS_VALIDAS.reduce(
-      (
-        total,
-        nomeArea
-      ) =>
-        total +
-        (
-          dados.areas[
-            nomeArea
-          ]?.hc ||
-          0
-        ),
-      0
-    );
-
-
-  console.log(
-    "🧮 CONFERÊNCIA HC",
-    {
-      hcGeral:
-        dados.geral.hc,
-
-      somaAreas:
-        somaAreas,
-
-      semCadastro:
-        semCadastro.length,
-
-      fechamento:
-        somaAreas +
-        semCadastro.length
-    }
-  );
-
 }
-
-
 /* =========================================================
    ALERTA — PESSOAS SEM CADASTRO DE ÁREA
 ========================================================= */
@@ -2696,8 +3294,6 @@ function dividirLista(
     );
 
 }
-
-
 /* =========================================================
    MONTAR LISTA COM TEMPO
 ========================================================= */
@@ -3025,6 +3621,8 @@ function montarListaSemTempo(
     );
 
 }
+
+
 /* =========================================================
    ADICIONAR EXCEÇÃO
 ========================================================= */
@@ -3391,8 +3989,6 @@ function carregarExcecoes() {
   }
 
 }
-
-
 /* =========================================================
    SALVAR EXCEÇÕES
 ========================================================= */
@@ -3751,18 +4347,22 @@ function classificarSituacao(
 
 
   const realizado = [
+
     "HECHO",
     "CUMPLIO",
     "REALIZADO",
     "CONCLUIDO"
+
   ];
 
 
   const processando = [
+
     "EN PROCESO",
     "EM PROCESSO",
     "EN CURSO",
     "INICIADO"
+
   ];
 
 
@@ -3808,10 +4408,12 @@ function gembaConcluido(
 ) {
 
   return [
+
     "HECHO",
     "CUMPLIO",
     "REALIZADO",
     "CONCLUIDO"
+
   ].includes(
     normalizarTexto(
       gemba
@@ -3949,11 +4551,6 @@ function normalizarArea(
     );
 
 
-  /*
-   * ACEITA VARIAÇÕES MAIS COMUNS
-   * para evitar uma área válida virar vazia.
-   */
-
   if (
     texto ===
       "OUTBOUND" ||
@@ -4074,8 +4671,6 @@ function ajustarSetorNaArte(
     .toUpperCase();
 
 }
-
-
 /* =========================================================
    CONVERTER TEMPO PARA MINUTOS
 ========================================================= */
@@ -4473,8 +5068,6 @@ function ordenarTempoNome(
   );
 
 }
-
-
 /* =========================================================
    EXTENSÃO
 ========================================================= */
