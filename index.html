@@ -19,6 +19,7 @@
     <header class="hero-dashboard">
       <div class="hero-brand">
         <img src="mercado-livre-87.png" alt="Mercado Livre" class="hero-logo">
+
         <div>
           <span class="eyebrow">MERCADO LIVRE</span>
           <h1>CENTRAL BE A REP</h1>
@@ -33,294 +34,728 @@
       </div>
     </header>
 
+
     <section class="sync-card">
       <div class="sync-main">
         <div class="sync-icon">🔄</div>
+
         <div>
           <span class="eyebrow">SINCRONIZAÇÃO AUTOMÁTICA</span>
           <h2>Dados atualizados pelo Verdi</h2>
-          <p id="texto-atualizacao">Buscando os dados mais recentes da base...</p>
+          <p id="texto-atualizacao">
+            Buscando os dados mais recentes da base...
+          </p>
         </div>
       </div>
 
       <div class="sync-actions">
-        <button id="botao-atualizar" class="btn btn-primary" type="button">↻ Atualizar dados</button>
 
-        <label for="arquivo-base" class="btn btn-secondary">⬆ Carregar arquivo</label>
-        <input id="arquivo-base" type="file" accept=".xlsx,.xls,.csv" hidden>
+        <button
+          id="botao-atualizar"
+          class="btn btn-primary"
+          type="button"
+        >
+          ↻ Atualizar dados
+        </button>
+
+        <label
+          for="arquivo-base"
+          class="btn btn-secondary"
+        >
+          ⬆ Carregar arquivo
+        </label>
+
+        <input
+          id="arquivo-base"
+          type="file"
+          accept=".xlsx,.xls,.csv"
+          hidden
+        >
+
       </div>
     </section>
 
-    <section id="status-arquivo" class="status-arquivo" aria-live="polite">
+
+    <section
+      id="status-arquivo"
+      class="status-arquivo"
+      aria-live="polite"
+    >
       Conectando à base...
     </section>
 
-    <section id="resumo-dados" class="dashboard oculto">
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section
+      id="resumo-dados"
+      class="dashboard oculto"
+    >
+
+      <!-- META -->
 
       <article class="goal-card">
+
         <div class="goal-header">
+
           <div>
-            <span class="eyebrow">META DO MÊS</span>
-            <h2>Evolução do Be a Rep</h2>
+            <span class="eyebrow">
+              META DO MÊS
+            </span>
+
+            <h2>
+              Evolução do Be a Rep
+            </h2>
           </div>
-          <span id="status-meta" class="goal-badge">Target: 90%</span>
+
+          <span
+            id="status-meta"
+            class="goal-badge"
+          >
+            Target: 90%
+          </span>
+
         </div>
+
 
         <div class="goal-content">
+
           <div class="goal-number">
-            <strong id="percentual-meta-dashboard">0,0%</strong>
-            <span>de realização</span>
+
+            <strong id="percentual-meta-dashboard">
+              0,0%
+            </strong>
+
+            <span>
+              de realização
+            </span>
+
           </div>
+
 
           <div class="goal-progress-area">
+
             <div class="goal-progress-labels">
-              <span>Progresso atual</span>
-              <strong id="texto-progresso-meta">0,0% de 90%</strong>
+
+              <span>
+                Progresso atual
+              </span>
+
+              <strong id="texto-progresso-meta">
+                0,0% de 90%
+              </strong>
+
             </div>
+
 
             <div class="goal-bar">
-              <div id="barra-meta-preenchida" class="goal-bar-fill"></div>
-              <span class="goal-target-marker" title="Target de 90%"></span>
+
+              <div
+                id="barra-meta-preenchida"
+                class="goal-bar-fill"
+              ></div>
+
+              <span
+                class="goal-target-marker"
+                title="Target de 90%"
+              ></span>
+
             </div>
 
-            <p id="mensagem-meta">Calculando o resultado...</p>
+
+            <p id="mensagem-meta">
+              Calculando o resultado...
+            </p>
+
           </div>
+
         </div>
+
       </article>
 
+
+      <!-- INDICADORES -->
+
       <section class="metrics-grid">
+
         <article class="metric-card metric-hc">
-          <div class="metric-top"><span>👥</span><small>BASE</small></div>
+
+          <div class="metric-top">
+            <span>👥</span>
+            <small>BASE</small>
+          </div>
+
           <p>HC TOTAL</p>
-          <strong id="resumo-hc">0</strong>
-          <span>100% da base</span>
+
+          <strong id="resumo-hc">
+            0
+          </strong>
+
+          <span>
+            100% da base
+          </span>
+
         </article>
+
 
         <article class="metric-card metric-done">
-          <div class="metric-top"><span>✅</span><small>CONCLUÍDO</small></div>
+
+          <div class="metric-top">
+            <span>✅</span>
+            <small>CONCLUÍDO</small>
+          </div>
+
           <p>REALIZARAM</p>
-          <strong id="resumo-realizaram">0</strong>
-          <span id="percentual-resumo-realizaram">0,0%</span>
+
+          <strong id="resumo-realizaram">
+            0
+          </strong>
+
+          <span id="percentual-resumo-realizaram">
+            0,0%
+          </span>
+
         </article>
+
 
         <article class="metric-card metric-progress">
-          <div class="metric-top"><span>⏳</span><small>ANDAMENTO</small></div>
+
+          <div class="metric-top">
+            <span>⏳</span>
+            <small>ANDAMENTO</small>
+          </div>
+
           <p>EM PROCESSO</p>
-          <strong id="resumo-processo">0</strong>
-          <span id="percentual-resumo-processo">0,0%</span>
+
+          <strong id="resumo-processo">
+            0
+          </strong>
+
+          <span id="percentual-resumo-processo">
+            0,0%
+          </span>
+
         </article>
+
 
         <article class="metric-card metric-pending">
-          <div class="metric-top"><span>❌</span><small>PENDENTE</small></div>
+
+          <div class="metric-top">
+            <span>❌</span>
+            <small>PENDENTE</small>
+          </div>
+
           <p>NÃO REALIZARAM</p>
-          <strong id="resumo-nao">0</strong>
-          <span id="percentual-resumo-nao">0,0%</span>
+
+          <strong id="resumo-nao">
+            0
+          </strong>
+
+          <span id="percentual-resumo-nao">
+            0,0%
+          </span>
+
         </article>
+
       </section>
+
+
+      <!-- SITUAÇÃO ATUAL -->
 
       <section class="current-status">
+
         <div>
-          <span class="eyebrow">SITUAÇÃO ATUAL</span>
-          <h3 id="titulo-situacao">Acompanhamento do mês</h3>
-          <p id="descricao-situacao">Os dados serão exibidos após a atualização.</p>
+
+          <span class="eyebrow">
+            SITUAÇÃO ATUAL
+          </span>
+
+          <h3 id="titulo-situacao">
+            Acompanhamento do mês
+          </h3>
+
+          <p id="descricao-situacao">
+            Os dados serão exibidos após a atualização.
+          </p>
+
         </div>
+
 
         <div class="current-status-grid">
-          <div><span>Target</span><strong>90%</strong></div>
-          <div><span>Atual</span><strong id="situacao-atual">0,0%</strong></div>
-          <div><span>Faltam</span><strong id="situacao-faltam">0</strong></div>
+
+          <div>
+            <span>Target</span>
+            <strong>90%</strong>
+          </div>
+
+          <div>
+            <span>Atual</span>
+            <strong id="situacao-atual">
+              0,0%
+            </strong>
+          </div>
+
+          <div>
+            <span>Faltam</span>
+            <strong id="situacao-faltam">
+              0
+            </strong>
+          </div>
+
         </div>
+
       </section>
 
+
+      <!-- EXCEÇÕES -->
+
       <section class="exceptions-card">
+
         <div class="exceptions-header">
+
           <div>
-            <span class="eyebrow">GESTÃO DE EXCEÇÕES</span>
-            <h2>Ocultar pessoas somente das listas nominais</h2>
+
+            <span class="eyebrow">
+              GESTÃO DE EXCEÇÕES
+            </span>
+
+            <h2>
+              Ocultar pessoas somente das listas nominais
+            </h2>
+
             <p>
               A pessoa continua no HC, target, percentual e quantidade de pendentes.
               Apenas o nome deixa de aparecer nas artes e listas.
             </p>
+
           </div>
-          <span id="total-excecoes" class="exceptions-count">0 ocultadas</span>
+
+
+          <span
+            id="total-excecoes"
+            class="exceptions-count"
+          >
+            0 ocultadas
+          </span>
+
         </div>
 
+
         <div class="exceptions-form">
+
           <div class="field">
-            <label for="excecao-nome">Pessoa</label>
+
+            <label for="excecao-nome">
+              Pessoa
+            </label>
+
             <input
               id="excecao-nome"
               list="lista-pessoas-excecao"
               placeholder="Digite ou selecione um nome"
               autocomplete="off"
             >
+
             <datalist id="lista-pessoas-excecao"></datalist>
+
           </div>
+
 
           <div class="field">
-            <label for="excecao-motivo">Motivo</label>
+
+            <label for="excecao-motivo">
+              Motivo
+            </label>
+
             <select id="excecao-motivo">
-              <option value="Licença-maternidade">Licença-maternidade</option>
-              <option value="INSS">INSS</option>
-              <option value="Afastamento">Afastamento</option>
-              <option value="Férias">Férias</option>
-              <option value="Outro">Outro</option>
+
+              <option value="Licença-maternidade">
+                Licença-maternidade
+              </option>
+
+              <option value="INSS">
+                INSS
+              </option>
+
+              <option value="Afastamento">
+                Afastamento
+              </option>
+
+              <option value="Férias">
+                Férias
+              </option>
+
+              <option value="Outro">
+                Outro
+              </option>
+
             </select>
+
           </div>
 
-          <button id="botao-adicionar-excecao" class="btn btn-dark" type="button">
+
+          <button
+            id="botao-adicionar-excecao"
+            class="btn btn-dark"
+            type="button"
+          >
             Ocultar das listas
           </button>
+
         </div>
 
-        <div id="lista-excecoes" class="exceptions-list">
-          <p class="empty-state">Nenhuma pessoa ocultada das listas.</p>
+
+        <div
+          id="lista-excecoes"
+          class="exceptions-list"
+        >
+
+          <p class="empty-state">
+            Nenhuma pessoa ocultada das listas.
+          </p>
+
         </div>
+
       </section>
+
     </section>
 
-    <section id="menu-artes" class="art-center oculto">
+
+    <!-- =====================================================
+         CENTRAL DE ARTES
+    ====================================================== -->
+
+    <section
+      id="menu-artes"
+      class="art-center oculto"
+    >
+
       <div class="art-center-header">
+
         <div>
-          <span class="eyebrow">CENTRAL DE ARTES</span>
-          <h2>Escolha a imagem que deseja gerar</h2>
-          <p>As artes utilizam os dados mais recentes carregados no dashboard.</p>
+
+          <span class="eyebrow">
+            CENTRAL DE ARTES
+          </span>
+
+          <h2>
+            Escolha a imagem que deseja gerar
+          </h2>
+
+          <p>
+            As artes utilizam os dados mais recentes carregados no dashboard.
+          </p>
+
         </div>
 
-        <button id="baixar-png" class="btn btn-dark" type="button">📥 Baixar PNG</button>
+
+        <button
+          id="baixar-png"
+          class="btn btn-dark"
+          type="button"
+        >
+          📥 Baixar PNG
+        </button>
+
       </div>
 
+
       <div class="art-tabs">
-        <button class="art-tab ativo" data-arte="geral" type="button">
+
+        <button
+          class="art-tab ativo"
+          data-arte="geral"
+          type="button"
+        >
+
           <span>📊</span>
+
           <div>
             <strong>Resumo Geral</strong>
             <small>Indicadores e áreas</small>
           </div>
+
         </button>
 
-        <button class="art-tab" data-arte="realizaram" type="button">
+
+        <!-- NOVA ABA -->
+
+        <button
+          class="art-tab"
+          data-arte="realizaram"
+          type="button"
+        >
+
           <span>✅</span>
+
           <div>
             <strong>Realizaram</strong>
             <small>Local, tempo e peças</small>
           </div>
+
         </button>
 
-        <button class="art-tab" data-arte="processo" type="button">
+
+        <button
+          class="art-tab"
+          data-arte="processo"
+          type="button"
+        >
+
           <span>⏳</span>
+
           <div>
             <strong>Em Processo</strong>
             <small>Pessoas em andamento</small>
           </div>
+
         </button>
 
-        <button class="art-tab" data-arte="nao" type="button">
+
+        <button
+          class="art-tab"
+          data-arte="nao"
+          type="button"
+        >
+
           <span>⚠️</span>
+
           <div>
             <strong>Não Realizaram</strong>
             <small>Lista de pendentes</small>
           </div>
+
         </button>
 
-        <button class="art-tab" data-arte="guemba-pendente" type="button">
+
+        <button
+          class="art-tab"
+          data-arte="guemba-pendente"
+          type="button"
+        >
+
           <span>✅</span>
+
           <div>
             <strong>Guemba feito</strong>
             <small>Be a Rep não iniciado</small>
           </div>
+
         </button>
 
-        <button class="art-tab" data-arte="guemba-processando" type="button">
+
+        <button
+          class="art-tab"
+          data-arte="guemba-processando"
+          type="button"
+        >
+
           <span>🔄</span>
+
           <div>
             <strong>Guemba processando</strong>
             <small>Be a Rep em andamento</small>
           </div>
+
         </button>
+
       </div>
+
     </section>
 
-    <section id="area-artes" class="art-stage oculto">
 
-      <article id="arte-geral" class="arte arte-geral ativa" data-nome-arquivo="Be-a-Rep-Resumo-Geral">
+    <!-- =====================================================
+         ÁREA DAS ARTES
+    ====================================================== -->
+
+    <section
+      id="area-artes"
+      class="art-stage oculto"
+    >
+
+
+      <!-- =====================================================
+           RESUMO GERAL
+      ====================================================== -->
+
+      <article
+        id="arte-geral"
+        class="arte arte-geral ativa"
+        data-nome-arquivo="Be-a-Rep-Resumo-Geral"
+      >
+
         <header class="arte-header">
-          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <img
+            src="mercado-livre-87.png"
+            alt="Mercado Livre"
+            class="arte-logo"
+          >
+
           <div class="arte-title">
-            <h2>BE A REP</h2>
-            <p>ACOMPANHAMENTO</p>
+
+            <h2>
+              BE A REP
+            </h2>
+
+            <p>
+              ACOMPANHAMENTO
+            </p>
+
           </div>
+
           <div class="month-pill month-yellow">
             📅 <strong data-mes>MÊS</strong>
           </div>
+
         </header>
 
+
         <section class="summary-top">
+
           <div class="overall-card">
-            <strong id="percentual-geral">0,0%</strong>
-            <span>GERAL</span>
-            <small>% de realização</small>
+
+            <strong id="percentual-geral">
+              0,0%
+            </strong>
+
+            <span>
+              GERAL
+            </span>
+
+            <small>
+              % de realização
+            </small>
+
           </div>
+
 
           <div class="summary-cards">
+
             <div>
+
               <span>✅</span>
-              <small>REALIZARAM</small>
-              <strong id="arte-geral-realizaram">0</strong>
-              <em id="arte-percentual-realizaram">0,0%</em>
+
+              <small>
+                REALIZARAM
+              </small>
+
+              <strong id="arte-geral-realizaram">
+                0
+              </strong>
+
+              <em id="arte-percentual-realizaram">
+                0,0%
+              </em>
+
             </div>
 
+
             <div>
+
               <span>🕘</span>
-              <small>EM PROCESSO</small>
-              <strong id="arte-geral-processo">0</strong>
-              <em id="arte-percentual-processo">0,0%</em>
+
+              <small>
+                EM PROCESSO
+              </small>
+
+              <strong id="arte-geral-processo">
+                0
+              </strong>
+
+              <em id="arte-percentual-processo">
+                0,0%
+              </em>
+
             </div>
 
+
             <div>
+
               <span>❌</span>
-              <small>NÃO REALIZARAM</small>
-              <strong id="arte-geral-nao">0</strong>
-              <em id="arte-percentual-nao">0,0%</em>
+
+              <small>
+                NÃO REALIZARAM
+              </small>
+
+              <strong id="arte-geral-nao">
+                0
+              </strong>
+
+              <em id="arte-percentual-nao">
+                0,0%
+              </em>
+
             </div>
 
+
             <div>
+
               <span>👥</span>
-              <small>HC TOTAL</small>
-              <strong id="arte-geral-hc">0</strong>
-              <em>100%</em>
+
+              <small>
+                HC TOTAL
+              </small>
+
+              <strong id="arte-geral-hc">
+                0
+              </strong>
+
+              <em>
+                100%
+              </em>
+
             </div>
+
           </div>
+
         </section>
 
+
         <section class="area-section">
+
           <div class="section-heading yellow-heading">
+
             <span>📊</span>
-            <h3>RESULTADO POR ÁREA</h3>
+
+            <h3>
+              RESULTADO POR ÁREA
+            </h3>
+
           </div>
 
+
           <div class="areas-table">
+
             <div class="areas-table-head">
+
               <span>ÁREA</span>
               <span>REALIZARAM</span>
               <span>EM PROCESSO</span>
               <span>NÃO REALIZARAM</span>
               <span>HC TOTAL</span>
               <span>% REALIZAÇÃO</span>
+
             </div>
 
             <div id="lista-areas"></div>
+
           </div>
+
         </section>
+
 
         <footer class="arte-footer footer-yellow">
           ★ <strong>Gente que se desenvolve, transforma o negócio.</strong>
         </footer>
+
       </article>
 
 
       <!-- =====================================================
-           NOVA ABA — REALIZARAM
+           REALIZARAM
       ====================================================== -->
 
       <article
@@ -330,16 +765,30 @@
       >
 
         <header class="arte-header">
-          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <img
+            src="mercado-livre-87.png"
+            alt="Mercado Livre"
+            class="arte-logo"
+          >
 
           <div class="arte-title">
-            <h2>BE A REP</h2>
-            <p>REALIZARAM</p>
+
+            <h2>
+              BE A REP
+            </h2>
+
+            <p>
+              REALIZARAM
+            </p>
+
           </div>
+
 
           <div class="month-pill month-green">
             📅 <strong data-mes>MÊS</strong>
           </div>
+
         </header>
 
 
@@ -349,8 +798,12 @@
             ✅
           </div>
 
+
           <div>
-            <h3>PESSOAS QUE REALIZARAM O BE A REP</h3>
+
+            <h3>
+              PESSOAS QUE REALIZARAM O BE A REP
+            </h3>
 
             <strong id="total-realizaram-lista">
               0
@@ -359,7 +812,9 @@
             <p>
               Detalhamento de local, tempo, peças processadas e produtividade.
             </p>
+
           </div>
+
 
           <div class="hero-side">
             📦
@@ -371,8 +826,13 @@
         <section class="list-section">
 
           <div class="section-heading green-heading">
+
             <span>📋</span>
-            <h3>DETALHAMENTO</h3>
+
+            <h3>
+              DETALHAMENTO
+            </h3>
+
           </div>
 
 
@@ -384,6 +844,8 @@
               background:#ffffff;
             "
           >
+
+            <!-- CABEÇALHO DA TABELA -->
 
             <div
               style="
@@ -407,13 +869,21 @@
               "
             >
 
-              <span>NOME</span>
+              <span>
+                NOME
+              </span>
 
-              <span>ÁREA</span>
+              <span>
+                ÁREA
+              </span>
 
-              <span>SETOR</span>
+              <span>
+                SETOR
+              </span>
 
-              <span>LOCAL</span>
+              <span>
+                LOCAL
+              </span>
 
               <span style="text-align:center;">
                 TEMPO
@@ -430,6 +900,8 @@
             </div>
 
 
+            <!-- LINHAS GERADAS PELO SCRIPT.JS -->
+
             <div id="lista-realizaram-detalhe"></div>
 
           </div>
@@ -444,41 +916,95 @@
       </article>
 
 
-      <article id="arte-processo" class="arte arte-listagem" data-nome-arquivo="Be-a-Rep-Em-Processo">
+      <!-- =====================================================
+           EM PROCESSO
+      ====================================================== -->
+
+      <article
+        id="arte-processo"
+        class="arte arte-listagem"
+        data-nome-arquivo="Be-a-Rep-Em-Processo"
+      >
 
         <header class="arte-header">
-          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <img
+            src="mercado-livre-87.png"
+            alt="Mercado Livre"
+            class="arte-logo"
+          >
 
           <div class="arte-title">
-            <h2>BE A REP</h2>
-            <p>ACOMPANHAMENTO</p>
+
+            <h2>
+              BE A REP
+            </h2>
+
+            <p>
+              ACOMPANHAMENTO
+            </p>
+
           </div>
+
 
           <div class="month-pill month-orange">
             📅 <strong data-mes>MÊS</strong>
           </div>
+
         </header>
 
+
         <section class="list-hero hero-orange">
-          <div class="hero-icon">⏳</div>
+
+          <div class="hero-icon">
+            ⏳
+          </div>
+
 
           <div>
-            <h3>PESSOAS EM PROCESSO</h3>
-            <strong id="total-processo">0</strong>
-            <p>Continue evoluindo! Você já está no caminho.</p>
+
+            <h3>
+              PESSOAS EM PROCESSO
+            </h3>
+
+            <strong id="total-processo">
+              0
+            </strong>
+
+            <p>
+              Continue evoluindo! Você já está no caminho.
+            </p>
+
           </div>
 
-          <div class="hero-side">📈</div>
+
+          <div class="hero-side">
+            📈
+          </div>
+
         </section>
+
 
         <section class="list-section">
+
           <div class="section-heading orange-heading">
+
             <span>◷</span>
-            <h3>ACOMPANHAMENTO</h3>
+
+            <h3>
+              ACOMPANHAMENTO
+            </h3>
+
           </div>
 
-          <div id="listas-processo" class="listas-grid"></div>
+
+          <div
+            id="listas-processo"
+            class="listas-grid"
+          ></div>
+
         </section>
+
 
         <footer class="arte-footer footer-orange">
           ★ <strong>Pequenas ações todos os dias geram grandes conquistas.</strong>
@@ -487,41 +1013,95 @@
       </article>
 
 
-      <article id="arte-nao" class="arte arte-listagem" data-nome-arquivo="Be-a-Rep-Nao-Realizaram">
+      <!-- =====================================================
+           NÃO REALIZARAM
+      ====================================================== -->
+
+      <article
+        id="arte-nao"
+        class="arte arte-listagem"
+        data-nome-arquivo="Be-a-Rep-Nao-Realizaram"
+      >
 
         <header class="arte-header">
-          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <img
+            src="mercado-livre-87.png"
+            alt="Mercado Livre"
+            class="arte-logo"
+          >
 
           <div class="arte-title">
-            <h2>BE A REP</h2>
-            <p>ACOMPANHAMENTO</p>
+
+            <h2>
+              BE A REP
+            </h2>
+
+            <p>
+              ACOMPANHAMENTO
+            </p>
+
           </div>
+
 
           <div class="month-pill month-red">
             📅 <strong data-mes>MÊS</strong>
           </div>
+
         </header>
 
+
         <section class="list-hero hero-red">
-          <div class="hero-icon">⚠️</div>
+
+          <div class="hero-icon">
+            ⚠️
+          </div>
+
 
           <div>
-            <h3>PESSOAS QUE NÃO REALIZARAM</h3>
-            <strong id="total-nao">0</strong>
-            <p>O desenvolvimento começa com a decisão de agir.</p>
+
+            <h3>
+              PESSOAS QUE NÃO REALIZARAM
+            </h3>
+
+            <strong id="total-nao">
+              0
+            </strong>
+
+            <p>
+              O desenvolvimento começa com a decisão de agir.
+            </p>
+
           </div>
 
-          <div class="hero-side">📋</div>
+
+          <div class="hero-side">
+            📋
+          </div>
+
         </section>
+
 
         <section class="list-section">
+
           <div class="section-heading red-heading">
+
             <span>🔎</span>
-            <h3>PENDENTES</h3>
+
+            <h3>
+              PENDENTES
+            </h3>
+
           </div>
 
-          <div id="listas-nao" class="listas-grid"></div>
+
+          <div
+            id="listas-nao"
+            class="listas-grid"
+          ></div>
+
         </section>
+
 
         <footer class="arte-footer footer-red">
           ★ <strong>Não é sobre ter tempo, é sobre fazer acontecer.</strong>
@@ -530,6 +1110,10 @@
       </article>
 
 
+      <!-- =====================================================
+           GUEMBA REALIZADO / BE A REP PENDENTE
+      ====================================================== -->
+
       <article
         id="arte-guemba-pendente"
         class="arte arte-listagem"
@@ -537,45 +1121,85 @@
       >
 
         <header class="arte-header">
-          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <img
+            src="mercado-livre-87.png"
+            alt="Mercado Livre"
+            class="arte-logo"
+          >
 
           <div class="arte-title">
-            <h2>BE A REP</h2>
-            <p>ACOMPANHAMENTO</p>
+
+            <h2>
+              BE A REP
+            </h2>
+
+            <p>
+              ACOMPANHAMENTO
+            </p>
+
           </div>
+
 
           <div class="month-pill month-green">
             📅 <strong data-mes>MÊS</strong>
           </div>
+
         </header>
 
+
         <section class="list-hero hero-green">
-          <div class="hero-icon">✅</div>
+
+          <div class="hero-icon">
+            ✅
+          </div>
+
 
           <div>
+
             <h3>
               PESSOAS COM GUEMBA REALIZADO MAS<br>
               PENDENTE DE BE A REP
             </h3>
 
-            <strong id="total-guemba-pendente">0</strong>
+            <strong id="total-guemba-pendente">
+              0
+            </strong>
 
             <p>
               Guemba concluído, porém sem início do Be a Rep.
             </p>
+
           </div>
 
-          <div class="hero-side">📋</div>
+
+          <div class="hero-side">
+            📋
+          </div>
+
         </section>
+
 
         <section class="list-section">
+
           <div class="section-heading green-heading">
+
             <span>👥</span>
-            <h3>ACOMPANHAMENTO</h3>
+
+            <h3>
+              ACOMPANHAMENTO
+            </h3>
+
           </div>
 
-          <div id="listas-guemba-pendente" class="listas-grid"></div>
+
+          <div
+            id="listas-guemba-pendente"
+            class="listas-grid"
+          ></div>
+
         </section>
+
 
         <footer class="arte-footer footer-green">
           ★ <strong>O próximo passo depende de você!</strong>
@@ -584,6 +1208,10 @@
       </article>
 
 
+      <!-- =====================================================
+           GUEMBA REALIZADO / BE A REP PROCESSANDO
+      ====================================================== -->
+
       <article
         id="arte-guemba-processando"
         class="arte arte-listagem"
@@ -591,45 +1219,85 @@
       >
 
         <header class="arte-header">
-          <img src="mercado-livre-87.png" alt="Mercado Livre" class="arte-logo">
+
+          <img
+            src="mercado-livre-87.png"
+            alt="Mercado Livre"
+            class="arte-logo"
+          >
 
           <div class="arte-title">
-            <h2>BE A REP</h2>
-            <p>ACOMPANHAMENTO</p>
+
+            <h2>
+              BE A REP
+            </h2>
+
+            <p>
+              ACOMPANHAMENTO
+            </p>
+
           </div>
+
 
           <div class="month-pill month-blue">
             📅 <strong data-mes>MÊS</strong>
           </div>
+
         </header>
 
+
         <section class="list-hero hero-blue">
-          <div class="hero-icon">🔄</div>
+
+          <div class="hero-icon">
+            🔄
+          </div>
+
 
           <div>
+
             <h3>
               PESSOAS COM GUEMBA REALIZADO MAS<br>
               PROCESSANDO BE A REP
             </h3>
 
-            <strong id="total-guemba-processando">0</strong>
+            <strong id="total-guemba-processando">
+              0
+            </strong>
 
             <p>
               Guemba concluído e Be a Rep em andamento.
             </p>
+
           </div>
 
-          <div class="hero-side">⚙️</div>
+
+          <div class="hero-side">
+            ⚙️
+          </div>
+
         </section>
+
 
         <section class="list-section">
+
           <div class="section-heading blue-heading">
+
             <span>◷</span>
-            <h3>ACOMPANHAMENTO</h3>
+
+            <h3>
+              ACOMPANHAMENTO
+            </h3>
+
           </div>
 
-          <div id="listas-guemba-processando" class="listas-grid"></div>
+
+          <div
+            id="listas-guemba-processando"
+            class="listas-grid"
+          ></div>
+
         </section>
+
 
         <footer class="arte-footer footer-blue">
           ★ <strong>Você está no caminho certo. Continue assim!</strong>
@@ -640,17 +1308,32 @@
     </section>
 
 
+    <!-- =====================================================
+         RODAPÉ
+    ====================================================== -->
+
     <footer class="site-footer">
-      <span>Central Be a Rep</span>
-      <span>Dados sincronizados pelo Verdi</span>
+
+      <span>
+        Central Be a Rep
+      </span>
+
+      <span>
+        Dados sincronizados pelo Verdi
+      </span>
+
     </footer>
 
   </main>
 
 
+  <!-- =====================================================
+       SCRIPT
+  ====================================================== -->
+
   <script
     type="module"
-    src="js/script.js?v=20260826-05"
+    src="js/script.js?v=20260826-06"
   >
   </script>
 
