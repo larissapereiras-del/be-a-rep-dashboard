@@ -1280,62 +1280,80 @@ function processarRegistros(
       }
 
 
-      /* ===================================================
-         NOVA LISTA — REALIZARAM
+     /* ===================================================
+   NOVA LISTA — REALIZARAM
 
-         Mantém exatamente a mesma regra atual:
-         situacao === REALIZOU
-      =================================================== */
+   REGRA EXCLUSIVA DA NOVA ABA:
+   considera somente o ESTADO_BAR do Be a Rep.
 
-      if (
-        pessoa.situacao ===
-        "REALIZOU"
-      ) {
+   NÃO ALTERA:
+   - HC
+   - percentual
+   - resumo geral
+   - em processo
+   - não realizaram
+   - lógica atual do dashboard
+=================================================== */
 
-        realizaramDetalhe.push({
-
-          nome:
-            pessoa.nome,
-
-          username:
-            pessoa.username,
-
-          area:
-            pessoa.area ||
-            "SEM ÁREA",
-
-          setor:
-            ajustarSetorNaArte(
-              pessoa.nome,
-              pessoa.setor
-            ) ||
-            "SEM SETOR",
-
-          local:
-            pessoa.local ||
-            "-",
-
-          tempo:
-            pessoa.tempo ||
-            "-",
-
-          minutos:
-            pessoa.minutos ||
-            0,
-
-          unidades:
-            pessoa.unidades ||
-            0,
-
-          produtividade:
-            pessoa.produtividade ||
-            0
-
-        });
-
-      }
+const realizouBeARep =
+  [
+    "HECHO",
+    "CUMPLIO",
+    "REALIZADO",
+    "CONCLUIDO"
+  ].includes(
+    normalizarTexto(
+      pessoa.statusBar
+    )
+  );
 
 
+if (
+  realizouBeARep
+) {
+
+  realizaramDetalhe.push({
+
+    nome:
+      pessoa.nome,
+
+    username:
+      pessoa.username,
+
+    area:
+      pessoa.area ||
+      "SEM ÁREA",
+
+    setor:
+      ajustarSetorNaArte(
+        pessoa.nome,
+        pessoa.setor
+      ) ||
+      "SEM SETOR",
+
+    local:
+      pessoa.local ||
+      "-",
+
+    tempo:
+      pessoa.tempo ||
+      "-",
+
+    minutos:
+      pessoa.minutos ||
+      0,
+
+    unidades:
+      pessoa.unidades ||
+      0,
+
+    produtividade:
+      pessoa.produtividade ||
+      0
+
+  });
+
+}
       /* ===================================================
          EM PROCESSO / NÃO REALIZARAM
       =================================================== */
