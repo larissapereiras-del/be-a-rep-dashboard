@@ -1740,26 +1740,59 @@ function atualizarTudo() {
    NOVA ABA — REALIZARAM
 ========================================================= */
 
-function preencherArteRealizaram(
-  dados
-) {
+const lista =
+  Array.isArray(
+    dados?.registros
+  )
+    ? dados.registros
+        .filter(
+          pessoa =>
+            pessoa.situacao ===
+            "REALIZOU"
+        )
+        .map(
+          pessoa => ({
 
-  const lista =
-    Array.isArray(
-      dados?.realizaramDetalhe
-    )
-      ? dados.realizaramDetalhe
-      : [];
+            nome:
+              pessoa.nome,
 
+            username:
+              pessoa.username,
 
-  const total =
-    $("total-realizaram-lista");
+            area:
+              pessoa.area ||
+              "SEM ÁREA",
 
+            setor:
+              ajustarSetorNaArte(
+                pessoa.nome,
+                pessoa.setor
+              ) ||
+              "SEM SETOR",
 
-  const container =
-    $("lista-realizaram-detalhe");
+            local:
+              pessoa.local ||
+              "-",
 
+            tempo:
+              pessoa.tempo ||
+              "-",
 
+            minutos:
+              pessoa.minutos ||
+              0,
+
+            unidades:
+              pessoa.unidades ||
+              0,
+
+            produtividade:
+              pessoa.produtividade ||
+              0
+
+          })
+        )
+    : [];
   /* =======================================================
      TOTAL
   ======================================================= */
