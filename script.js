@@ -1,34 +1,133 @@
-console.log("✅ CENTRAL BE A REP V2.2 — VERDI + CADASTRO DE ÁREAS");
+console.log("✅ CENTRAL BE A REP V2.3 — VERDI + FILTRO DE MÊS");
 
-const API_DADOS = "/api/dados";
-const TARGET = 0.90;
-const STORAGE_EXCECOES = "be-a-rep-excecoes-v1";
+
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
+
+const API_DADOS =
+  "/api/dados";
+
+
+const TARGET =
+  0.90;
+
+
+const STORAGE_EXCECOES =
+  "be-a-rep-excecoes-v1";
+
 
 const AREAS_VALIDAS = [
+
   "Outbound",
   "Inbound",
   "OPEX",
   "ICQA",
   "Line Haul"
+
 ];
 
-let dadosProcessados = null;
-let arteAtual = "geral";
-let excecoes = carregarExcecoes();
 
-const $ = id => document.getElementById(id);
+/* =========================================================
+   ESTADO DA APLICAÇÃO
+========================================================= */
 
-const inputArquivo = $("arquivo-base");
-const statusArquivo = $("status-arquivo");
-const resumoDados = $("resumo-dados");
-const menuArtes = $("menu-artes");
-const areaArtes = $("area-artes");
-const botaoBaixar = $("baixar-png");
-const botaoAtualizar = $("botao-atualizar");
-const textoAtualizacao = $("texto-atualizacao");
+let dadosProcessados =
+  null;
+
+
+/*
+ * Guarda a resposta completa da API.
+ *
+ * Isso é importante porque, ao trocar o mês,
+ * não precisamos consultar o Verdi novamente.
+ *
+ * Apenas reprocessamos os dados que já foram
+ * carregados.
+ */
+
+let dadosApiBrutos =
+  [];
+
+
+/*
+ * Mês atualmente selecionado no filtro.
+ *
+ * Ao abrir a página, começa automaticamente
+ * com o mês atual do computador.
+ *
+ * Exemplo:
+ * SETEMBRO-2026
+ */
+
+let referenciaSelecionada =
+  obterReferenciaMesAtual();
+
+
+let arteAtual =
+  "geral";
+
+
+let excecoes =
+  carregarExcecoes();
+
+
+/* =========================================================
+   ATALHO PARA ELEMENTOS
+========================================================= */
+
+const $ =
+  id =>
+    document.getElementById(
+      id
+    );
+
+
+const inputArquivo =
+  $("arquivo-base");
+
+
+const statusArquivo =
+  $("status-arquivo");
+
+
+const resumoDados =
+  $("resumo-dados");
+
+
+const menuArtes =
+  $("menu-artes");
+
+
+const areaArtes =
+  $("area-artes");
+
+
+const botaoBaixar =
+  $("baixar-png");
+
+
+const botaoAtualizar =
+  $("botao-atualizar");
+
+
+const textoAtualizacao =
+  $("texto-atualizacao");
+
+
+/*
+ * NOVO:
+ * seletor criado no index.html.
+ */
+
+const filtroMes =
+  $("filtro-mes");
+
 
 const botoesArte =
-  document.querySelectorAll(".art-tab");
+  document.querySelectorAll(
+    ".art-tab"
+  );
 
 
 /* =========================================================
@@ -41,7 +140,25 @@ document.addEventListener(
 
     configurarEventos();
 
+
     renderizarExcecoes();
+
+
+    /*
+     * Antes mesmo da resposta do Verdi,
+     * mostramos o mês atual no cabeçalho.
+     */
+
+    preencherMes(
+      formatarReferenciaFiltro(
+        referenciaSelecionada
+      )
+    );
+
+
+    /*
+     * Busca os dados normalmente.
+     */
 
     await carregarDadosAutomaticos();
 
@@ -55,30 +172,178 @@ document.addEventListener(
 
 function configurarEventos() {
 
-  botaoAtualizar?.addEventListener(
-    "click",
-    carregarDadosAutomaticos
-  );
+
+  /* =======================================================
+     ATUALIZAR DADOS
+  ======================================================= */
+
+  botaoAtualizar
+    ?.addEventListener(
+      "click",
+      carregarDadosAutomaticos
+    );
 
 
-  inputArquivo?.addEventListener(
-    "change",
-    async evento => {
+  /* =======================================================
+     NOVO — FILTRO DE MÊS
+  ======================================================= */
 
-      const arquivo =
-        evento.target.files?.[0];
+  filtroMes
+    ?.addEventListener(
+      "change",
+      () => {
 
-      if (arquivo) {
+        const novaReferencia =
+          filtroMes.value;
 
-        await processarArquivo(
-          arquivo
+
+        if (
+          !novaReferencia
+        ) {
+
+          return;
+
+        }
+
+
+        referenciaSelecionada =
+          novaReferencia;
+
+
+        console.log(
+          "📅 Novo mês selecionado:",
+          referenciaSelecionada
         );
 
+
+        /*
+         * Se ainda não temos os dados da API,
+         * não existe nada para reprocessar.
+         */
+
+        if (
+          !Array.isArray(
+            dadosApiBrutos
+          ) ||
+          dadosApiBrutos.length ===
+            0
+        ) {
+
+          return;
+
+        }
+
+
+        try {
+
+          /*
+           * Reprocessa a mesma resposta do Verdi,
+           * agora usando o mês escolhido.
+           */
+
+          dadosProcessados =
+            processarDadosApi(
+              dadosApiBrutos,
+              referenciaSelecionada
+            );
+
+
+          atualizarTudo();
+
+
+          atualizarStatus(
+            `✅ Exibindo dados de ${formatarReferenciaFiltro(referenciaSelecionada)}.`,
+            "sucesso"
+          );
+
+
+          if (
+            textoAtualizacao
+          ) {
+
+            textoAtualizacao.textContent =
+              `Dados de ${formatarReferenciaFiltro(referenciaSelecionada)} carregados. Você pode selecionar outro mês quando quiser.`;
+
+          }
+
+        }
+
+        catch (
+          erro
+        ) {
+
+          console.error(
+            "❌ Erro ao trocar o mês:",
+            erro
+          );
+
+
+          /*
+           * O mês continua selecionado mesmo que
+           * ainda não possua registros.
+           */
+
+          preencherMes(
+            formatarReferenciaFiltro(
+              referenciaSelecionada
+            )
+          );
+
+
+          atualizarStatus(
+            `⚠️ Não há dados obrigatórios disponíveis para ${formatarReferenciaFiltro(referenciaSelecionada)}.`,
+            "erro"
+          );
+
+
+          if (
+            textoAtualizacao
+          ) {
+
+            textoAtualizacao.textContent =
+              `Não foram encontrados dados obrigatórios para ${formatarReferenciaFiltro(referenciaSelecionada)}. Selecione outro mês no filtro.`;
+
+          }
+
+
+          ocultarDashboard();
+
+        }
+
       }
+    );
 
-    }
-  );
 
+  /* =======================================================
+     CARREGAR ARQUIVO MANUAL
+  ======================================================= */
+
+  inputArquivo
+    ?.addEventListener(
+      "change",
+      async evento => {
+
+        const arquivo =
+          evento.target.files?.[0];
+
+
+        if (
+          arquivo
+        ) {
+
+          await processarArquivo(
+            arquivo
+          );
+
+        }
+
+      }
+    );
+
+
+  /* =======================================================
+     TROCAR ARTES
+  ======================================================= */
 
   botoesArte.forEach(
     botao => {
@@ -98,11 +363,20 @@ function configurarEventos() {
   );
 
 
-  botaoBaixar?.addEventListener(
-    "click",
-    baixarArteAtual
-  );
+  /* =======================================================
+     BAIXAR ARTE
+  ======================================================= */
 
+  botaoBaixar
+    ?.addEventListener(
+      "click",
+      baixarArteAtual
+    );
+
+
+  /* =======================================================
+     EXCEÇÕES
+  ======================================================= */
 
   $("botao-adicionar-excecao")
     ?.addEventListener(
@@ -126,10 +400,18 @@ async function carregarDadosAutomaticos() {
 
   try {
 
-    if (botaoAtualizar) {
+
+    /* =====================================================
+       ESTADO DE CARREGAMENTO
+    ===================================================== */
+
+    if (
+      botaoAtualizar
+    ) {
 
       botaoAtualizar.disabled =
         true;
+
 
       botaoAtualizar.textContent =
         "Atualizando...";
@@ -137,7 +419,9 @@ async function carregarDadosAutomaticos() {
     }
 
 
-    if (textoAtualizacao) {
+    if (
+      textoAtualizacao
+    ) {
 
       textoAtualizacao.textContent =
         "Buscando os dados mais recentes da base...";
@@ -150,6 +434,10 @@ async function carregarDadosAutomaticos() {
       ""
     );
 
+
+    /* =====================================================
+       CONSULTAR API
+    ===================================================== */
 
     const resposta =
       await fetch(
@@ -173,7 +461,13 @@ async function carregarDadosAutomaticos() {
       );
 
 
-    if (!resposta.ok) {
+    /* =====================================================
+       VALIDAR RESPOSTA
+    ===================================================== */
+
+    if (
+      !resposta.ok
+    ) {
 
       let mensagem =
         `Erro ${resposta.status} ao consultar a base.`;
@@ -185,7 +479,9 @@ async function carregarDadosAutomaticos() {
           await resposta.json();
 
 
-        if (erro?.erro) {
+        if (
+          erro?.erro
+        ) {
 
           mensagem =
             erro.erro;
@@ -204,13 +500,20 @@ async function carregarDadosAutomaticos() {
     }
 
 
+    /* =====================================================
+       RECEBER REGISTROS
+    ===================================================== */
+
     const registros =
       await resposta.json();
 
 
     if (
-      !Array.isArray(registros) ||
-      registros.length === 0
+      !Array.isArray(
+        registros
+      ) ||
+      registros.length ===
+        0
     ) {
 
       throw new Error(
@@ -220,15 +523,132 @@ async function carregarDadosAutomaticos() {
     }
 
 
-    dadosProcessados =
-      processarDadosApi(
-        registros
+    console.log(
+      "📥 Registros recebidos da API:",
+      registros.length
+    );
+
+
+    /* =====================================================
+       GUARDAR BASE COMPLETA
+    ===================================================== */
+
+    dadosApiBrutos =
+      registros;
+
+
+    /*
+     * Agora montamos as opções do seletor
+     * utilizando os meses existentes na Query.
+     */
+
+    montarFiltroMes(
+      dadosApiBrutos
+    );
+
+
+    /* =====================================================
+       MÊS INICIAL
+    ===================================================== */
+
+    /*
+     * Sempre tentamos abrir primeiro no mês atual.
+     *
+     * Exemplo:
+     * 01/09/2026 -> SETEMBRO-2026
+     */
+
+    referenciaSelecionada =
+      obterReferenciaMesAtual();
+
+
+    if (
+      filtroMes
+    ) {
+
+      filtroMes.value =
+        referenciaSelecionada;
+
+    }
+
+
+    /* =====================================================
+       PROCESSAR MÊS ATUAL
+    ===================================================== */
+
+    try {
+
+      dadosProcessados =
+        processarDadosApi(
+          dadosApiBrutos,
+          referenciaSelecionada
+        );
+
+    }
+
+    catch (
+      erroMesAtual
+    ) {
+
+      /*
+       * IMPORTANTE:
+       *
+       * Se virou o mês e a Query ainda não possui
+       * registros do mês novo, o dashboard não fica
+       * completamente inutilizado.
+       *
+       * Mantemos o mês atual selecionado e avisamos
+       * que o usuário pode escolher um mês anterior.
+       */
+
+      console.warn(
+        "⚠️ Mês atual ainda sem dados:",
+        erroMesAtual
       );
 
+
+      preencherMes(
+        formatarReferenciaFiltro(
+          referenciaSelecionada
+        )
+      );
+
+
+      atualizarStatus(
+        `⚠️ Ainda não há dados obrigatórios para ${formatarReferenciaFiltro(referenciaSelecionada)}. Selecione outro mês no filtro.`,
+        "erro"
+      );
+
+
+      if (
+        textoAtualizacao
+      ) {
+
+        textoAtualizacao.textContent =
+          `A base foi carregada, mas ${formatarReferenciaFiltro(referenciaSelecionada)} ainda não possui registros obrigatórios. Você pode selecionar um mês anterior.`;
+
+      }
+
+
+      ocultarDashboard();
+
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       LOG
+    ===================================================== */
 
     console.log(
       "📊 RESULTADO PROCESSADO",
       {
+
+        referencia:
+          referenciaSelecionada,
+
         geral:
           dadosProcessados.geral,
 
@@ -240,43 +660,58 @@ async function carregarDadosAutomaticos() {
 
         realizaramDetalhe:
           dadosProcessados.realizaramDetalhe
+
       }
     );
 
 
+    /* =====================================================
+       ATUALIZAR DASHBOARD
+    ===================================================== */
+
     atualizarTudo();
 
+
+    /* =====================================================
+       HORÁRIO
+    ===================================================== */
 
     const horario =
       new Date()
         .toLocaleTimeString(
           "pt-BR",
           {
+
             hour:
               "2-digit",
 
             minute:
               "2-digit"
+
           }
         );
 
 
     atualizarStatus(
-      `✅ Dados atualizados automaticamente às ${horario}.`,
+      `✅ Dados de ${formatarReferenciaFiltro(referenciaSelecionada)} atualizados às ${horario}.`,
       "sucesso"
     );
 
 
-    if (textoAtualizacao) {
+    if (
+      textoAtualizacao
+    ) {
 
       textoAtualizacao.textContent =
-        'Dados sincronizados diretamente pelo Verdi. Clique em "Atualizar dados" para buscar novamente.';
+        `Dados de ${formatarReferenciaFiltro(referenciaSelecionada)} sincronizados diretamente pelo Verdi.`;
 
     }
 
   }
 
-  catch (erro) {
+  catch (
+    erro
+  ) {
 
     console.error(
       "❌ Erro ao carregar dados:",
@@ -290,7 +725,9 @@ async function carregarDadosAutomaticos() {
     );
 
 
-    if (textoAtualizacao) {
+    if (
+      textoAtualizacao
+    ) {
 
       textoAtualizacao.textContent =
         "A atualização automática falhou. Use o carregamento manual como backup.";
@@ -304,10 +741,13 @@ async function carregarDadosAutomaticos() {
 
   finally {
 
-    if (botaoAtualizar) {
+    if (
+      botaoAtualizar
+    ) {
 
       botaoAtualizar.disabled =
         false;
+
 
       botaoAtualizar.textContent =
         textoOriginal;
@@ -320,14 +760,387 @@ async function carregarDadosAutomaticos() {
 
 
 /* =========================================================
+   REFERÊNCIA DO MÊS ATUAL
+========================================================= */
+
+function obterReferenciaMesAtual() {
+
+  const agora =
+    new Date();
+
+
+  const mes =
+    agora.toLocaleString(
+      "pt-BR",
+      {
+
+        month:
+          "long"
+
+      }
+    );
+
+
+  const ano =
+    agora.getFullYear();
+
+
+  return normalizarTexto(
+    `${mes}-${ano}`
+  );
+
+}
+
+
+/* =========================================================
+   FORMATAR REFERÊNCIA PARA EXIBIÇÃO
+========================================================= */
+
+function formatarReferenciaFiltro(
+  referencia
+) {
+
+  const texto =
+    normalizarTexto(
+      referencia
+    );
+
+
+  if (
+    !texto
+  ) {
+
+    return "MÊS";
+
+  }
+
+
+  const partes =
+    texto.split(
+      "-"
+    );
+
+
+  const mes =
+    partes[0] ||
+    "";
+
+
+  const ano =
+    partes[1] ||
+    "";
+
+
+  const nomes = {
+
+    JANEIRO:
+      "Janeiro",
+
+    FEVEREIRO:
+      "Fevereiro",
+
+    MARCO:
+      "Março",
+
+    ABRIL:
+      "Abril",
+
+    MAIO:
+      "Maio",
+
+    JUNHO:
+      "Junho",
+
+    JULHO:
+      "Julho",
+
+    AGOSTO:
+      "Agosto",
+
+    SETEMBRO:
+      "Setembro",
+
+    OUTUBRO:
+      "Outubro",
+
+    NOVEMBRO:
+      "Novembro",
+
+    DEZEMBRO:
+      "Dezembro"
+
+  };
+
+
+  const nomeMes =
+    nomes[
+      mes
+    ] ||
+    mes;
+
+
+  return ano
+    ? `${nomeMes} / ${ano}`
+    : nomeMes;
+
+}
+
+
+/* =========================================================
+   OBTER ORDEM DA REFERÊNCIA
+========================================================= */
+
+function obterOrdemReferenciaMes(
+  referencia
+) {
+
+  const texto =
+    normalizarTexto(
+      referencia
+    );
+
+
+  const [
+    mes,
+    ano
+  ] =
+    texto.split(
+      "-"
+    );
+
+
+  const ordemMeses = {
+
+    JANEIRO:
+      1,
+
+    FEVEREIRO:
+      2,
+
+    MARCO:
+      3,
+
+    ABRIL:
+      4,
+
+    MAIO:
+      5,
+
+    JUNHO:
+      6,
+
+    JULHO:
+      7,
+
+    AGOSTO:
+      8,
+
+    SETEMBRO:
+      9,
+
+    OUTUBRO:
+      10,
+
+    NOVEMBRO:
+      11,
+
+    DEZEMBRO:
+      12
+
+  };
+
+
+  const numeroMes =
+    ordemMeses[
+      mes
+    ] ||
+    0;
+
+
+  const numeroAno =
+    Number(
+      ano
+    ) ||
+    0;
+
+
+  return (
+    numeroAno *
+      100 +
+    numeroMes
+  );
+
+}
+
+
+/* =========================================================
+   MONTAR FILTRO DE MÊS
+========================================================= */
+
+function montarFiltroMes(
+  registros
+) {
+
+  if (
+    !filtroMes
+  ) {
+
+    return;
+
+  }
+
+
+  const referencias =
+    new Set();
+
+
+  /*
+   * Primeiro buscamos somente meses que realmente
+   * existem na resposta da Query.
+   */
+
+  (
+    registros ||
+    []
+  ).forEach(
+    item => {
+
+      const mes =
+        normalizarTexto(
+          obterValorObjeto(
+            item,
+            [
+
+              "MES",
+              "Mes",
+              "Mês"
+
+            ]
+          )
+        );
+
+
+      if (
+        mes
+      ) {
+
+        referencias.add(
+          mes
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+   * Também adicionamos o mês atual.
+   *
+   * Dessa forma Setembro aparece no filtro mesmo
+   * se a Query ainda estiver somente com Agosto.
+   */
+
+  referencias.add(
+    obterReferenciaMesAtual()
+  );
+
+
+  const lista =
+    Array.from(
+      referencias
+    );
+
+
+  /*
+   * Mais recente primeiro:
+   *
+   * Setembro / 2026
+   * Agosto / 2026
+   * Julho / 2026
+   * ...
+   */
+
+  lista.sort(
+    (
+      a,
+      b
+    ) =>
+      obterOrdemReferenciaMes(
+        b
+      ) -
+      obterOrdemReferenciaMes(
+        a
+      )
+  );
+
+
+  filtroMes.innerHTML =
+    "";
+
+
+  lista.forEach(
+    referencia => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        referencia;
+
+
+      option.textContent =
+        formatarReferenciaFiltro(
+          referencia
+        );
+
+
+      filtroMes.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  /*
+   * Seleção inicial = mês atual.
+   */
+
+  referenciaSelecionada =
+    obterReferenciaMesAtual();
+
+
+  filtroMes.value =
+    referenciaSelecionada;
+
+
+  console.log(
+    "📅 Meses disponíveis:",
+    lista
+  );
+
+}
+
+
+/* =========================================================
    PROCESSAR DADOS DA API
 ========================================================= */
 
 function processarDadosApi(
-  dadosApi
+  dadosApi,
+  referenciaFiltro =
+    referenciaSelecionada
 ) {
 
-  if (!Array.isArray(dadosApi)) {
+  if (
+    !Array.isArray(
+      dadosApi
+    )
+  ) {
 
     throw new Error(
       "A base recebida da API não é válida."
@@ -337,35 +1150,18 @@ function processarDadosApi(
 
 
   /* =======================================================
-     MÊS ATUAL
+     REFERÊNCIA SELECIONADA
   ======================================================= */
-
-  const agora =
-    new Date();
-
-
-  const mesAtual =
-    agora.toLocaleString(
-      "pt-BR",
-      {
-        month:
-          "long"
-      }
-    );
-
-
-  const anoAtual =
-    agora.getFullYear();
-
 
   const referenciaAtual =
     normalizarTexto(
-      `${mesAtual}-${anoAtual}`
+      referenciaFiltro ||
+      obterReferenciaMesAtual()
     );
 
 
   console.log(
-    "📅 Referência atual:",
+    "📅 Referência selecionada:",
     referenciaAtual
   );
 
@@ -374,7 +1170,7 @@ function processarDadosApi(
      FILTRO
 
      SOMENTE:
-     - MÊS ATUAL
+     - MÊS SELECIONADO
      - OBRIGATORIO
 
      NÃO FILTRAMOS ÁREA AQUI.
@@ -392,9 +1188,11 @@ function processarDadosApi(
             obterValorObjeto(
               item,
               [
+
                 "MES",
                 "Mes",
                 "Mês"
+
               ]
             )
           );
@@ -405,10 +1203,12 @@ function processarDadosApi(
             obterValorObjeto(
               item,
               [
+
                 "FLAG_OBLIGATORIEDAD",
                 "FLAG OBLIGATORIEDAD",
                 "FLAG_OBRIGATORIEDADE",
                 "Obrigatoriedade"
+
               ]
             )
           );
@@ -426,7 +1226,7 @@ function processarDadosApi(
 
 
   console.log(
-    "🔎 Registros após mês + obrigatório:",
+    "🔎 Registros após mês selecionado + obrigatório:",
     filtrados.length
   );
 
@@ -434,6 +1234,7 @@ function processarDadosApi(
   /* =======================================================
      NORMALIZAR PESSOAS
   ======================================================= */
+
   const registros =
     filtrados
       .map(
@@ -450,17 +1251,21 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "FULL_NAME",
                   "Full Name",
                   "NOME",
                   "Nome",
                   "Nombre"
+
                 ]
               )
             );
 
 
-          if (!nome) {
+          if (
+            !nome
+          ) {
 
             return null;
 
@@ -476,8 +1281,10 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "USERNAME",
                   "LDAP_USER"
+
                 ]
               )
             );
@@ -492,7 +1299,9 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "EMAIL"
+
                 ]
               )
             );
@@ -507,9 +1316,11 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "CAD_PEOPLE",
                   "CAD_GROOT",
                   "CAD"
+
                 ]
               )
             );
@@ -524,10 +1335,12 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "MES",
                   "Mes",
                   "Mês",
                   "MES_BE_A_REP"
+
                 ]
               )
             );
@@ -542,10 +1355,12 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "FLAG_OBLIGATORIEDAD",
                   "FLAG OBLIGATORIEDAD",
                   "FLAG_OBRIGATORIEDADE",
                   "Obrigatoriedade"
+
                 ]
               )
             );
@@ -560,11 +1375,13 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "SUMA_HORAS_MES",
                   "HORAS",
                   "Horas Mes",
                   "Horas Mês",
                   "Tempo"
+
                 ]
               )
             );
@@ -582,10 +1399,12 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "PROCESOS_LMS",
                   "PROCESOS LMS",
                   "PROCESSOS_LMS",
                   "PROCESSOS LMS"
+
                 ]
               )
             );
@@ -599,8 +1418,10 @@ function processarDadosApi(
             obterValorObjeto(
               item,
               [
+
                 "UNIDADES",
                 "Unidades"
+
               ]
             );
 
@@ -619,10 +1440,12 @@ function processarDadosApi(
             obterValorObjeto(
               item,
               [
+
                 "PRODUCTIVIDAD",
                 "PRODUTIVIDADE",
                 "Productividad",
                 "Produtividade"
+
               ]
             );
 
@@ -642,8 +1465,10 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "GEMBA",
                   "Gemba"
+
                 ]
               )
             );
@@ -658,10 +1483,12 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "ESTADO_BAR",
                   "STATUS_BAR",
                   "Status BAR",
                   "Status Bar"
+
                 ]
               )
             );
@@ -669,8 +1496,6 @@ function processarDadosApi(
 
           /* ===============================================
              ÁREA CONSOLIDADA
-
-             Campo vindo do CADASTRO_AREAS.
           =============================================== */
 
           const areaOriginal =
@@ -678,12 +1503,14 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "ÁREA CONSOLIDADA",
                   "AREA CONSOLIDADA",
                   "AREA_CONSOLIDADA",
                   "Área Consolidada",
                   "AREA_CONSOLIDADA_1",
                   "ÁREA_CONSOLIDADA"
+
                 ]
               )
             );
@@ -704,8 +1531,10 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "SETOR",
                   "Setor"
+
                 ]
               )
             );
@@ -716,9 +1545,11 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "POSITION_PEOPLE",
                   "POSICION_PEOPLE",
                   "ROL"
+
                 ]
               )
             );
@@ -741,9 +1572,11 @@ function processarDadosApi(
               obterValorObjeto(
                 item,
                 [
+
                   "Status Cadastro",
                   "STATUS CADASTRO",
                   "STATUS_CADASTRO"
+
                 ]
               )
             );
@@ -781,8 +1614,6 @@ function processarDadosApi(
                 tempo
               ),
 
-            /* NOVOS CAMPOS */
-
             local:
               local,
 
@@ -791,8 +1622,6 @@ function processarDadosApi(
 
             produtividade:
               produtividade,
-
-            /* CAMPOS EXISTENTES */
 
             gemba:
               gemba,
@@ -830,7 +1659,9 @@ function processarDadosApi(
 
         }
       )
-      .filter(Boolean);
+      .filter(
+        Boolean
+      );
 
 
   /* =======================================================
@@ -890,8 +1721,6 @@ function processarDadosApi(
   );
 
 }
-
-
 /* =========================================================
    CONVERTER VALOR NUMÉRICO DA QUERY
 
@@ -1165,6 +1994,8 @@ function removerDuplicidades(
   );
 
 }
+
+
 /* =========================================================
    PROCESSAR REGISTROS
 ========================================================= */
@@ -1176,7 +2007,7 @@ function processarRegistros(
   if (!registros.length) {
 
     throw new Error(
-      "Nenhuma pessoa obrigatória foi encontrada no mês atual."
+      `Nenhuma pessoa obrigatória foi encontrada para ${formatarReferenciaFiltro(referenciaSelecionada)}.`
     );
 
   }
@@ -1199,17 +2030,22 @@ function processarRegistros(
   const realizaramDetalhe =
     [];
 
+
   const processo =
     [];
+
 
   const naoRealizaram =
     [];
 
+
   const guembaPendenteBeARep =
     [];
 
+
   const guembaProcessandoBeARep =
     [];
+
 
   const semCadastro =
     [];
@@ -1280,80 +2116,82 @@ function processarRegistros(
       }
 
 
-     /* ===================================================
-   NOVA LISTA — REALIZARAM
+      /* ===================================================
+         NOVA LISTA — REALIZARAM
 
-   REGRA EXCLUSIVA DA NOVA ABA:
-   considera somente o ESTADO_BAR do Be a Rep.
+         REGRA EXCLUSIVA DA NOVA ABA:
+         considera somente o ESTADO_BAR do Be a Rep.
 
-   NÃO ALTERA:
-   - HC
-   - percentual
-   - resumo geral
-   - em processo
-   - não realizaram
-   - lógica atual do dashboard
-=================================================== */
+         NÃO ALTERA:
+         - HC
+         - percentual
+         - resumo geral
+         - em processo
+         - não realizaram
+         - lógica atual do dashboard
+      =================================================== */
 
-const realizouBeARep =
-  [
-    "HECHO",
-    "CUMPLIO",
-    "REALIZADO",
-    "CONCLUIDO"
-  ].includes(
-    normalizarTexto(
-      pessoa.statusBar
-    )
-  );
+      const realizouBeARep =
+        [
+          "HECHO",
+          "CUMPLIO",
+          "REALIZADO",
+          "CONCLUIDO"
+        ].includes(
+          normalizarTexto(
+            pessoa.statusBar
+          )
+        );
 
 
-if (
-  realizouBeARep
-) {
+      if (
+        realizouBeARep
+      ) {
 
-  realizaramDetalhe.push({
+        realizaramDetalhe.push({
 
-    nome:
-      pessoa.nome,
+          nome:
+            pessoa.nome,
 
-    username:
-      pessoa.username,
+          username:
+            pessoa.username,
 
-    area:
-      pessoa.area ||
-      "SEM ÁREA",
+          area:
+            pessoa.area ||
+            "SEM ÁREA",
 
-    setor:
-      ajustarSetorNaArte(
-        pessoa.nome,
-        pessoa.setor
-      ) ||
-      "SEM SETOR",
+          setor:
+            ajustarSetorNaArte(
+              pessoa.nome,
+              pessoa.setor
+            ) ||
+            "SEM SETOR",
 
-    local:
-      pessoa.local ||
-      "-",
+          local:
+            pessoa.local ||
+            "-",
 
-    tempo:
-      pessoa.tempo ||
-      "-",
+          tempo:
+            pessoa.tempo ||
+            "-",
 
-    minutos:
-      pessoa.minutos ||
-      0,
+          minutos:
+            pessoa.minutos ||
+            0,
 
-    unidades:
-      pessoa.unidades ||
-      0,
+          unidades:
+            pessoa.unidades ||
+            0,
 
-    produtividade:
-      pessoa.produtividade ||
-      0
+          produtividade:
+            pessoa.produtividade ||
+            0
 
-  });
+        });
 
-}
+      }
+
+
       /* ===================================================
          EM PROCESSO / NÃO REALIZARAM
       =================================================== */
@@ -1474,6 +2312,7 @@ if (
           a.area ||
           ""
         );
+
 
       const areaB =
         String(
@@ -1606,8 +2445,6 @@ if (
     registros:
       registros,
 
-    /* NOVA LISTA */
-
     realizaramDetalhe:
       realizaramDetalhe,
 
@@ -1736,68 +2573,39 @@ function atualizarTudo() {
   );
 
 }
+
+
 /* =========================================================
    NOVA ABA — REALIZARAM
 ========================================================= */
 
-const lista =
-  Array.isArray(
-    dados?.registros
-  )
-    ? dados.registros
-        .filter(
-          pessoa =>
-            pessoa.situacao ===
-            "REALIZOU"
-        )
-        .map(
-          pessoa => ({
+function preencherArteRealizaram(
+  dados
+) {
 
-            nome:
-              pessoa.nome,
+  const total =
+    $("total-realizaram-lista");
 
-            username:
-              pessoa.username,
 
-            area:
-              pessoa.area ||
-              "SEM ÁREA",
+  const container =
+    $("lista-realizaram-detalhe");
 
-            setor:
-              ajustarSetorNaArte(
-                pessoa.nome,
-                pessoa.setor
-              ) ||
-              "SEM SETOR",
 
-            local:
-              pessoa.local ||
-              "-",
+  const lista =
+    Array.isArray(
+      dados?.realizaramDetalhe
+    )
+      ? dados.realizaramDetalhe
+      : [];
 
-            tempo:
-              pessoa.tempo ||
-              "-",
 
-            minutos:
-              pessoa.minutos ||
-              0,
-
-            unidades:
-              pessoa.unidades ||
-              0,
-
-            produtividade:
-              pessoa.produtividade ||
-              0
-
-          })
-        )
-    : [];
   /* =======================================================
      TOTAL
   ======================================================= */
 
-  if (total) {
+  if (
+    total
+  ) {
 
     total.textContent =
       lista.length;
@@ -1805,7 +2613,9 @@ const lista =
   }
 
 
-  if (!container) {
+  if (
+    !container
+  ) {
 
     return;
 
@@ -1836,7 +2646,12 @@ const lista =
         "
       >
 
-        Nenhuma pessoa realizada encontrada para o mês atual.
+        Nenhuma pessoa realizou o Be a Rep em
+        ${escaparHTML(
+          formatarReferenciaFiltro(
+            referenciaSelecionada
+          )
+        )}.
 
       </div>
 
@@ -2034,8 +2849,6 @@ const lista =
   );
 
 }
-
-
 /* =========================================================
    FORMATAR NÚMEROS — REALIZARAM
 ========================================================= */
@@ -2076,6 +2889,8 @@ function formatarNumeroRealizaram(
   );
 
 }
+
+
 /* =========================================================
    PREENCHER RESUMO
 ========================================================= */
@@ -2747,6 +3562,8 @@ function preencherTabelaAreas(
   }
 
 }
+
+
 /* =========================================================
    ALERTA — PESSOAS SEM CADASTRO DE ÁREA
 ========================================================= */
@@ -3126,8 +3943,6 @@ function preencherAlertaSemCadastro(
   );
 
 }
-
-
 /* =========================================================
    LISTAS COM EXCEÇÕES
 ========================================================= */
@@ -3345,6 +4160,8 @@ function dividirLista(
     );
 
 }
+
+
 /* =========================================================
    MONTAR LISTA COM TEMPO
 ========================================================= */
@@ -3772,12 +4589,14 @@ function adicionarExcecao() {
 
   excecoes.push(
     {
+
       nome:
         pessoa.nome,
 
       motivo:
         motivo ||
         "Outro"
+
     }
   );
 
@@ -3789,14 +4608,19 @@ function adicionarExcecao() {
     "";
 
 
+  campoMotivo.value =
+    "";
+
+
   renderizarExcecoes();
 
 
   preencherListasComExcecoes();
 
+
+  preencherDatalistExcecoes();
+
 }
-
-
 /* =========================================================
    REMOVER EXCEÇÃO
 ========================================================= */
@@ -4040,6 +4864,8 @@ function carregarExcecoes() {
   }
 
 }
+
+
 /* =========================================================
    SALVAR EXCEÇÕES
 ========================================================= */
@@ -4448,8 +5274,6 @@ function classificarSituacao(
   return "NAO_REALIZOU";
 
 }
-
-
 /* =========================================================
    GEMBA CONCLUÍDO
 ========================================================= */
@@ -4722,6 +5546,8 @@ function ajustarSetorNaArte(
     .toUpperCase();
 
 }
+
+
 /* =========================================================
    CONVERTER TEMPO PARA MINUTOS
 ========================================================= */
@@ -5033,20 +5859,22 @@ function obterValorObjeto(
       );
 
 
-    const chave =
+    const chaveEncontrada =
       chaves.find(
-        chaveAtual =>
+        chave =>
           normalizarTexto(
-            chaveAtual
+            chave
           ) ===
           nomeNormalizado
       );
 
 
-    if (chave) {
+    if (
+      chaveEncontrada
+    ) {
 
       return objeto[
-        chave
+        chaveEncontrada
       ];
 
     }
@@ -5057,8 +5885,6 @@ function obterValorObjeto(
   return "";
 
 }
-
-
 /* =========================================================
    ORDENAÇÕES
 ========================================================= */
@@ -5119,6 +5945,8 @@ function ordenarTempoNome(
   );
 
 }
+
+
 /* =========================================================
    EXTENSÃO
 ========================================================= */
@@ -5251,5 +6079,5 @@ function escaparHTML(
 ========================================================= */
 
 console.log(
-  "✅ script.js V2.2 carregado por completo"
+  "✅ script.js V2.3 — filtro de mês carregado por completo"
 );
