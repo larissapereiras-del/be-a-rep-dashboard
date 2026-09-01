@@ -17,9 +17,12 @@
   --shadow:0 18px 55px rgba(7,27,97,.10);
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
-html,body{
+html,
+body{
   margin:0;
   min-height:100%;
 }
@@ -35,11 +38,14 @@ body{
   color:var(--text);
 }
 
-button,input,select{
+button,
+input,
+select{
   font:inherit;
 }
 
-button,.btn{
+button,
+.btn{
   cursor:pointer;
 }
 
@@ -225,6 +231,50 @@ button,.btn{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
+  align-items:flex-end;
+}
+
+
+/* =========================================================
+   FILTRO DE MÊS
+========================================================= */
+
+.filtro-mes-box{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  min-width:165px;
+}
+
+.filtro-mes-box label{
+  font-size:10px;
+  font-weight:900;
+  color:var(--navy);
+  letter-spacing:.3px;
+}
+
+.filtro-mes-box select{
+  height:44px;
+  min-width:165px;
+  padding:0 38px 0 13px;
+  border:1px solid #dce1ee;
+  border-radius:14px;
+  background:#fff;
+  color:var(--navy);
+  font-size:12px;
+  font-weight:800;
+  outline:none;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.filtro-mes-box select:hover{
+  border-color:#aeb9d8;
+}
+
+.filtro-mes-box select:focus{
+  border-color:var(--navy);
+  box-shadow:0 0 0 3px rgba(7,27,97,.08);
 }
 
 .btn{
@@ -785,8 +835,6 @@ button,.btn{
 .month-blue{
   background:var(--sky);
 }
-
-
 /* =========================================================
    RESUMO GERAL
 ========================================================= */
@@ -1184,6 +1232,14 @@ button,.btn{
     width:100%;
   }
 
+  .sync-actions{
+    width:100%;
+  }
+
+  .filtro-mes-box{
+    min-width:180px;
+  }
+
   .goal-content{
     grid-template-columns:1fr;
   }
@@ -1230,6 +1286,25 @@ button,.btn{
 
   .hero-brand h1{
     font-size:25px;
+  }
+
+  .sync-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .filtro-mes-box{
+    width:100%;
+    min-width:0;
+  }
+
+  .filtro-mes-box select{
+    width:100%;
+    min-width:0;
+  }
+
+  .sync-actions .btn{
+    width:100%;
   }
 
   .metrics-grid,
