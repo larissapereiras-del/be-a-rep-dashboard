@@ -999,133 +999,126 @@ function montarFiltroMes(
    * existem na resposta da Query.
    */
 
-  (
-    registros ||
-    []
-  ).forEach(
-    item => {
+ (
+  registros ||
+  []
+).forEach(
+  item => {
 
-      const mes =
-        normalizarTexto(
-          obterValorObjeto(
-            item,
-            [
+    const mes =
+      normalizarTexto(
+        obterValorObjeto(
+          item,
+          [
 
-              "MES",
-              "Mes",
-              "Mês"
+            "MES",
+            "Mes",
+            "Mês"
 
-            ]
-          )
-        );
+          ]
+        )
+      );
 
 
-      if (
-        mes
-      ) {
+    if (
+      mes
+    ) {
 
-        referencias.add(
+      referencias.add(
+        normalizarReferenciaMes(
           mes
-        );
-
-      }
+        )
+      );
 
     }
+
+  }
+);
+
+
+/*
+ * Também adicionamos o mês atual.
+ *
+ * Dessa forma Setembro aparece no filtro mesmo
+ * se a Query ainda estiver somente com Agosto.
+ */
+
+referencias.add(
+  normalizarReferenciaMes(
+    obterReferenciaMesAtual()
+  )
+);
+
+
+const lista =
+  Array.from(
+    referencias
   );
 
 
-  /*
-   * Também adicionamos o mês atual.
-   *
-   * Dessa forma Setembro aparece no filtro mesmo
-   * se a Query ainda estiver somente com Agosto.
-   */
+lista.sort(
+  (
+    a,
+    b
+  ) =>
+    obterOrdemReferenciaMes(
+      b
+    ) -
+    obterOrdemReferenciaMes(
+      a
+    )
+);
 
-  referencias.add(
+
+filtroMes.innerHTML =
+  "";
+
+
+lista.forEach(
+  referencia => {
+
+    const option =
+      document.createElement(
+        "option"
+      );
+
+
+    option.value =
+      referencia;
+
+
+    option.textContent =
+      formatarReferenciaFiltro(
+        referencia
+      );
+
+
+    filtroMes.appendChild(
+      option
+    );
+
+  }
+);
+
+
+/*
+ * Seleção inicial = mês atual.
+ */
+
+referenciaSelecionada =
+  normalizarReferenciaMes(
     obterReferenciaMesAtual()
   );
 
 
-  const lista =
-    Array.from(
-      referencias
-    );
+filtroMes.value =
+  referenciaSelecionada;
 
 
-  /*
-   * Mais recente primeiro:
-   *
-   * Setembro / 2026
-   * Agosto / 2026
-   * Julho / 2026
-   * ...
-   */
-
-  lista.sort(
-    (
-      a,
-      b
-    ) =>
-      obterOrdemReferenciaMes(
-        b
-      ) -
-      obterOrdemReferenciaMes(
-        a
-      )
-  );
-
-
-  filtroMes.innerHTML =
-    "";
-
-
-  lista.forEach(
-    referencia => {
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-
-      option.value =
-        referencia;
-
-
-      option.textContent =
-        formatarReferenciaFiltro(
-          referencia
-        );
-
-
-      filtroMes.appendChild(
-        option
-      );
-
-    }
-  );
-
-
-  /*
-   * Seleção inicial = mês atual.
-   */
-
-  referenciaSelecionada =
-    obterReferenciaMesAtual();
-
-
-  filtroMes.value =
-    referenciaSelecionada;
-
-
-  console.log(
-    "📅 Meses disponíveis:",
-    lista
-  );
-
-}
-
-
+console.log(
+  "📅 Meses disponíveis:",
+  lista
+);
 /* =========================================================
    PROCESSAR DADOS DA API
 ========================================================= */
