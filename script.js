@@ -1645,9 +1645,13 @@ function processarDadosApi(
               statusCadastro,
 
             temCadastroArea:
-              AREAS_VALIDAS.includes(
-                area
-              ),
+  (
+    AREAS_VALIDAS.includes(
+      area
+    ) ||
+    area ===
+      "Head Site"
+  ),
 
             situacao:
               classificarSituacao(
@@ -2077,13 +2081,15 @@ function processarRegistros(
       =================================================== */
 
       if (
-        pessoa.temCadastroArea
-      ) {
+  AREAS_VALIDAS.includes(
+    pessoa.area
+  )
+) {
 
-        const dadosArea =
-          areas[
-            pessoa.area
-          ];
+  const dadosArea =
+    areas[
+      pessoa.area
+    ];
 
 
         dadosArea.hc++;
@@ -5483,27 +5489,41 @@ function normalizarArea(
 
 
   if (
-    texto ===
-      "LINE HAUL" ||
-    texto ===
-      "LINEHAUL" ||
-    texto.includes(
-      "LINE HAUL"
-    ) ||
-    texto.includes(
-      "LINEHAUL"
-    )
-  ) {
+  texto ===
+    "LINE HAUL" ||
+  texto ===
+    "LINEHAUL" ||
+  texto.includes(
+    "LINE HAUL"
+  ) ||
+  texto.includes(
+    "LINEHAUL"
+  )
+) {
 
-    return "Line Haul";
-
-  }
-
-
-  return "";
+  return "Line Haul";
 
 }
 
+
+if (
+  texto ===
+    "HEAD SITE" ||
+  texto ===
+    "HEADSITE" ||
+  texto.includes(
+    "HEAD SITE"
+  )
+) {
+
+  return "Head Site";
+
+}
+
+
+return "";
+
+}
 
 /* =========================================================
    AJUSTAR SETOR NA ARTE
