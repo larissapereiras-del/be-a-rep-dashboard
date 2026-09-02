@@ -758,6 +758,74 @@ async function carregarDadosAutomaticos() {
 
 }
 
+/* =========================================================
+   NORMALIZAR REFERÊNCIA DE MÊS
+   Português / Espanhol
+========================================================= */
+
+function normalizarReferenciaMes(valor) {
+
+  const texto =
+    normalizarTexto(valor);
+
+  if (!texto) {
+    return "";
+  }
+
+  const partes =
+    texto.split("-");
+
+  const mes =
+    partes[0] || "";
+
+  const ano =
+    partes[1] || "";
+
+  const meses = {
+
+    JANEIRO: "JANEIRO",
+    ENERO: "JANEIRO",
+
+    FEVEREIRO: "FEVEREIRO",
+    FEBRERO: "FEVEREIRO",
+
+    MARCO: "MARCO",
+    MARZO: "MARCO",
+
+    ABRIL: "ABRIL",
+
+    MAIO: "MAIO",
+    MAYO: "MAIO",
+
+    JUNHO: "JUNHO",
+    JUNIO: "JUNHO",
+
+    JULHO: "JULHO",
+    JULIO: "JULHO",
+
+    AGOSTO: "AGOSTO",
+
+    SETEMBRO: "SETEMBRO",
+    SEPTIEMBRE: "SETEMBRO",
+
+    OUTUBRO: "OUTUBRO",
+    OCTUBRE: "OUTUBRO",
+
+    NOVEMBRO: "NOVEMBRO",
+    NOVIEMBRE: "NOVEMBRO",
+
+    DEZEMBRO: "DEZEMBRO",
+    DICIEMBRE: "DEZEMBRO"
+
+  };
+
+  const mesNormalizado =
+    meses[mes] || mes;
+
+  return ano
+    ? `${mesNormalizado}-${ano}`
+    : mesNormalizado;
+}
 
 /* =========================================================
    REFERÊNCIA DO MÊS ATUAL
@@ -1119,6 +1187,8 @@ console.log(
   "📅 Meses disponíveis:",
   lista
 );
+
+}
 /* =========================================================
    PROCESSAR DADOS DA API
 ========================================================= */
@@ -1208,11 +1278,15 @@ function processarDadosApi(
 
 
         return (
-          mesRegistro ===
-            referenciaAtual &&
-          obrigatoriedade ===
-            "OBLIGATORIO"
-        );
+  normalizarReferenciaMes(
+    mesRegistro
+  ) ===
+    normalizarReferenciaMes(
+      referenciaAtual
+    ) &&
+  obrigatoriedade ===
+    "OBLIGATORIO"
+);
 
       }
     );
