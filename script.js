@@ -5270,23 +5270,49 @@ function classificarSituacao(
   area
 ) {
 
-  const pessoaTemBeARepConcluido =
+  const fezGemba =
+    gembaConcluido(
+      valorGemba
+    );
+
+
+  const concluiuBeARep =
     beRepConcluido({
-
-      statusBar:
-        valorBar,
-
-      minutos:
-        minutos,
-
-      area:
-        area
-
+      statusBar: valorBar,
+      minutos,
+      area
     });
 
 
+  const iniciouBeARep =
+    beRepIniciado({
+      statusBar: valorBar,
+      minutos
+    });
+
+
+  /*
+    RESUMO GERAL
+
+    REALIZOU:
+    - Fez Gemba
+      OU
+    - Concluiu Be a Rep
+
+    EM PROCESSO:
+    - Ainda não fez Gemba
+    - Iniciou Be a Rep
+    - Ainda não concluiu Be a Rep
+
+    NÃO REALIZOU:
+    - Não fez Gemba
+    - Não iniciou Be a Rep
+  */
+
+
   if (
-    pessoaTemBeARepConcluido
+    fezGemba ||
+    concluiuBeARep
   ) {
 
     return "REALIZOU";
@@ -5294,34 +5320,8 @@ function classificarSituacao(
   }
 
 
-  const pessoaTemBeARepEmProcesso =
-    beRepEmProcesso({
-
-      statusBar:
-        valorBar,
-
-      minutos:
-        minutos,
-
-      area:
-        area
-
-    });
-
-
   if (
-    pessoaTemBeARepEmProcesso
-  ) {
-
-    return "EM_PROCESSO";
-
-  }
-
-
-  if (
-    gembaConcluido(
-      valorGemba
-    )
+    iniciouBeARep
   ) {
 
     return "EM_PROCESSO";
