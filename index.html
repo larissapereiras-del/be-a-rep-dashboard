@@ -23,7 +23,7 @@
 
   <link
     rel="stylesheet"
-    href="style.css?v=20260903-01"
+    href="style.css?v=20260903-02"
   >
 
 
@@ -54,7 +54,7 @@
          CABEÇALHO
     ====================================================== -->
 
-    <header class="hero-dashboard">
+    <header class="hero-dashboard hero-dashboard-v2">
 
 
       <div class="hero-brand">
@@ -81,7 +81,7 @@
 
 
           <p>
-            Monitoramento de Gemba, Be a Rep e geração de artes em um único lugar.
+            Acompanhamento de desenvolvimento, Gemba e Be a Rep.
           </p>
 
 
@@ -91,20 +91,38 @@
       </div>
 
 
-      <div class="hero-status">
+
+      <div class="hero-actions-v2">
 
 
-        <span class="online-dot"></span>
+        <div class="hero-month-box">
 
 
-        <span>
-          Sistema conectado
-        </span>
+          <span>
+            MÊS DE REFERÊNCIA
+          </span>
 
 
-        <strong data-mes>
-          MÊS
-        </strong>
+          <strong data-mes>
+            MÊS
+          </strong>
+
+
+        </div>
+
+
+        <div class="hero-connection">
+
+
+          <span class="online-dot"></span>
+
+
+          <span>
+            Verdi conectado
+          </span>
+
+
+        </div>
 
 
       </div>
@@ -115,10 +133,10 @@
 
 
     <!-- =====================================================
-         SINCRONIZAÇÃO
+         CONTROLE / SINCRONIZAÇÃO
     ====================================================== -->
 
-    <section class="sync-card">
+    <section class="sync-card sync-card-v2">
 
 
       <div class="sync-main">
@@ -133,12 +151,12 @@
 
 
           <span class="eyebrow">
-            SINCRONIZAÇÃO AUTOMÁTICA
+            DADOS DA CENTRAL
           </span>
 
 
           <h2>
-            Dados atualizados pelo Verdi
+            Acompanhamento atualizado pelo Verdi
           </h2>
 
 
@@ -156,10 +174,6 @@
 
       <div class="sync-actions">
 
-
-        <!-- =================================================
-             FILTRO DE MÊS
-        ================================================== -->
 
         <div class="filtro-mes-box">
 
@@ -184,29 +198,21 @@
 
 
 
-        <!-- =================================================
-             ATUALIZAR DADOS
-        ================================================== -->
-
         <button
           id="botao-atualizar"
           class="btn btn-primary"
           type="button"
         >
-          ↻ Atualizar dados
+          ↻ Atualizar
         </button>
 
 
-
-        <!-- =================================================
-             CARREGAR ARQUIVO
-        ================================================== -->
 
         <label
           for="arquivo-base"
           class="btn btn-secondary"
         >
-          ⬆ Carregar arquivo
+          ⬆ Arquivo
         </label>
 
 
@@ -253,129 +259,10 @@
 
 
       <!-- ===================================================
-           META
-      ==================================================== -->
-
-      <article class="goal-card">
-
-
-        <div class="goal-header">
-
-
-          <div>
-
-
-            <span class="eyebrow">
-              META DO MÊS
-            </span>
-
-
-            <h2>
-              Evolução do Be a Rep
-            </h2>
-
-
-          </div>
-
-
-          <span
-            id="status-meta"
-            class="goal-badge"
-          >
-            Target: 90%
-          </span>
-
-
-        </div>
-
-
-
-        <div class="goal-content">
-
-
-          <!-- =================================================
-               PERCENTUAL
-          ================================================== -->
-
-          <div class="goal-number">
-
-
-            <strong id="percentual-meta-dashboard">
-              0,0%
-            </strong>
-
-
-            <span>
-              de realização
-            </span>
-
-
-          </div>
-
-
-
-          <!-- =================================================
-               BARRA DA META
-          ================================================== -->
-
-          <div class="goal-progress-area">
-
-
-            <div class="goal-progress-labels">
-
-
-              <span>
-                Progresso atual
-              </span>
-
-
-              <strong id="texto-progresso-meta">
-                0,0% de 90%
-              </strong>
-
-
-            </div>
-
-
-
-            <div class="goal-bar">
-
-
-              <div
-                id="barra-meta-preenchida"
-                class="goal-bar-fill"
-              ></div>
-
-
-              <span
-                class="goal-target-marker"
-                title="Target de 90%"
-              ></span>
-
-
-            </div>
-
-
-            <p id="mensagem-meta">
-              Calculando o resultado...
-            </p>
-
-
-          </div>
-
-
-        </div>
-
-
-      </article>
-
-
-
-      <!-- ===================================================
            INDICADORES PRINCIPAIS
       ==================================================== -->
 
-      <section class="metrics-grid">
+      <section class="dashboard-kpis-v2">
 
 
         <!-- HC TOTAL -->
@@ -400,7 +287,7 @@
 
 
           <p>
-            HC TOTAL
+            HC GERAL
           </p>
 
 
@@ -418,7 +305,7 @@
 
 
 
-        <!-- REALIZARAM O BE A REP -->
+        <!-- REALIZARAM -->
 
         <article class="metric-card metric-done">
 
@@ -440,7 +327,7 @@
 
 
           <p>
-            REALIZARAM O BE A REP
+            REALIZARAM
           </p>
 
 
@@ -458,7 +345,7 @@
 
 
 
-        <!-- BE A REP EM PROCESSO -->
+        <!-- EM PROCESSO -->
 
         <article class="metric-card metric-progress">
 
@@ -480,7 +367,7 @@
 
 
           <p>
-            BE A REP EM PROCESSO
+            EM PROCESSO
           </p>
 
 
@@ -537,140 +424,56 @@
         </article>
 
 
-      </section>
+
+        <!-- % REALIZAÇÃO -->
+
+        <article class="metric-card metric-percentual">
 
 
-
-      <!-- ===================================================
-           ACOMPANHAMENTO GEMBA
-
-           Indicadores compactos:
-           não ocupam o espaço de um novo card principal.
-      ==================================================== -->
-
-      <section
-        style="
-          display:flex;
-          justify-content:flex-end;
-          gap:10px;
-          flex-wrap:wrap;
-          margin-top:-2px;
-          margin-bottom:18px;
-        "
-      >
+          <div class="metric-top">
 
 
-        <!-- GEMBA FEITO / BAR NÃO INICIADO -->
-
-        <div
-          style="
-            display:flex;
-            align-items:center;
-            gap:9px;
-            padding:8px 12px;
-            border-radius:999px;
-            border:1px solid #cfe8db;
-            background:#f3fbf7;
-            color:#31594a;
-            font-size:12px;
-            line-height:1;
-            box-shadow:0 3px 10px rgba(0,0,0,.025);
-          "
-        >
+            <span>
+              📊
+            </span>
 
 
-          <span>
-            ✅
-          </span>
+            <small>
+              RESULTADO
+            </small>
 
 
-          <span>
-            Gemba feito
-            <strong style="color:#667085;">
-              |
-            </strong>
-            Be a Rep não iniciado
-          </span>
+          </div>
 
 
-          <strong
-            id="resumo-gemba-pendente"
-            style="
-              min-width:25px;
-              height:25px;
-              padding:0 7px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              border-radius:999px;
-              background:#ffffff;
-              color:#147a4b;
-              font-size:13px;
-              box-sizing:border-box;
-            "
-          >
-            0
+          <p>
+            % REALIZAÇÃO
+          </p>
+
+
+          <strong id="percentual-meta-dashboard">
+            0,0%
           </strong>
 
 
-        </div>
+          <div class="mini-progress">
 
 
-
-        <!-- GEMBA + BAR EM PROCESSO -->
-
-        <div
-          style="
-            display:flex;
-            align-items:center;
-            gap:9px;
-            padding:8px 12px;
-            border-radius:999px;
-            border:1px solid #d7e2f8;
-            background:#f5f8ff;
-            color:#344b76;
-            font-size:12px;
-            line-height:1;
-            box-shadow:0 3px 10px rgba(0,0,0,.025);
-          "
-        >
+            <div
+              id="barra-meta-preenchida"
+              class="mini-progress-fill"
+            ></div>
 
 
-          <span>
-            🔄
+          </div>
+
+
+          <span id="texto-progresso-meta">
+            Target 90%
           </span>
 
 
-          <span>
-            Gemba feito
-            <strong style="color:#667085;">
-              |
-            </strong>
-            Be a Rep em processo
-          </span>
-
-
-          <strong
-            id="resumo-gemba-processo"
-            style="
-              min-width:25px;
-              height:25px;
-              padding:0 7px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              border-radius:999px;
-              background:#ffffff;
-              color:#1849a9;
-              font-size:13px;
-              box-sizing:border-box;
-            "
-          >
-            0
-          </strong>
-
-
-        </div>
+        </article>
 
 
       </section>
@@ -678,17 +481,17 @@
 
 
       <!-- ===================================================
-           SITUAÇÃO ATUAL
+           META / SITUAÇÃO
       ==================================================== -->
 
-      <section class="current-status">
+      <section class="status-meta-v2">
 
 
         <div>
 
 
           <span class="eyebrow">
-            SITUAÇÃO ATUAL
+            RESULTADO DO MÊS
           </span>
 
 
@@ -706,7 +509,7 @@
 
 
 
-        <div class="current-status-grid">
+        <div class="status-meta-numeros">
 
 
           <div>
@@ -762,44 +565,70 @@
         </div>
 
 
+        <!-- IDs mantidos para compatibilidade com o script atual -->
+
+        <span
+          id="status-meta"
+          class="oculto"
+        >
+          Target: 90%
+        </span>
+
+
+        <p
+          id="mensagem-meta"
+          class="oculto"
+        >
+          Calculando o resultado...
+        </p>
+
+
+        <span
+          class="goal-target-marker oculto"
+          title="Target de 90%"
+        ></span>
+
+
       </section>
-            <!-- ===================================================
-           EXCEÇÕES
+
+
+
+      <!-- ===================================================
+           CONSULTA RÁPIDA
       ==================================================== -->
 
-      <section class="exceptions-card">
+      <section class="consulta-card">
 
 
-        <div class="exceptions-header">
+        <div class="consulta-header">
 
 
           <div>
 
 
             <span class="eyebrow">
-              GESTÃO DE EXCEÇÕES
+              CONSULTA RÁPIDA
             </span>
 
 
             <h2>
-              Ocultar pessoas somente das listas nominais
+              🔎 Consultar uma pessoa
             </h2>
 
 
             <p>
-              A pessoa continua no HC, target, percentual e quantidade de pendentes.
-              Apenas o nome deixa de aparecer nas artes e listas.
+              Pesquise pelo nome ou username para consultar o status de Gemba e Be a Rep.
             </p>
 
 
           </div>
 
 
-          <span
-            id="total-excecoes"
-            class="exceptions-count"
-          >
-            0 ocultadas
+          <span class="consulta-mes">
+            📅
+            <strong data-mes>
+              MÊS
+            </strong>
           </span>
 
 
@@ -807,85 +636,38 @@
 
 
 
-        <!-- =================================================
-             FORMULÁRIO DE EXCEÇÕES
-        ================================================== -->
-
-        <div class="exceptions-form">
+        <div class="consulta-search">
 
 
-          <div class="field">
+          <div class="consulta-input-wrap">
 
 
-            <label for="excecao-nome">
-              Pessoa
-            </label>
+            <span>
+              🔎
+            </span>
 
 
             <input
-              id="excecao-nome"
-              list="lista-pessoas-excecao"
-              placeholder="Digite ou selecione um nome"
+              id="consulta-pessoa"
+              type="text"
+              list="lista-pessoas-consulta"
+              placeholder="Digite o nome ou username..."
               autocomplete="off"
             >
 
 
-            <datalist id="lista-pessoas-excecao"></datalist>
+            <datalist id="lista-pessoas-consulta"></datalist>
 
 
           </div>
-
-
-
-          <div class="field">
-
-
-            <label for="excecao-motivo">
-              Motivo
-            </label>
-
-
-            <select id="excecao-motivo">
-
-
-              <option value="Licença-maternidade">
-                Licença-maternidade
-              </option>
-
-
-              <option value="INSS">
-                INSS
-              </option>
-
-
-              <option value="Afastamento">
-                Afastamento
-              </option>
-
-
-              <option value="Férias">
-                Férias
-              </option>
-
-
-              <option value="Outro">
-                Outro
-              </option>
-
-
-            </select>
-
-
-          </div>
-
 
 
           <button
-            id="botao-adicionar-excecao"
+            id="botao-consultar-pessoa"
             class="btn btn-dark"
             type="button"
           >
-            Ocultar das listas
+            Consultar
           </button>
 
 
@@ -894,25 +676,669 @@
 
 
         <!-- =================================================
-             LISTA DE EXCEÇÕES
+             RESULTADO INICIAL
         ================================================== -->
 
         <div
-          id="lista-excecoes"
-          class="exceptions-list"
+          id="consulta-vazia"
+          class="consulta-empty"
         >
 
 
-          <p class="empty-state">
-            Nenhuma pessoa ocultada das listas.
-          </p>
+          <div class="consulta-empty-icon">
+            👤
+          </div>
+
+
+          <div>
+
+
+            <strong>
+              Consulte uma pessoa da base
+            </strong>
+
+
+            <span>
+              O resultado mostrará Gemba, Be a Rep, tempo e informações operacionais.
+            </span>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             RESULTADO DA PESSOA
+        ================================================== -->
+
+        <div
+          id="consulta-resultado"
+          class="consulta-resultado oculto"
+        >
+
+
+          <!-- CABEÇALHO -->
+
+          <div class="consulta-profile">
+
+
+            <div class="consulta-avatar">
+              👤
+            </div>
+
+
+            <div class="consulta-profile-info">
+
+
+              <span
+                id="consulta-status-geral"
+                class="consulta-status-badge"
+              >
+                STATUS
+              </span>
+
+
+              <h3 id="consulta-nome">
+                Nome da pessoa
+              </h3>
+
+
+              <p>
+
+
+                <span id="consulta-username">
+                  username
+                </span>
+
+
+                <span class="consulta-separador">
+                  •
+                </span>
+
+
+                <span id="consulta-area">
+                  Área
+                </span>
+
+
+                <span class="consulta-separador">
+                  •
+                </span>
+
+
+                <span id="consulta-setor">
+                  Setor
+                </span>
+
+
+              </p>
+
+
+            </div>
+
+
+          </div>
+
+
+
+          <!-- STATUS GEMBA / BE A REP -->
+
+          <div class="consulta-status-grid">
+
+
+            <div class="consulta-status-item">
+
+
+              <span class="consulta-status-icon">
+                🧭
+              </span>
+
+
+              <div>
+
+
+                <small>
+                  GEMBA
+                </small>
+
+
+                <strong id="consulta-gemba">
+                  —
+                </strong>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            <div class="consulta-status-item">
+
+
+              <span class="consulta-status-icon">
+                🚀
+              </span>
+
+
+              <div>
+
+
+                <small>
+                  BE A REP
+                </small>
+
+
+                <strong id="consulta-berep">
+                  —
+                </strong>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            <div class="consulta-status-item">
+
+
+              <span class="consulta-status-icon">
+                ⏱️
+              </span>
+
+
+              <div>
+
+
+                <small>
+                  TEMPO
+                </small>
+
+
+                <strong id="consulta-tempo">
+                  —
+                </strong>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            <div class="consulta-status-item">
+
+
+              <span class="consulta-status-icon">
+                🎯
+              </span>
+
+
+              <div>
+
+
+                <small>
+                  META DE TEMPO
+                </small>
+
+
+                <strong id="consulta-meta-tempo">
+                  —
+                </strong>
+
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+
+          <!-- DADOS OPERACIONAIS -->
+
+          <div class="consulta-detalhes">
+
+
+            <div>
+
+
+              <span>
+                📍 Local
+              </span>
+
+
+              <strong id="consulta-local">
+                —
+              </strong>
+
+
+            </div>
+
+
+
+            <div>
+
+
+              <span>
+                📦 Peças
+              </span>
+
+
+              <strong id="consulta-pecas">
+                —
+              </strong>
+
+
+            </div>
+
+
+
+            <div>
+
+
+              <span>
+                📈 Produtividade
+              </span>
+
+
+              <strong id="consulta-produtividade">
+                —
+              </strong>
+
+
+            </div>
+
+
+
+            <div>
+
+
+              <span>
+                ⏳ Tempo restante
+              </span>
+
+
+              <strong id="consulta-tempo-restante">
+                —
+              </strong>
+
+
+            </div>
+
+
+          </div>
 
 
         </div>
 
 
       </section>
+            <!-- ===================================================
+           JORNADA GEMBA → BE A REP
+      ==================================================== -->
 
+      <section class="journey-card">
+
+
+        <div class="journey-header">
+
+
+          <div>
+
+
+            <span class="eyebrow">
+              JORNADA DE DESENVOLVIMENTO
+            </span>
+
+
+            <h2>
+              Gemba → Be a Rep
+            </h2>
+
+
+            <p>
+              Visão rápida da evolução das pessoas dentro da jornada.
+            </p>
+
+
+          </div>
+
+
+          <span class="journey-badge">
+            📅
+            <strong data-mes>
+              MÊS
+            </strong>
+          </span>
+
+
+        </div>
+
+
+
+        <div class="journey-flow">
+
+
+          <!-- GEMBA FEITO / BE A REP NÃO INICIADO -->
+
+          <article class="journey-step journey-step-green">
+
+
+            <div class="journey-step-icon">
+              ✅
+            </div>
+
+
+            <div>
+
+
+              <small>
+                ETAPA 1
+              </small>
+
+
+              <strong>
+                Gemba feito
+              </strong>
+
+
+              <span>
+                Be a Rep não iniciado
+              </span>
+
+
+            </div>
+
+
+            <b id="resumo-gemba-pendente">
+              0
+            </b>
+
+
+          </article>
+
+
+
+          <div class="journey-arrow">
+            →
+          </div>
+
+
+
+          <!-- GEMBA + BE A REP EM PROCESSO -->
+
+          <article class="journey-step journey-step-blue">
+
+
+            <div class="journey-step-icon">
+              🔄
+            </div>
+
+
+            <div>
+
+
+              <small>
+                ETAPA 2
+              </small>
+
+
+              <strong>
+                Gemba realizado
+              </strong>
+
+
+              <span>
+                Be a Rep em processo
+              </span>
+
+
+            </div>
+
+
+            <b id="resumo-gemba-processo">
+              0
+            </b>
+
+
+          </article>
+
+
+
+          <div class="journey-arrow">
+            →
+          </div>
+
+
+
+          <!-- BE A REP CONCLUÍDO -->
+
+          <article class="journey-step journey-step-done">
+
+
+            <div class="journey-step-icon">
+              🚀
+            </div>
+
+
+            <div>
+
+
+              <small>
+                ETAPA 3
+              </small>
+
+
+              <strong>
+                Be a Rep concluído
+              </strong>
+
+
+              <span>
+                Jornada concluída
+              </span>
+
+
+            </div>
+
+
+            <b id="jornada-berep-concluido">
+              0
+            </b>
+
+
+          </article>
+
+
+        </div>
+
+
+
+        <div class="journey-note">
+
+          <span>
+            ℹ️
+          </span>
+
+
+          <p>
+            A jornada é apenas uma visão complementar.
+            O Resumo Geral continua considerando Gemba e Be a Rep de forma consolidada.
+          </p>
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- ===================================================
+           DESEMPENHO POR ÁREA
+      ==================================================== -->
+
+      <section class="performance-card">
+
+
+        <div class="performance-header">
+
+
+          <div>
+
+
+            <span class="eyebrow">
+              RESULTADO POR ÁREA
+            </span>
+
+
+            <h2>
+              Desempenho das áreas
+            </h2>
+
+
+            <p>
+              Acompanhe rapidamente o percentual de realização por área.
+            </p>
+
+
+          </div>
+
+
+          <div class="performance-legend">
+
+
+            <span>
+              <i class="legend-dot legend-green"></i>
+              Realizaram
+            </span>
+
+
+            <span>
+              <i class="legend-dot legend-orange"></i>
+              Em processo
+            </span>
+
+
+            <span>
+              <i class="legend-dot legend-red"></i>
+              Não realizaram
+            </span>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             RANKING / BARRAS
+        ================================================== -->
+
+        <div
+          id="ranking-areas"
+          class="area-ranking"
+        >
+
+
+          <div class="ranking-empty">
+            Carregando desempenho das áreas...
+          </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             TABELA DETALHADA
+        ================================================== -->
+
+        <details class="area-details">
+
+
+          <summary>
+
+            <span>
+              📊 Ver tabela detalhada
+            </span>
+
+            <small>
+              Realizados, processo, pendentes e HC
+            </small>
+
+          </summary>
+
+
+          <div class="area-details-body">
+
+
+            <div class="areas-table">
+
+
+              <div class="areas-table-head">
+
+
+                <span>
+                  ÁREA
+                </span>
+
+
+                <span>
+                  REALIZARAM
+                </span>
+
+
+                <span>
+                  EM PROCESSO
+                </span>
+
+
+                <span>
+                  NÃO REALIZARAM
+                </span>
+
+
+                <span>
+                  HC TOTAL
+                </span>
+
+
+                <span>
+                  % REALIZAÇÃO
+                </span>
+
+
+              </div>
+
+
+              <div id="lista-areas-dashboard"></div>
+
+
+            </div>
+
+
+          </div>
+
+
+        </details>
+
+
+      </section>
+            <!-- ===================================================
+           FECHA O DASHBOARD PRINCIPAL
+      ==================================================== -->
 
     </section>
 
@@ -940,12 +1366,12 @@
 
 
           <h2>
-            Escolha a imagem que deseja gerar
+            📸 Artes para acompanhamento
           </h2>
 
 
           <p>
-            As artes utilizam os dados mais recentes carregados no dashboard.
+            Escolha uma visão para consultar ou gerar a imagem de acompanhamento.
           </p>
 
 
@@ -955,10 +1381,10 @@
 
         <button
           id="baixar-png"
-          class="btn btn-dark"
+          class="btn btn-download"
           type="button"
         >
-          📥 Baixar PNG
+          ⬇ Baixar arte em PNG
         </button>
 
 
@@ -967,212 +1393,123 @@
 
 
       <!-- ===================================================
-           ABAS DAS ARTES
+           NAVEGAÇÃO DAS ARTES
       ==================================================== -->
 
       <div class="art-tabs">
 
 
-
-        <!-- RESUMO GERAL -->
-
         <button
+          type="button"
           class="art-tab ativo"
           data-arte="geral"
-          type="button"
         >
-
 
           <span>
             📊
           </span>
 
-
-          <div>
-
-
-            <strong>
-              Resumo Geral
-            </strong>
-
-
-            <small>
-              Indicadores e áreas
-            </small>
-
-
-          </div>
-
+          <strong>
+            Resumo Geral
+          </strong>
 
         </button>
 
 
 
-        <!-- REALIZARAM O BE A REP -->
-
         <button
+          type="button"
           class="art-tab"
           data-arte="realizaram"
-          type="button"
         >
-
 
           <span>
             ✅
           </span>
 
-
-          <div>
-
-
-            <strong>
-              Realizaram o Be a Rep
-            </strong>
-
-
-            <small>
-              Local, tempo e peças
-            </small>
-
-
-          </div>
-
+          <strong>
+            Realizaram o Be a Rep
+          </strong>
 
         </button>
 
 
 
-        <!-- BE A REP EM PROCESSO -->
-
         <button
+          type="button"
           class="art-tab"
           data-arte="processo"
-          type="button"
         >
-
 
           <span>
             ⏳
           </span>
 
-
-          <div>
-
-
-            <strong>
-              Be a Rep em processo
-            </strong>
-
-
-            <small>
-              Pessoas em andamento
-            </small>
-
-
-          </div>
-
+          <strong>
+            Be a Rep em processo
+          </strong>
 
         </button>
 
 
 
-        <!-- NÃO REALIZARAM -->
-
         <button
+          type="button"
           class="art-tab"
           data-arte="nao"
-          type="button"
         >
 
-
           <span>
-            ⚠️
+            ❌
           </span>
 
-
-          <div>
-
-
-            <strong>
-              Não realizaram
-            </strong>
-
-
-            <small>
-              Sem Gemba e sem Be a Rep
-            </small>
-
-
-          </div>
-
+          <strong>
+            Não realizaram
+          </strong>
 
         </button>
 
 
 
-        <!-- GEMBA FEITO -->
-
         <button
+          type="button"
           class="art-tab"
           data-arte="guemba-pendente"
-          type="button"
         >
 
-
           <span>
-            ✅
+            🧭
           </span>
 
+          <strong>
+            Gemba feito
+          </strong>
 
-          <div>
-
-
-            <strong>
-              Gemba feito
-            </strong>
-
-
-            <small>
-              Be a Rep não iniciado
-            </small>
-
-
-          </div>
-
+          <small>
+            Be a Rep não iniciado
+          </small>
 
         </button>
 
 
 
-        <!-- GEMBA + BE A REP EM PROCESSO -->
-
         <button
+          type="button"
           class="art-tab"
           data-arte="guemba-processando"
-          type="button"
         >
-
 
           <span>
             🔄
           </span>
 
+          <strong>
+            Gemba + Be a Rep
+          </strong>
 
-          <div>
-
-
-            <strong>
-              Gemba + Be a Rep em processo
-            </strong>
-
-
-            <small>
-              Gemba concluído e Be a Rep iniciado
-            </small>
-
-
-          </div>
-
+          <small>
+            Em processo
+          </small>
 
         </button>
 
@@ -1190,14 +1527,14 @@
 
     <section
       id="area-artes"
-      class="art-stage oculto"
+      class="area-artes oculto"
     >
 
 
 
-      <!-- =====================================================
-           RESUMO GERAL
-      ====================================================== -->
+      <!-- ===================================================
+           ARTE 1 — RESUMO GERAL
+      ==================================================== -->
 
       <article
         id="arte-geral"
@@ -1206,10 +1543,7 @@
       >
 
 
-
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
+        <!-- CABEÇALHO -->
 
         <header class="arte-header">
 
@@ -1221,7 +1555,6 @@
           >
 
 
-
           <div class="arte-title">
 
 
@@ -1231,24 +1564,20 @@
 
 
             <p>
-              ACOMPANHAMENTO
+              RESUMO GERAL
             </p>
 
 
           </div>
 
 
-
-          <div class="month-pill month-yellow">
-
+          <div class="month-pill month-blue">
 
             📅
-
 
             <strong data-mes>
               MÊS
             </strong>
-
 
           </div>
 
@@ -1258,16 +1587,18 @@
 
 
         <!-- =================================================
-             RESUMO SUPERIOR
+             RESUMO PRINCIPAL
         ================================================== -->
 
         <section class="summary-top">
 
 
-
-          <!-- PERCENTUAL GERAL -->
-
           <div class="overall-card">
+
+
+            <span>
+              RESULTADO GERAL
+            </span>
 
 
             <strong id="percentual-geral">
@@ -1275,29 +1606,21 @@
             </strong>
 
 
-            <span>
-              GERAL
-            </span>
-
-
-            <small>
-              % de realização
-            </small>
+            <p>
+              REALIZAÇÃO
+            </p>
 
 
           </div>
 
 
 
-          <!-- CARDS PRINCIPAIS -->
-
           <div class="summary-cards">
-
 
 
             <!-- REALIZARAM -->
 
-            <div>
+            <div class="summary-card summary-green">
 
 
               <span>
@@ -1305,19 +1628,25 @@
               </span>
 
 
-              <small>
-                REALIZARAM
-              </small>
+              <div>
 
 
-              <strong id="arte-geral-realizaram">
-                0
-              </strong>
+                <small>
+                  REALIZARAM
+                </small>
 
 
-              <em id="arte-percentual-realizaram">
-                0,0%
-              </em>
+                <strong id="arte-geral-realizaram">
+                  0
+                </strong>
+
+
+                <p id="arte-percentual-realizaram">
+                  0,0%
+                </p>
+
+
+              </div>
 
 
             </div>
@@ -1326,27 +1655,33 @@
 
             <!-- EM PROCESSO -->
 
-            <div>
+            <div class="summary-card summary-orange">
 
 
               <span>
-                🕘
+                ⏳
               </span>
 
 
-              <small>
-                EM PROCESSO
-              </small>
+              <div>
 
 
-              <strong id="arte-geral-processo">
-                0
-              </strong>
+                <small>
+                  EM PROCESSO
+                </small>
 
 
-              <em id="arte-percentual-processo">
-                0,0%
-              </em>
+                <strong id="arte-geral-processo">
+                  0
+                </strong>
+
+
+                <p id="arte-percentual-processo">
+                  0,0%
+                </p>
+
+
+              </div>
 
 
             </div>
@@ -1355,7 +1690,7 @@
 
             <!-- NÃO REALIZARAM -->
 
-            <div>
+            <div class="summary-card summary-red">
 
 
               <span>
@@ -1363,19 +1698,25 @@
               </span>
 
 
-              <small>
-                NÃO REALIZARAM
-              </small>
+              <div>
 
 
-              <strong id="arte-geral-nao">
-                0
-              </strong>
+                <small>
+                  NÃO REALIZARAM
+                </small>
 
 
-              <em id="arte-percentual-nao">
-                0,0%
-              </em>
+                <strong id="arte-geral-nao">
+                  0
+                </strong>
+
+
+                <p id="arte-percentual-nao">
+                  0,0%
+                </p>
+
+
+              </div>
 
 
             </div>
@@ -1384,7 +1725,7 @@
 
             <!-- HC TOTAL -->
 
-            <div>
+            <div class="summary-card summary-blue">
 
 
               <span>
@@ -1392,19 +1733,25 @@
               </span>
 
 
-              <small>
-                HC TOTAL
-              </small>
+              <div>
 
 
-              <strong id="arte-geral-hc">
-                0
-              </strong>
+                <small>
+                  HC TOTAL
+                </small>
 
 
-              <em>
-                100%
-              </em>
+                <strong id="arte-geral-hc">
+                  0
+                </strong>
+
+
+                <p>
+                  100%
+                </p>
+
+
+              </div>
 
 
             </div>
@@ -1421,61 +1768,26 @@
              INDICADORES COMPLEMENTARES DE GEMBA
         ================================================== -->
 
-        <section
-          style="
-            display:flex;
-            justify-content:flex-end;
-            flex-wrap:wrap;
-            gap:10px;
-            padding:0 26px 18px;
-            box-sizing:border-box;
-          "
-        >
+        <section class="gemba-mini-summary">
 
 
-          <div
-            style="
-              display:flex;
-              align-items:center;
-              gap:8px;
-              background:#f3fbf7;
-              border:1px solid #cfe8db;
-              border-radius:999px;
-              padding:7px 11px;
-              font-size:11px;
-              color:#31594a;
-              box-shadow:0 3px 10px rgba(0,0,0,.025);
-            "
-          >
+          <div>
 
 
             <span>
-              ✅
+              🧭
             </span>
 
 
-            <span>
+            <p>
               Gemba feito
-              <strong style="color:#98a2b3;">|</strong>
-              Be a Rep não iniciado
-            </span>
+              <small>
+                Be a Rep não iniciado
+              </small>
+            </p>
 
 
-            <strong
-              id="arte-geral-gemba-pendente"
-              style="
-                background:#ffffff;
-                color:#147a4b;
-                border-radius:999px;
-                min-width:24px;
-                height:24px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                padding:0 6px;
-                box-sizing:border-box;
-              "
-            >
+            <strong id="arte-geral-gemba-pendente">
               0
             </strong>
 
@@ -1484,20 +1796,7 @@
 
 
 
-          <div
-            style="
-              display:flex;
-              align-items:center;
-              gap:8px;
-              background:#f5f8ff;
-              border:1px solid #d7e2f8;
-              border-radius:999px;
-              padding:7px 11px;
-              font-size:11px;
-              color:#344b76;
-              box-shadow:0 3px 10px rgba(0,0,0,.025);
-            "
-          >
+          <div>
 
 
             <span>
@@ -1505,28 +1804,15 @@
             </span>
 
 
-            <span>
+            <p>
               Gemba feito
-              <strong style="color:#98a2b3;">|</strong>
-              Be a Rep em processo
-            </span>
+              <small>
+                Be a Rep em processo
+              </small>
+            </p>
 
 
-            <strong
-              id="arte-geral-gemba-processo"
-              style="
-                background:#ffffff;
-                color:#1849a9;
-                border-radius:999px;
-                min-width:24px;
-                height:24px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                padding:0 6px;
-                box-sizing:border-box;
-              "
-            >
+            <strong id="arte-geral-gemba-processo">
               0
             </strong>
 
@@ -1539,13 +1825,13 @@
 
 
         <!-- =================================================
-             RESULTADO POR ÁREA
+             RESULTADO POR ÁREA DA ARTE
         ================================================== -->
 
         <section class="area-section">
 
 
-          <div class="section-heading yellow-heading">
+          <div class="section-heading blue-heading">
 
 
             <span>
@@ -1601,6 +1887,12 @@
             </div>
 
 
+            <!--
+              IMPORTANTE:
+              este é o ID original utilizado pelo script
+              para preencher a tabela da ARTE.
+            -->
+
             <div id="lista-areas"></div>
 
 
@@ -1612,27 +1904,24 @@
 
 
         <!-- =================================================
-             RODAPÉ
+             RODAPÉ DA ARTE
         ================================================== -->
 
-        <footer class="arte-footer footer-yellow">
-
+        <footer class="arte-footer footer-blue">
 
           ★
 
-
           <strong>
-            Gente que se desenvolve, transforma o negócio.
+            Desenvolvimento na prática, resultado na operação.
           </strong>
-
 
         </footer>
 
 
       </article>
-            <!-- =====================================================
-           REALIZARAM O BE A REP
-      ====================================================== -->
+            <!-- ===================================================
+           ARTE 2 — REALIZARAM O BE A REP
+      ==================================================== -->
 
       <article
         id="arte-realizaram"
@@ -1641,9 +1930,7 @@
       >
 
 
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
+        <!-- CABEÇALHO -->
 
         <header class="arte-header">
 
@@ -1686,9 +1973,7 @@
 
 
 
-        <!-- =================================================
-             DESTAQUE
-        ================================================== -->
+        <!-- DESTAQUE -->
 
         <section class="list-hero hero-green">
 
@@ -1728,9 +2013,7 @@
 
 
 
-        <!-- =================================================
-             DETALHAMENTO
-        ================================================== -->
+        <!-- DETALHAMENTO -->
 
         <section class="list-section">
 
@@ -1739,7 +2022,7 @@
 
 
             <span>
-              📋
+              👥
             </span>
 
 
@@ -1752,41 +2035,12 @@
 
 
 
-          <div
-            style="
-              border:1px solid #e2e5ea;
-              border-radius:14px;
-              overflow:hidden;
-              background:#ffffff;
-            "
-          >
+          <div class="realizaram-detalhe">
 
 
-            <!-- =================================================
-                 CABEÇALHO DA TABELA
-            ================================================== -->
+            <!-- CABEÇALHO DA TABELA -->
 
-            <div
-              style="
-                display:grid;
-                grid-template-columns:
-                  2fr
-                  1fr
-                  1.35fr
-                  1.45fr
-                  .8fr
-                  .9fr
-                  1fr;
-                gap:8px;
-                padding:12px;
-                background:#071b61;
-                color:#ffffff;
-                font-size:11px;
-                font-weight:900;
-                letter-spacing:.02em;
-                align-items:center;
-              "
-            >
+            <div class="realizaram-detalhe-head">
 
 
               <span>
@@ -1809,7 +2063,7 @@
               </span>
 
 
-              <span style="text-align:center;">
+              <span>
                 TEMPO
               </span>
 
@@ -1828,9 +2082,7 @@
 
 
 
-            <!-- =================================================
-                 LINHAS GERADAS PELO SCRIPT.JS
-            ================================================== -->
+            <!-- LINHAS GERADAS PELO SCRIPT -->
 
             <div id="lista-realizaram-detalhe"></div>
 
@@ -1842,9 +2094,7 @@
 
 
 
-        <!-- =================================================
-             RODAPÉ
-        ================================================== -->
+        <!-- RODAPÉ -->
 
         <footer class="arte-footer footer-green">
 
@@ -1861,10 +2111,9 @@
 
 
 
-
-      <!-- =====================================================
-           BE A REP EM PROCESSO
-      ====================================================== -->
+      <!-- ===================================================
+           ARTE 3 — BE A REP EM PROCESSO
+      ==================================================== -->
 
       <article
         id="arte-processo"
@@ -1873,9 +2122,7 @@
       >
 
 
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
+        <!-- CABEÇALHO -->
 
         <header class="arte-header">
 
@@ -1918,9 +2165,7 @@
 
 
 
-        <!-- =================================================
-             DESTAQUE
-        ================================================== -->
+        <!-- DESTAQUE -->
 
         <section class="list-hero hero-orange">
 
@@ -1960,9 +2205,7 @@
 
 
 
-        <!-- =================================================
-             LISTA
-        ================================================== -->
+        <!-- LISTA -->
 
         <section class="list-section">
 
@@ -1993,9 +2236,7 @@
 
 
 
-        <!-- =================================================
-             RODAPÉ
-        ================================================== -->
+        <!-- RODAPÉ -->
 
         <footer class="arte-footer footer-orange">
 
@@ -2009,9 +2250,9 @@
 
 
       </article>
-            <!-- =====================================================
-           NÃO REALIZARAM
-      ====================================================== -->
+            <!-- ===================================================
+           ARTE 4 — NÃO REALIZARAM
+      ==================================================== -->
 
       <article
         id="arte-nao"
@@ -2020,9 +2261,7 @@
       >
 
 
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
+        <!-- CABEÇALHO -->
 
         <header class="arte-header">
 
@@ -2065,9 +2304,7 @@
 
 
 
-        <!-- =================================================
-             DESTAQUE
-        ================================================== -->
+        <!-- DESTAQUE -->
 
         <section class="list-hero hero-red">
 
@@ -2107,9 +2344,7 @@
 
 
 
-        <!-- =================================================
-             LISTA
-        ================================================== -->
+        <!-- LISTA -->
 
         <section class="list-section">
 
@@ -2140,9 +2375,7 @@
 
 
 
-        <!-- =================================================
-             RODAPÉ
-        ================================================== -->
+        <!-- RODAPÉ -->
 
         <footer class="arte-footer footer-red">
 
@@ -2159,14 +2392,13 @@
 
 
 
-
-      <!-- =====================================================
-           GEMBA FEITO / BE A REP NÃO INICIADO
+      <!-- ===================================================
+           ARTE 5 — GEMBA FEITO / BE A REP NÃO INICIADO
 
            IMPORTANTE:
            Os IDs internos continuam com "guemba"
            para manter compatibilidade com o script.js.
-      ====================================================== -->
+      ==================================================== -->
 
       <article
         id="arte-guemba-pendente"
@@ -2175,9 +2407,7 @@
       >
 
 
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
+        <!-- CABEÇALHO -->
 
         <header class="arte-header">
 
@@ -2220,9 +2450,7 @@
 
 
 
-        <!-- =================================================
-             DESTAQUE
-        ================================================== -->
+        <!-- DESTAQUE -->
 
         <section class="list-hero hero-green">
 
@@ -2264,9 +2492,7 @@
 
 
 
-        <!-- =================================================
-             LISTA
-        ================================================== -->
+        <!-- LISTA -->
 
         <section class="list-section">
 
@@ -2297,9 +2523,7 @@
 
 
 
-        <!-- =================================================
-             RODAPÉ
-        ================================================== -->
+        <!-- RODAPÉ -->
 
         <footer class="arte-footer footer-green">
 
@@ -2316,14 +2540,13 @@
 
 
 
-
-      <!-- =====================================================
-           GEMBA + BE A REP EM PROCESSO
+      <!-- ===================================================
+           ARTE 6 — GEMBA + BE A REP EM PROCESSO
 
            IMPORTANTE:
-           Os IDs internos continuam com "guemba"
+           O ID interno continua com "guemba"
            para manter compatibilidade com o script.js.
-      ====================================================== -->
+      ==================================================== -->
 
       <article
         id="arte-guemba-processando"
@@ -2332,9 +2555,7 @@
       >
 
 
-        <!-- =================================================
-             CABEÇALHO
-        ================================================== -->
+        <!-- CABEÇALHO -->
 
         <header class="arte-header">
 
@@ -2377,9 +2598,7 @@
 
 
 
-        <!-- =================================================
-             DESTAQUE
-        ================================================== -->
+        <!-- DESTAQUE -->
 
         <section class="list-hero hero-blue">
 
@@ -2419,9 +2638,7 @@
 
 
 
-        <!-- =================================================
-             LISTA
-        ================================================== -->
+        <!-- LISTA -->
 
         <section class="list-section">
 
@@ -2452,9 +2669,7 @@
 
 
 
-        <!-- =================================================
-             RODAPÉ
-        ================================================== -->
+        <!-- RODAPÉ -->
 
         <footer class="arte-footer footer-blue">
 
@@ -2469,6 +2684,241 @@
 
       </article>
           </section>
+
+
+
+    <!-- =====================================================
+         AJUSTES DO DASHBOARD
+    ====================================================== -->
+
+    <section class="dashboard-settings">
+
+
+      <details class="settings-details">
+
+
+        <summary class="settings-summary">
+
+
+          <div class="settings-summary-left">
+
+
+            <span class="settings-icon">
+              ⚙️
+            </span>
+
+
+            <div>
+
+
+              <span class="eyebrow">
+                CONFIGURAÇÕES
+              </span>
+
+
+              <strong>
+                Ajustes do Dashboard
+              </strong>
+
+
+              <small>
+                Gerencie exceções e pessoas ocultadas das artes.
+              </small>
+
+
+            </div>
+
+
+          </div>
+
+
+          <span class="settings-arrow">
+            ↓
+          </span>
+
+
+        </summary>
+
+
+
+        <div class="settings-content">
+
+
+          <!-- =================================================
+               EXCEÇÕES DAS ARTES
+          ================================================== -->
+
+          <section class="exceptions-card settings-exception-card">
+
+
+            <div class="exceptions-header">
+
+
+              <div>
+
+
+                <span class="eyebrow">
+                  GESTÃO DE EXCEÇÕES
+                </span>
+
+
+                <h2>
+                  👤 Pessoas ocultadas das artes
+                </h2>
+
+
+                <p>
+                  Utilize esta opção para retirar uma pessoa das listas exibidas nas artes.
+                </p>
+
+
+              </div>
+
+
+              <span
+                id="contador-excecoes"
+                class="exception-counter"
+              >
+                0 ocultadas
+              </span>
+
+
+            </div>
+
+
+
+            <div class="settings-warning">
+
+
+              <span>
+                ℹ️
+              </span>
+
+
+              <p>
+                A pessoa continuará fazendo parte dos dados do dashboard.
+                A exceção remove apenas sua exibição nas listas das artes.
+              </p>
+
+
+            </div>
+
+
+
+            <!-- ADICIONAR EXCEÇÃO -->
+
+            <div class="exception-form">
+
+
+              <div class="field-group">
+
+
+                <label for="nome-excecao">
+                  Pessoa
+                </label>
+
+
+                <input
+                  id="nome-excecao"
+                  type="text"
+                  list="lista-nomes-excecao"
+                  placeholder="Digite ou selecione uma pessoa..."
+                  autocomplete="off"
+                >
+
+
+                <datalist id="lista-nomes-excecao"></datalist>
+
+
+              </div>
+
+
+
+              <div class="field-group">
+
+
+                <label for="motivo-excecao">
+                  Motivo
+                </label>
+
+
+                <input
+                  id="motivo-excecao"
+                  type="text"
+                  placeholder="Ex.: afastamento, férias..."
+                  autocomplete="off"
+                >
+
+
+              </div>
+
+
+
+              <button
+                id="adicionar-excecao"
+                class="btn btn-dark"
+                type="button"
+              >
+                + Adicionar
+              </button>
+
+
+            </div>
+
+
+
+            <!-- LISTA DE EXCEÇÕES -->
+
+            <div class="exception-list-area">
+
+
+              <div class="exception-list-title">
+
+
+                <div>
+
+
+                  <strong>
+                    Pessoas removidas das listas
+                  </strong>
+
+
+                  <span>
+                    Clique em “Reativar nome” para voltar a exibir a pessoa.
+                  </span>
+
+
+                </div>
+
+
+              </div>
+
+
+              <div id="lista-excecoes">
+
+
+                <p class="empty-state">
+                  Nenhuma pessoa ocultada das listas.
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+
+          </section>
+
+
+        </div>
+
+
+      </details>
+
+
+    </section>
+
 
 
     <!-- =====================================================
@@ -2501,7 +2951,7 @@
 
   <script
     type="module"
-    src="script.js?v=20260903-01"
+    src="script.js?v=20260903-02"
   >
   </script>
 
