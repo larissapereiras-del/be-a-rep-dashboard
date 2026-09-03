@@ -5997,95 +5997,53 @@ function atualizarStatus(
 
 function exibirDashboard() {
 
-  if (
-    resumoDados
-  ) {
-
-    resumoDados.hidden =
-      false;
-
-  }
+  resumoDados
+    ?.classList
+    .remove(
+      "oculto"
+    );
 
 
-  if (
-    menuArtes
-  ) {
-
-    menuArtes.hidden =
-      false;
-
-  }
+  menuArtes
+    ?.classList
+    .remove(
+      "oculto"
+    );
 
 
-  if (
-    areaArtes
-  ) {
-
-    areaArtes.hidden =
-      false;
-
-  }
-
-
-  if (
-    botaoBaixar
-  ) {
-
-    botaoBaixar.hidden =
-      false;
-
-  }
+  areaArtes
+    ?.classList
+    .remove(
+      "oculto"
+    );
 
 }
 
 
-/* =========================================================
-   OCULTAR DASHBOARD
-========================================================= */
 
 function ocultarDashboard() {
 
-  if (
-    resumoDados
-  ) {
-
-    resumoDados.hidden =
-      true;
-
-  }
+  resumoDados
+    ?.classList
+    .add(
+      "oculto"
+    );
 
 
-  if (
-    menuArtes
-  ) {
-
-    menuArtes.hidden =
-      true;
-
-  }
+  menuArtes
+    ?.classList
+    .add(
+      "oculto"
+    );
 
 
-  if (
-    areaArtes
-  ) {
-
-    areaArtes.hidden =
-      true;
-
-  }
-
-
-  if (
-    botaoBaixar
-  ) {
-
-    botaoBaixar.hidden =
-      true;
-
-  }
+  areaArtes
+    ?.classList
+    .add(
+      "oculto"
+    );
 
 }
-
 
 /* =========================================================
    MOSTRAR ARTE
@@ -6099,19 +6057,6 @@ function mostrarArte(
     nomeArte;
 
 
-  botoesArte.forEach(
-    botao => {
-
-      botao.classList.toggle(
-        "ativo",
-        botao.dataset.arte ===
-          nomeArte
-      );
-
-    }
-  );
-
-
   document
     .querySelectorAll(
       ".arte"
@@ -6119,129 +6064,129 @@ function mostrarArte(
     .forEach(
       arte => {
 
-        arte.classList.toggle(
-          "ativa",
-          arte.dataset.arte ===
-            nomeArte
-        );
+        arte
+          .classList
+          .remove(
+            "ativa"
+          );
+
+      }
+    );
+
+
+  const arteSelecionada =
+    document
+      .getElementById(
+        `arte-${nomeArte}`
+      );
+
+
+  arteSelecionada
+    ?.classList
+    .add(
+      "ativa"
+    );
+
+
+  botoesArte
+    .forEach(
+      botao => {
+
+        botao
+          .classList
+          .toggle(
+            "ativo",
+            botao.dataset.arte ===
+              nomeArte
+          );
 
       }
     );
 
 }
-
-
 /* =========================================================
    BAIXAR ARTE ATUAL
 ========================================================= */
 
 async function baixarArteAtual() {
 
+  const arte =
+    document
+      .getElementById(
+        `arte-${arteAtual}`
+      );
+
+
+  if (
+    !arte
+  ) {
+
+    atualizarStatus(
+      "Não foi possível localizar a arte selecionada.",
+      "erro"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    typeof html2canvas ===
+    "undefined"
+  ) {
+
+    atualizarStatus(
+      "Biblioteca de geração de imagem não carregada.",
+      "erro"
+    );
+
+    return;
+
+  }
+
+
   try {
-
-    const arte =
-      document.querySelector(
-        `.arte[data-arte="${arteAtual}"]`
-      );
-
-
-    if (
-      !arte
-    ) {
-
-      throw new Error(
-        "Não foi possível encontrar a arte selecionada."
-      );
-
-    }
-
-
-    if (
-      typeof html2canvas !==
-      "function"
-    ) {
-
-      throw new Error(
-        "A biblioteca de geração de imagem não foi carregada."
-      );
-
-    }
-
-
-    if (
-      botaoBaixar
-    ) {
-
-      botaoBaixar.disabled =
-        true;
-
-
-      botaoBaixar.textContent =
-        "Gerando imagem...";
-
-    }
-
 
     const canvas =
       await html2canvas(
         arte,
         {
-
-          scale:
-            2,
-
+          scale: 2,
           backgroundColor:
             "#ffffff",
-
-          useCORS:
-            true
-
+          useCORS: true
         }
       );
 
 
+    const nomeArquivo =
+      arte.dataset
+        .nomeArquivo ||
+      `Be-a-Rep-${arteAtual}`;
+
+
     const link =
-      document.createElement(
-        "a"
-      );
-
-
-    const nomeMes =
-      normalizarTexto(
-        dadosProcessados?.mes ||
-        referenciaSelecionada
-      )
-        .replace(
-          /\s+/g,
-          "-"
-        );
-
-
-    const nomeArteArquivo =
-      normalizarTexto(
-        arteAtual
-      )
-        .replace(
-          /\s+/g,
-          "-"
+      document
+        .createElement(
+          "a"
         );
 
 
     link.download =
-      `be-a-rep-${nomeArteArquivo}-${nomeMes}.png`;
+      `${nomeArquivo}-${referenciaSelecionada || "mes"}.png`;
 
 
     link.href =
-      canvas.toDataURL(
-        "image/png"
-      );
+      canvas
+        .toDataURL(
+          "image/png"
+        );
 
 
     link.click();
 
-  }
-
-  catch (
+  } catch (
     erro
   ) {
 
@@ -6252,32 +6197,13 @@ async function baixarArteAtual() {
 
 
     atualizarStatus(
-      `❌ Não foi possível gerar a imagem: ${erro.message}`,
+      "Erro ao gerar a imagem.",
       "erro"
     );
 
   }
 
-  finally {
-
-    if (
-      botaoBaixar
-    ) {
-
-      botaoBaixar.disabled =
-        false;
-
-
-      botaoBaixar.textContent =
-        "⬇ Baixar PNG";
-
-    }
-
-  }
-
 }
-
-
 /* =========================================================
    NORMALIZAR TEXTO
 ========================================================= */
