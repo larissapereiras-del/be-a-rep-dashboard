@@ -3410,3 +3410,531 @@
   }
 
 }
+
+/* =========================================================
+   CENTRAL BE A REP — TIPOGRAFIA V3
+   Mais limpa, moderna e confortável para dashboard
+========================================================= */
+
+@import url(
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap'
+);
+
+
+/* =========================================================
+   BASE
+========================================================= */
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.45;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+
+/* =========================================================
+   MONTSERRAT SOMENTE PARA GRANDES DESTAQUES
+========================================================= */
+
+.hero-brand h1,
+.arte-title h2,
+.overall-card > strong {
+  font-family: "Montserrat", "Inter", Arial, sans-serif;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.hero-brand .eyebrow {
+  font-family: "Inter", sans-serif;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+
+.hero-brand h1 {
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 800;
+  letter-spacing: -1.2px;
+}
+
+
+.hero-brand p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+
+.hero-month-box span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+}
+
+
+.hero-month-box strong {
+  font-family: "Inter", sans-serif;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+.hero-connection {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   EYEBROWS / PEQUENOS TÍTULOS
+========================================================= */
+
+.eyebrow,
+.sync-main .eyebrow,
+.consulta-header .eyebrow,
+.journey-header .eyebrow,
+.performance-header .eyebrow,
+.art-center-header .eyebrow,
+.exceptions-header .eyebrow,
+.settings-summary .eyebrow {
+  font-family: "Inter", sans-serif;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+
+
+/* =========================================================
+   TÍTULOS DAS SEÇÕES
+========================================================= */
+
+.sync-main h2,
+.consulta-header h2,
+.journey-header h2,
+.performance-header h2,
+.art-center-header h2,
+.exceptions-header h2 {
+  font-family: "Inter", sans-serif;
+
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+
+.consulta-header h2,
+.journey-header h2,
+.performance-header h2,
+.art-center-header h2 {
+  font-size: 21px;
+}
+
+
+.sync-main h2 {
+  font-size: 16px;
+}
+
+
+.exceptions-header h2 {
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   DESCRIÇÕES
+========================================================= */
+
+.sync-main p,
+.consulta-header p,
+.journey-header p,
+.performance-header p,
+.art-center-header p,
+.exceptions-header p {
+  font-family: "Inter", sans-serif;
+
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   KPIs
+========================================================= */
+
+.dashboard-kpis-v2 .metric-card > p {
+  font-family: "Inter", sans-serif;
+
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+}
+
+
+.dashboard-kpis-v2 .metric-card > strong {
+  font-family: "Inter", sans-serif;
+
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+}
+
+
+.dashboard-kpis-v2 .metric-card > span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+.metric-top small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   META / RESULTADO
+========================================================= */
+
+.status-meta-v2 .eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.status-meta-v2 h3 {
+  font-family: "Inter", sans-serif;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+.status-meta-v2 p {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+
+.status-meta-numeros span {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.status-meta-numeros strong {
+  font-family: "Inter", sans-serif;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FILTRO / BOTÕES
+========================================================= */
+
+.filtro-mes-box label {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.filtro-mes-box select {
+  font-family: "Inter", sans-serif;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.btn,
+.sync-actions .btn,
+.consulta-search .btn-dark,
+.btn-download,
+.exception-form .btn-dark {
+  font-family: "Inter", sans-serif;
+
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+
+/* =========================================================
+   CONSULTA RÁPIDA
+========================================================= */
+
+.consulta-input-wrap input {
+  font-family: "Inter", sans-serif;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+.consulta-empty strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.consulta-empty span {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+
+.consulta-profile-info h3 {
+  font-family: "Inter", sans-serif;
+
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+
+.consulta-profile-info p {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+.consulta-status-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+
+.consulta-status-item small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+
+.consulta-status-item strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.consulta-detalhes span {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.consulta-detalhes strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   JORNADA
+========================================================= */
+
+.journey-step small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+
+.journey-step strong {
+  font-family: "Inter", sans-serif;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+.journey-step span {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+
+.journey-step > b {
+  font-family: "Inter", sans-serif;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+.journey-note p {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   DESEMPENHO POR ÁREA
+========================================================= */
+
+.performance-legend span {
+  font-size: 9px;
+  font-weight: 500;
+}
+
+
+.area-rank-name strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+.area-rank-percent {
+  font-family: "Inter", sans-serif;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.area-rank-hc {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+
+.performance-card .areas-table-head span {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+}
+
+
+.dashboard-area-row > span {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+
+.dashboard-area-row > span:first-child,
+.dashboard-area-row .area-realizados,
+.dashboard-area-row .area-processo,
+.dashboard-area-row .area-nao,
+.dashboard-area-row .area-percentual {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CENTRAL DE ARTES
+========================================================= */
+
+.art-tab strong {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.art-tab small {
+  font-size: 8px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   AJUSTES / EXCEÇÕES
+========================================================= */
+
+.settings-summary strong {
+  font-family: "Inter", sans-serif;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+.settings-summary small {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+
+.settings-warning p {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+
+.field-group label {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.field-group input {
+  font-family: "Inter", sans-serif;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+.exception-list-title strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+.exception-list-title span {
+  font-size: 9px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   MELHOR LEITURA DOS NÚMEROS
+========================================================= */
+
+#resumo-hc,
+#resumo-realizaram,
+#resumo-processo,
+#resumo-nao,
+#percentual-meta-dashboard,
+#resumo-gemba-pendente,
+#resumo-gemba-processo,
+#jornada-berep-concluido {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 580px) {
+
+  .hero-brand h1 {
+    font-size: 27px;
+  }
+
+
+  .consulta-header h2,
+  .journey-header h2,
+  .performance-header h2,
+  .art-center-header h2 {
+    font-size: 19px;
+  }
+
+
+  .dashboard-kpis-v2 .metric-card > strong {
+    font-size: 31px;
+  }
+
+}
