@@ -127,7 +127,63 @@ const botoesArte =
   document.querySelectorAll(
     ".art-tab"
   );
+/* =========================================================
+   CONSULTA RÁPIDA — ELEMENTOS
+========================================================= */
 
+const consultaPessoa =
+  $("consulta-pessoa");
+
+const listaPessoasConsulta =
+  $("lista-pessoas-consulta");
+
+const botaoConsultarPessoa =
+  $("botao-consultar-pessoa");
+
+const consultaVazia =
+  $("consulta-vazia");
+
+const consultaResultado =
+  $("consulta-resultado");
+
+const consultaStatusGeral =
+  $("consulta-status-geral");
+
+const consultaNome =
+  $("consulta-nome");
+
+const consultaUsername =
+  $("consulta-username");
+
+const consultaArea =
+  $("consulta-area");
+
+const consultaSetor =
+  $("consulta-setor");
+
+const consultaGemba =
+  $("consulta-gemba");
+
+const consultaBeRep =
+  $("consulta-berep");
+
+const consultaTempo =
+  $("consulta-tempo");
+
+const consultaMetaTempo =
+  $("consulta-meta-tempo");
+
+const consultaLocal =
+  $("consulta-local");
+
+const consultaPecas =
+  $("consulta-pecas");
+
+const consultaProdutividade =
+  $("consulta-produtividade");
+
+const consultaTempoRestante =
+  $("consulta-tempo-restante");
 
 /* =========================================================
    INICIALIZAÇÃO
@@ -169,7 +225,60 @@ document.addEventListener(
    EVENTOS
 ========================================================= */
 
-function configurarEventos() {
+function configurarEventos()
+  /* =======================================================
+     CONSULTA RÁPIDA
+  ======================================================= */
+
+  botaoConsultarPessoa
+    ?.addEventListener(
+      "click",
+      consultarPessoaSelecionada
+    );
+
+
+  consultaPessoa
+    ?.addEventListener(
+      "keydown",
+      evento => {
+
+        if (
+          evento.key ===
+          "Enter"
+        ) {
+
+          evento.preventDefault();
+
+          consultarPessoaSelecionada();
+
+        }
+
+      }
+    );
+
+
+  consultaPessoa
+    ?.addEventListener(
+      "input",
+      () => {
+
+        /*
+         * Se apagar completamente a pesquisa,
+         * volta para o estado inicial.
+         */
+
+        if (
+          !consultaPessoa.value.trim()
+        ) {
+
+          limparResultadoConsulta();
+
+        }
+
+      }
+    );
+   
+{
 
 
   /* =======================================================
@@ -2788,19 +2897,14 @@ function atualizarTudo() {
   );
 
 
-  preencherListasComExcecoes();
-
-
   preencherDatalistExcecoes();
 
+  preencherDatalistConsulta();
+
+  limparResultadoConsulta();
 
   renderizarExcecoes();
-
-
-  exibirDashboard();
-
-
-  mostrarArte(
+   
     "geral"
   );
 
@@ -7068,6 +7172,815 @@ function salvarExcecoes() {
 
 }
 
+/* =========================================================
+   CONSULTA RÁPIDA
+========================================================= */
+
+
+/* =========================================================
+   PREENCHER NOMES DA CONSULTA
+========================================================= */
+
+function preencherDatalistConsulta() {
+
+  if (
+    !listaPessoasConsulta
+  ) {
+
+    return;
+
+  }
+
+
+  listaPessoasConsulta.innerHTML =
+    "";
+
+
+  const registros =
+    Array.isArray(
+      dadosProcessados?.registros
+    )
+      ? dadosProcessados.registros
+      : [];
+
+
+  const pessoasOrdenadas =
+    [...registros].sort(
+      (
+        a,
+        b
+      ) => {
+
+        return String(
+          a?.nome ||
+          ""
+        ).localeCompare(
+          String(
+            b?.nome ||
+            ""
+          ),
+          "pt-BR"
+        );
+
+      }
+    );
+
+
+  pessoasOrdenadas.forEach(
+    pessoa => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      const nome =
+        String(
+          pessoa?.nome ||
+          ""
+        ).trim();
+
+
+      const username =
+        String(
+          pessoa?.username ||
+          ""
+        ).trim();
+
+
+      /*
+       * O value fica como o nome para facilitar a seleção.
+       * Username aparece como complemento da opção.
+       */
+
+      option.value =
+        nome;
+
+
+      if (
+        username
+      ) {
+
+        option.label =
+          `${username} • ${pessoa?.area || "SEM ÁREA"}`;
+
+      }
+
+
+      listaPessoasConsulta.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+
+/* =========================================================
+   NORMALIZAR TEXTO PARA PESQUISA
+========================================================= */
+
+function normalizarTextoConsulta(
+  valor
+) {
+
+  return String(
+    valor ||
+    ""
+  )
+    .normalize(
+      "NFD"
+    )
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
+    .trim()
+    .toUpperCase();
+
+}
+
+
+
+/* =========================================================
+   LOCALIZAR PESSOA
+========================================================= */
+
+function localizarPessoaConsulta(
+  termo
+) {
+
+  const registros =
+    Array.isArray(
+      dadosProcessados?.registros
+    )
+      ? dadosProcessados.registros
+      : [];
+
+
+  const busca =
+    normalizarTextoConsulta(
+      termo
+    );
+
+
+  if (
+    !busca
+  ) {
+
+    return null;
+
+  }
+
+
+  /*
+   * 1º tenta encontrar correspondência exata
+   * por nome ou username.
+   */
+
+  const exata =
+    registros.find(
+      pessoa => {
+
+        const nome =
+          normalizarTextoConsulta(
+            pessoa?.nome
+          );
+
+
+        const username =
+          normalizarTextoConsulta(
+            pessoa?.username
+          );
+
+
+        return (
+          nome === busca ||
+          username === busca
+        );
+
+      }
+    );
+
+
+  if (
+    exata
+  ) {
+
+    return exata;
+
+  }
+
+
+  /*
+   * 2º tenta localizar por trecho.
+   */
+
+  return registros.find(
+    pessoa => {
+
+      const nome =
+        normalizarTextoConsulta(
+          pessoa?.nome
+        );
+
+
+      const username =
+        normalizarTextoConsulta(
+          pessoa?.username
+        );
+
+
+      return (
+        nome.includes(
+          busca
+        ) ||
+        username.includes(
+          busca
+        )
+      );
+
+    }
+  ) ||
+    null;
+
+}
+
+
+
+/* =========================================================
+   CONSULTAR PESSOA
+========================================================= */
+
+function consultarPessoaSelecionada() {
+
+  if (
+    !consultaPessoa
+  ) {
+
+    return;
+
+  }
+
+
+  const termo =
+    consultaPessoa.value.trim();
+
+
+  if (
+    !termo
+  ) {
+
+    limparResultadoConsulta();
+
+    consultaPessoa.focus();
+
+    return;
+
+  }
+
+
+  const pessoa =
+    localizarPessoaConsulta(
+      termo
+    );
+
+
+  if (
+    !pessoa
+  ) {
+
+    mostrarPessoaNaoEncontrada(
+      termo
+    );
+
+    return;
+
+  }
+
+
+  preencherResultadoConsulta(
+    pessoa
+  );
+
+}
+
+
+
+/* =========================================================
+   PREENCHER RESULTADO
+========================================================= */
+
+function preencherResultadoConsulta(
+  pessoa
+) {
+
+  if (
+    !consultaResultado
+  ) {
+
+    return;
+
+  }
+
+
+  const fezGemba =
+    gembaConcluido(
+      pessoa?.gemba
+    );
+
+
+  const iniciouBeARep =
+    beRepIniciado(
+      pessoa
+    );
+
+
+  const concluiuBeARep =
+    beRepConcluido(
+      pessoa
+    );
+
+
+  const beARepEmProcesso =
+    beRepEmProcesso(
+      pessoa
+    );
+
+
+  const minutos =
+    Number(
+      pessoa?.minutos
+    ) ||
+    0;
+
+
+  const metaMinutos =
+    obterTempoMinimoBeARep(
+      pessoa?.area ||
+      ""
+    );
+
+
+  const minutosRestantes =
+    Math.max(
+      0,
+      metaMinutos -
+      minutos
+    );
+
+
+  /* =======================================================
+     STATUS GERAL DA CONSULTA
+  ======================================================= */
+
+  let textoStatus =
+    "NÃO INICIADO";
+
+
+  let classeStatus =
+    "status-nao";
+
+
+  if (
+    concluiuBeARep
+  ) {
+
+    textoStatus =
+      "BE A REP CONCLUÍDO";
+
+    classeStatus =
+      "status-concluido";
+
+  }
+
+  else if (
+    fezGemba &&
+    beARepEmProcesso
+  ) {
+
+    textoStatus =
+      "GEMBA + BE A REP EM PROCESSO";
+
+    classeStatus =
+      "status-processo";
+
+  }
+
+  else if (
+    fezGemba &&
+    !iniciouBeARep
+  ) {
+
+    textoStatus =
+      "SOMENTE GEMBA";
+
+    classeStatus =
+      "status-gemba";
+
+  }
+
+  else if (
+    beARepEmProcesso
+  ) {
+
+    textoStatus =
+      "BE A REP EM PROCESSO";
+
+    classeStatus =
+      "status-processo";
+
+  }
+
+  else if (
+    fezGemba
+  ) {
+
+    textoStatus =
+      "GEMBA CONCLUÍDO";
+
+    classeStatus =
+      "status-gemba";
+
+  }
+
+
+  /* =======================================================
+     EXIBIR CARD
+  ======================================================= */
+
+  consultaVazia
+    ?.classList.add(
+      "oculto"
+    );
+
+
+  consultaResultado.classList.remove(
+    "oculto"
+  );
+
+
+  /* =======================================================
+     BADGE
+  ======================================================= */
+
+  if (
+    consultaStatusGeral
+  ) {
+
+    consultaStatusGeral.textContent =
+      textoStatus;
+
+
+    consultaStatusGeral.classList.remove(
+      "status-concluido",
+      "status-processo",
+      "status-gemba",
+      "status-nao"
+    );
+
+
+    consultaStatusGeral.classList.add(
+      classeStatus
+    );
+
+  }
+
+
+  /* =======================================================
+     IDENTIFICAÇÃO
+  ======================================================= */
+
+  if (
+    consultaNome
+  ) {
+
+    consultaNome.textContent =
+      pessoa?.nome ||
+      "SEM NOME";
+
+  }
+
+
+  if (
+    consultaUsername
+  ) {
+
+    consultaUsername.textContent =
+      pessoa?.username
+        ? `@${pessoa.username}`
+        : "Sem username";
+
+  }
+
+
+  if (
+    consultaArea
+  ) {
+
+    consultaArea.textContent =
+      pessoa?.area ||
+      "SEM ÁREA";
+
+  }
+
+
+  if (
+    consultaSetor
+  ) {
+
+    consultaSetor.textContent =
+      pessoa?.setor ||
+      pessoa?.setorCadastro ||
+      "SEM SETOR";
+
+  }
+
+
+  /* =======================================================
+     GEMBA
+  ======================================================= */
+
+  if (
+    consultaGemba
+  ) {
+
+    consultaGemba.textContent =
+      fezGemba
+        ? "Concluído"
+        : "Não realizado";
+
+
+    consultaGemba.className =
+      fezGemba
+        ? "text-success"
+        : "text-danger";
+
+  }
+
+
+  /* =======================================================
+     BE A REP
+  ======================================================= */
+
+  if (
+    consultaBeRep
+  ) {
+
+    if (
+      concluiuBeARep
+    ) {
+
+      consultaBeRep.textContent =
+        "Concluído";
+
+      consultaBeRep.className =
+        "text-success";
+
+    }
+
+    else if (
+      iniciouBeARep
+    ) {
+
+      consultaBeRep.textContent =
+        "Em processo";
+
+      consultaBeRep.className =
+        "text-warning";
+
+    }
+
+    else {
+
+      consultaBeRep.textContent =
+        "Não iniciado";
+
+      consultaBeRep.className =
+        "text-danger";
+
+    }
+
+  }
+
+
+  /* =======================================================
+     TEMPO
+  ======================================================= */
+
+  if (
+    consultaTempo
+  ) {
+
+    consultaTempo.textContent =
+      pessoa?.tempo ||
+      `${minutos} min`;
+
+  }
+
+
+  if (
+    consultaMetaTempo
+  ) {
+
+    consultaMetaTempo.textContent =
+      `${metaMinutos} min`;
+
+  }
+
+
+  /* =======================================================
+     LOCAL
+  ======================================================= */
+
+  if (
+    consultaLocal
+  ) {
+
+    consultaLocal.textContent =
+      pessoa?.local ||
+      "—";
+
+  }
+
+
+  /* =======================================================
+     PEÇAS
+  ======================================================= */
+
+  if (
+    consultaPecas
+  ) {
+
+    consultaPecas.textContent =
+      Number(
+        pessoa?.unidades
+      ).toLocaleString(
+        "pt-BR",
+        {
+          maximumFractionDigits:
+            0
+        }
+      );
+
+  }
+
+
+  /* =======================================================
+     PRODUTIVIDADE
+  ======================================================= */
+
+  if (
+    consultaProdutividade
+  ) {
+
+    const produtividade =
+      Number(
+        pessoa?.produtividade
+      );
+
+
+    consultaProdutividade.textContent =
+      Number.isFinite(
+        produtividade
+      )
+        ? produtividade.toLocaleString(
+            "pt-BR",
+            {
+              minimumFractionDigits:
+                1,
+              maximumFractionDigits:
+                1
+            }
+          )
+        : "—";
+
+  }
+
+
+  /* =======================================================
+     TEMPO RESTANTE
+  ======================================================= */
+
+  if (
+    consultaTempoRestante
+  ) {
+
+    if (
+      concluiuBeARep
+    ) {
+
+      consultaTempoRestante.textContent =
+        "Meta atingida";
+
+      consultaTempoRestante.className =
+        "text-success";
+
+    }
+
+    else if (
+      iniciouBeARep
+    ) {
+
+      consultaTempoRestante.textContent =
+        `${minutosRestantes} min`;
+
+      consultaTempoRestante.className =
+        "text-warning";
+
+    }
+
+    else {
+
+      consultaTempoRestante.textContent =
+        `${metaMinutos} min`;
+
+      consultaTempoRestante.className =
+        "text-danger";
+
+    }
+
+  }
+
+}
+
+
+
+/* =========================================================
+   LIMPAR CONSULTA
+========================================================= */
+
+function limparResultadoConsulta() {
+
+  consultaResultado
+    ?.classList.add(
+      "oculto"
+    );
+
+
+  consultaVazia
+    ?.classList.remove(
+      "oculto"
+    );
+
+}
+
+
+
+/* =========================================================
+   PESSOA NÃO ENCONTRADA
+========================================================= */
+
+function mostrarPessoaNaoEncontrada(
+  termo
+) {
+
+  consultaResultado
+    ?.classList.add(
+      "oculto"
+    );
+
+
+  if (
+    !consultaVazia
+  ) {
+
+    return;
+
+  }
+
+
+  consultaVazia.classList.remove(
+    "oculto"
+  );
+
+
+  consultaVazia.innerHTML = `
+
+    <div class="consulta-empty-icon">
+      🔎
+    </div>
+
+    <div>
+
+      <strong>
+        Pessoa não encontrada
+      </strong>
+
+      <span>
+        Não encontramos “${escaparHTML(
+          termo
+        )}” na base do mês selecionado.
+      </span>
+
+    </div>
+
+  `;
+
+}
 
 /* =========================================================
    FIM DO SCRIPT
