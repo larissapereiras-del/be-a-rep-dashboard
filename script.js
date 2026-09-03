@@ -1,4 +1,4 @@
-console.log("✅ CENTRAL BE A REP V2.3 — VERDI + FILTRO DE MÊS");
+console.log("✅ CENTRAL BE A REP V2.4 — Gemba + Be a Rep + filtro de mês");
 
 
 /* =========================================================
@@ -116,8 +116,7 @@ const textoAtualizacao =
 
 
 /*
- * NOVO:
- * seletor criado no index.html.
+ * Seletor de mês criado no index.html.
  */
 
 const filtroMes =
@@ -185,7 +184,7 @@ function configurarEventos() {
 
 
   /* =======================================================
-     NOVO — FILTRO DE MÊS
+     FILTRO DE MÊS
   ======================================================= */
 
   filtroMes
@@ -538,7 +537,7 @@ async function carregarDadosAutomaticos() {
 
 
     /*
-     * Agora montamos as opções do seletor
+     * Montamos as opções do seletor
      * utilizando os meses existentes na Query.
      */
 
@@ -553,9 +552,6 @@ async function carregarDadosAutomaticos() {
 
     /*
      * Sempre tentamos abrir primeiro no mês atual.
-     *
-     * Exemplo:
-     * 01/09/2026 -> SETEMBRO-2026
      */
 
     referenciaSelecionada =
@@ -591,14 +587,9 @@ async function carregarDadosAutomaticos() {
     ) {
 
       /*
-       * IMPORTANTE:
-       *
        * Se virou o mês e a Query ainda não possui
-       * registros do mês novo, o dashboard não fica
-       * completamente inutilizado.
-       *
-       * Mantemos o mês atual selecionado e avisamos
-       * que o usuário pode escolher um mês anterior.
+       * registros do mês novo, mantemos o seletor
+       * disponível para consultar meses anteriores.
        */
 
       console.warn(
@@ -758,74 +749,129 @@ async function carregarDadosAutomaticos() {
 
 }
 
+
 /* =========================================================
    NORMALIZAR REFERÊNCIA DE MÊS
-   Português / Espanhol
+   Compatibilidade Português / Espanhol
 ========================================================= */
 
-function normalizarReferenciaMes(valor) {
+function normalizarReferenciaMes(
+  valor
+) {
 
   const texto =
-    normalizarTexto(valor);
+    normalizarTexto(
+      valor
+    );
 
-  if (!texto) {
+
+  if (
+    !texto
+  ) {
+
     return "";
+
   }
 
+
   const partes =
-    texto.split("-");
+    texto.split(
+      "-"
+    );
+
 
   const mes =
-    partes[0] || "";
+    partes[0] ||
+    "";
+
 
   const ano =
-    partes[1] || "";
+    partes[1] ||
+    "";
+
 
   const meses = {
 
-    JANEIRO: "JANEIRO",
-    ENERO: "JANEIRO",
+    JANEIRO:
+      "JANEIRO",
 
-    FEVEREIRO: "FEVEREIRO",
-    FEBRERO: "FEVEREIRO",
+    ENERO:
+      "JANEIRO",
 
-    MARCO: "MARCO",
-    MARZO: "MARCO",
+    FEVEREIRO:
+      "FEVEREIRO",
 
-    ABRIL: "ABRIL",
+    FEBRERO:
+      "FEVEREIRO",
 
-    MAIO: "MAIO",
-    MAYO: "MAIO",
+    MARCO:
+      "MARCO",
 
-    JUNHO: "JUNHO",
-    JUNIO: "JUNHO",
+    MARZO:
+      "MARCO",
 
-    JULHO: "JULHO",
-    JULIO: "JULHO",
+    ABRIL:
+      "ABRIL",
 
-    AGOSTO: "AGOSTO",
+    MAIO:
+      "MAIO",
 
-    SETEMBRO: "SETEMBRO",
-    SEPTIEMBRE: "SETEMBRO",
+    MAYO:
+      "MAIO",
 
-    OUTUBRO: "OUTUBRO",
-    OCTUBRE: "OUTUBRO",
+    JUNHO:
+      "JUNHO",
 
-    NOVEMBRO: "NOVEMBRO",
-    NOVIEMBRE: "NOVEMBRO",
+    JUNIO:
+      "JUNHO",
 
-    DEZEMBRO: "DEZEMBRO",
-    DICIEMBRE: "DEZEMBRO"
+    JULHO:
+      "JULHO",
+
+    JULIO:
+      "JULHO",
+
+    AGOSTO:
+      "AGOSTO",
+
+    SETEMBRO:
+      "SETEMBRO",
+
+    SEPTIEMBRE:
+      "SETEMBRO",
+
+    OUTUBRO:
+      "OUTUBRO",
+
+    OCTUBRE:
+      "OUTUBRO",
+
+    NOVEMBRO:
+      "NOVEMBRO",
+
+    NOVIEMBRE:
+      "NOVEMBRO",
+
+    DEZEMBRO:
+      "DEZEMBRO",
+
+    DICIEMBRE:
+      "DEZEMBRO"
 
   };
 
+
   const mesNormalizado =
-    meses[mes] || mes;
+    meses[mes] ||
+    mes;
+
 
   return ano
     ? `${mesNormalizado}-${ano}`
     : mesNormalizado;
+
 }
+
 
 /* =========================================================
    REFERÊNCIA DO MÊS ATUAL
@@ -854,7 +900,7 @@ function obterReferenciaMesAtual() {
 
 
   return normalizarTexto(
-    `${mes}-${ano}`
+         `${mes}-${ano}`
   );
 
 }
@@ -1063,132 +1109,141 @@ function montarFiltroMes(
 
 
   /*
-   * Primeiro buscamos somente meses que realmente
-   * existem na resposta da Query.
+   * Busca os meses que realmente existem
+   * na resposta da Query.
    */
 
- (
-  registros ||
-  []
-).forEach(
-  item => {
+  (
+    registros ||
+    []
+  ).forEach(
+    item => {
 
-    const mes =
-      normalizarTexto(
-        obterValorObjeto(
-          item,
-          [
+      const mes =
+        normalizarTexto(
+          obterValorObjeto(
+            item,
+            [
 
-            "MES",
-            "Mes",
-            "Mês"
+              "MES",
+              "Mes",
+              "Mês"
 
-          ]
-        )
-      );
+            ]
+          )
+        );
 
 
-    if (
-      mes
-    ) {
+      if (
+        mes
+      ) {
 
-      referencias.add(
-        normalizarReferenciaMes(
-          mes
-        )
+        referencias.add(
+          normalizarReferenciaMes(
+            mes
+          )
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+   * Também adicionamos o mês atual.
+   *
+   * Assim, por exemplo, Setembro aparece
+   * mesmo se a Query ainda estiver apenas
+   * com dados de Agosto.
+   */
+
+  referencias.add(
+    normalizarReferenciaMes(
+      obterReferenciaMesAtual()
+    )
+  );
+
+
+  const lista =
+    Array.from(
+      referencias
+    );
+
+
+  /*
+   * Ordena do mês mais recente
+   * para o mais antigo.
+   */
+
+  lista.sort(
+    (
+      a,
+      b
+    ) =>
+      obterOrdemReferenciaMes(
+        b
+      ) -
+      obterOrdemReferenciaMes(
+        a
+      )
+  );
+
+
+  filtroMes.innerHTML =
+    "";
+
+
+  lista.forEach(
+    referencia => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        referencia;
+
+
+      option.textContent =
+        formatarReferenciaFiltro(
+          referencia
+        );
+
+
+      filtroMes.appendChild(
+        option
       );
 
     }
-
-  }
-);
-
-
-/*
- * Também adicionamos o mês atual.
- *
- * Dessa forma Setembro aparece no filtro mesmo
- * se a Query ainda estiver somente com Agosto.
- */
-
-referencias.add(
-  normalizarReferenciaMes(
-    obterReferenciaMesAtual()
-  )
-);
-
-
-const lista =
-  Array.from(
-    referencias
   );
 
 
-lista.sort(
-  (
-    a,
-    b
-  ) =>
-    obterOrdemReferenciaMes(
-      b
-    ) -
-    obterOrdemReferenciaMes(
-      a
-    )
-);
+  /*
+   * Seleção inicial:
+   * mês atual.
+   */
 
-
-filtroMes.innerHTML =
-  "";
-
-
-lista.forEach(
-  referencia => {
-
-    const option =
-      document.createElement(
-        "option"
-      );
-
-
-    option.value =
-      referencia;
-
-
-    option.textContent =
-      formatarReferenciaFiltro(
-        referencia
-      );
-
-
-    filtroMes.appendChild(
-      option
+  referenciaSelecionada =
+    normalizarReferenciaMes(
+      obterReferenciaMesAtual()
     );
 
-  }
-);
+
+  filtroMes.value =
+    referenciaSelecionada;
 
 
-/*
- * Seleção inicial = mês atual.
- */
-
-referenciaSelecionada =
-  normalizarReferenciaMes(
-    obterReferenciaMesAtual()
+  console.log(
+    "📅 Meses disponíveis:",
+    lista
   );
 
-
-filtroMes.value =
-  referenciaSelecionada;
-
-
-console.log(
-  "📅 Meses disponíveis:",
-  lista
-);
-
 }
+
+
 /* =========================================================
    PROCESSAR DADOS DA API
 ========================================================= */
@@ -1217,7 +1272,7 @@ function processarDadosApi(
   ======================================================= */
 
   const referenciaAtual =
-    normalizarTexto(
+    normalizarReferenciaMes(
       referenciaFiltro ||
       obterReferenciaMesAtual()
     );
@@ -1234,12 +1289,14 @@ function processarDadosApi(
 
      SOMENTE:
      - MÊS SELECIONADO
-     - OBRIGATORIO
+     - OBRIGATÓRIO
 
      NÃO FILTRAMOS ÁREA AQUI.
 
-     Quem não estiver no CADASTRO_AREAS precisa continuar
-     chegando para aparecer no alerta.
+     Isso é importante porque:
+     - Head Site continua no HC Geral;
+     - pessoas sem cadastro continuam aparecendo
+       no alerta de cadastro.
   ======================================================= */
 
   const filtrados =
@@ -1278,15 +1335,15 @@ function processarDadosApi(
 
 
         return (
-  normalizarReferenciaMes(
-    mesRegistro
-  ) ===
-    normalizarReferenciaMes(
-      referenciaAtual
-    ) &&
-  obrigatoriedade ===
-    "OBLIGATORIO"
-);
+          normalizarReferenciaMes(
+            mesRegistro
+          ) ===
+            normalizarReferenciaMes(
+              referenciaAtual
+            ) &&
+          obrigatoriedade ===
+            "OBLIGATORIO"
+        );
 
       }
     );
@@ -1307,10 +1364,9 @@ function processarDadosApi(
       .map(
         item => {
 
+
           /* ===============================================
              NOME
-
-             NOME vem do CADASTRO_AREAS
           =============================================== */
 
           const nome =
@@ -1434,7 +1490,7 @@ function processarDadosApi(
 
 
           /* ===============================================
-             TEMPO
+             TEMPO DO BE A REP
           =============================================== */
 
           const tempo =
@@ -1454,11 +1510,28 @@ function processarDadosApi(
             );
 
 
+          /*
+           * Transformamos o tempo em minutos
+           * uma única vez.
+           *
+           * Essa informação será usada depois
+           * para aplicar as regras:
+           *
+           * OPEX = 10 minutos
+           * demais áreas = 60 minutos
+           */
+
+          const minutos =
+            converterTempoParaMinutos(
+              tempo
+            );
+
+
           /* ===============================================
              LOCAL DO BE A REP
 
              QUERY:
-             PROCESOS_LMS = coluna BC
+             PROCESOS_LMS
           =============================================== */
 
           const local =
@@ -1525,6 +1598,9 @@ function processarDadosApi(
 
           /* ===============================================
              GEMBA
+
+             IMPORTANTE:
+             Gemba é independente do Be a Rep.
           =============================================== */
 
           const gemba =
@@ -1542,7 +1618,7 @@ function processarDadosApi(
 
 
           /* ===============================================
-             STATUS BAR
+             STATUS DO BE A REP
           =============================================== */
 
           const statusBar =
@@ -1650,6 +1726,39 @@ function processarDadosApi(
 
 
           /* ===============================================
+             POSSUI CADASTRO DE ÁREA?
+          =============================================== */
+
+          const temCadastroArea =
+            (
+              AREAS_VALIDAS.includes(
+                area
+              ) ||
+              area ===
+                "Head Site"
+            );
+
+
+          /* ===============================================
+             SITUAÇÃO PARA O RESUMO GERAL
+
+             Aqui consideramos a visão consolidada
+             de Gemba + Be a Rep.
+
+             As abas específicas serão separadas
+             depois, dentro de processarRegistros().
+          =============================================== */
+
+          const situacao =
+            classificarSituacao(
+              gemba,
+              statusBar,
+              minutos,
+              area
+            );
+
+
+          /* ===============================================
              REGISTRO NORMALIZADO
           =============================================== */
 
@@ -1677,9 +1786,7 @@ function processarDadosApi(
               tempo,
 
             minutos:
-              converterTempoParaMinutos(
-                tempo
-              ),
+              minutos,
 
             local:
               local,
@@ -1712,19 +1819,10 @@ function processarDadosApi(
               statusCadastro,
 
             temCadastroArea:
-  (
-    AREAS_VALIDAS.includes(
-      area
-    ) ||
-    area ===
-      "Head Site"
-  ),
+              temCadastroArea,
 
             situacao:
-              classificarSituacao(
-                gemba,
-                statusBar
-              )
+              situacao
 
           };
 
@@ -1764,11 +1862,20 @@ function processarDadosApi(
         setor:
           pessoa.setor,
 
+        gemba:
+          pessoa.gemba,
+
+        statusBar:
+          pessoa.statusBar,
+
         local:
           pessoa.local,
 
         tempo:
           pessoa.tempo,
+
+        minutos:
+          pessoa.minutos,
 
         unidades:
           pessoa.unidades,
@@ -1792,6 +1899,8 @@ function processarDadosApi(
   );
 
 }
+
+
 /* =========================================================
    CONVERTER VALOR NUMÉRICO DA QUERY
 
@@ -1838,7 +1947,9 @@ function numeroSeguroBeARep(
       .trim();
 
 
-  if (!texto) {
+  if (
+    !texto
+  ) {
 
     return 0;
 
@@ -1888,7 +1999,7 @@ function numeroSeguroBeARep(
 ========================================================= */
 
 function removerDuplicidades(
-  registros
+     registros
 ) {
 
   const mapa =
@@ -2144,19 +2255,22 @@ function processarRegistros(
 
 
       /* ===================================================
-         ÁREA
+         ÁREA OPERACIONAL
+
+         Head Site não entra nas áreas,
+         mas continua normalmente no HC Geral.
       =================================================== */
 
       if (
-  AREAS_VALIDAS.includes(
-    pessoa.area
-  )
-) {
+        AREAS_VALIDAS.includes(
+          pessoa.area
+        )
+      ) {
 
-  const dadosArea =
-    areas[
-      pessoa.area
-    ];
+        const dadosArea =
+          areas[
+            pessoa.area
+          ];
 
 
         dadosArea.hc++;
@@ -2190,32 +2304,46 @@ function processarRegistros(
 
 
       /* ===================================================
-         NOVA LISTA — REALIZARAM
+         CLASSIFICAÇÃO DAS ABAS
 
-         REGRA EXCLUSIVA DA NOVA ABA:
-         considera somente o ESTADO_BAR do Be a Rep.
+         BE A REP:
+         - OPEX conclui com 10 minutos ou mais
+         - Demais áreas concluem com 60 minutos ou mais
 
-         NÃO ALTERA:
-         - HC
-         - percentual
-         - resumo geral
-         - em processo
-         - não realizaram
-         - lógica atual do dashboard
+         GEMBA:
+         - É tratado separadamente do Be a Rep
       =================================================== */
 
       const realizouBeARep =
-        [
-          "HECHO",
-          "CUMPLIO",
-          "REALIZADO",
-          "CONCLUIDO"
-        ].includes(
-          normalizarTexto(
-            pessoa.statusBar
-          )
+        beRepConcluido(
+          pessoa
         );
 
+
+      const beARepEmProcesso =
+        beRepEmProcesso(
+          pessoa
+        );
+
+
+      const fezGemba =
+        gembaConcluido(
+          pessoa.gemba
+        );
+
+
+      const iniciouBeARep =
+        beRepIniciado(
+          pessoa
+        );
+
+
+      /* ===================================================
+         REALIZARAM O BE A REP
+
+         Somente quem realmente cumpriu
+         o tempo mínimo do Be a Rep.
+      =================================================== */
 
       if (
         realizouBeARep
@@ -2266,12 +2394,14 @@ function processarRegistros(
 
 
       /* ===================================================
-         EM PROCESSO / NÃO REALIZARAM
+         BE A REP EM PROCESSO
+
+         Iniciou o Be a Rep,
+         mas ainda não cumpriu o tempo mínimo.
       =================================================== */
 
       if (
-        pessoa.situacao ===
-        "EM_PROCESSO"
+        beARepEmProcesso
       ) {
 
         processo.push(
@@ -2283,9 +2413,18 @@ function processarRegistros(
 
       }
 
-      else if (
-        pessoa.situacao ===
-        "NAO_REALIZOU"
+
+      /* ===================================================
+         NÃO REALIZARAM
+
+         Aqui entram SOMENTE pessoas que:
+         - não fizeram Gemba
+         - não iniciaram Be a Rep
+      =================================================== */
+
+      if (
+        !fezGemba &&
+        !iniciouBeARep
       ) {
 
         naoRealizaram.push(
@@ -2299,20 +2438,15 @@ function processarRegistros(
 
 
       /* ===================================================
-         GEMBA
+         GEMBA FEITO
+
+         Fez Gemba,
+         mas ainda não iniciou Be a Rep.
       =================================================== */
 
-      const tempoConclusao =
-        pessoa.area === "OPEX"
-          ? 10
-          : 60;
-
-
       if (
-        gembaConcluido(
-          pessoa.gemba
-        ) &&
-        pessoa.minutos === 0
+        fezGemba &&
+        !iniciouBeARep
       ) {
 
         guembaPendenteBeARep.push(
@@ -2325,13 +2459,19 @@ function processarRegistros(
       }
 
 
+      /* ===================================================
+         GEMBA + BE A REP EM PROCESSO
+
+         Fez Gemba
+         +
+         iniciou Be a Rep
+         +
+         ainda não concluiu o tempo mínimo.
+      =================================================== */
+
       if (
-        gembaConcluido(
-          pessoa.gemba
-        ) &&
-        pessoa.minutos > 0 &&
-        pessoa.minutos <
-          tempoConclusao
+        fezGemba &&
+        beARepEmProcesso
       ) {
 
         guembaProcessandoBeARep.push(
@@ -2455,7 +2595,12 @@ function processarRegistros(
      GERAL
 
      Todos os obrigatórios do mês entram aqui,
-     inclusive quem está sem área.
+     inclusive:
+     - Head Site
+     - pessoas sem cadastro de área
+
+     O Resumo Geral contempla o avanço completo
+     de Gemba + Be a Rep.
   ======================================================= */
 
   const geral =
@@ -2475,8 +2620,26 @@ function processarRegistros(
 
 
   console.log(
-    "✅ Realizaram detalhados:",
+    "✅ Realizaram o Be a Rep:",
     realizaramDetalhe.length
+  );
+
+
+  console.log(
+    "⏳ Be a Rep em processo:",
+    processo.length
+  );
+
+
+  console.log(
+    "📋 Gemba feito / Be a Rep não iniciado:",
+    guembaPendenteBeARep.length
+  );
+
+
+  console.log(
+    "🔄 Gemba + Be a Rep em processo:",
+    guembaProcessandoBeARep.length
   );
 
 
@@ -2620,10 +2783,6 @@ function atualizarTudo() {
   );
 
 
-  /* =======================================================
-     NOVA ABA — REALIZARAM
-  ======================================================= */
-
   preencherArteRealizaram(
     dadosProcessados
   );
@@ -2646,8 +2805,6 @@ function atualizarTudo() {
   );
 
 }
-
-
 /* =========================================================
    NOVA ABA — REALIZARAM
 ========================================================= */
@@ -2922,6 +3079,8 @@ function preencherArteRealizaram(
   );
 
 }
+
+
 /* =========================================================
    FORMATAR NÚMEROS — REALIZARAM
 ========================================================= */
@@ -2989,7 +3148,9 @@ function preencherResumo(
     $("resumo-nao");
 
 
-  if (resumoHc) {
+  if (
+    resumoHc
+  ) {
 
     resumoHc.textContent =
       geral.hc;
@@ -2997,7 +3158,9 @@ function preencherResumo(
   }
 
 
-  if (resumoRealizaram) {
+  if (
+    resumoRealizaram
+  ) {
 
     resumoRealizaram.textContent =
       geral.realizaram;
@@ -3005,7 +3168,9 @@ function preencherResumo(
   }
 
 
-  if (resumoProcesso) {
+  if (
+    resumoProcesso
+  ) {
 
     resumoProcesso.textContent =
       geral.processo;
@@ -3013,7 +3178,9 @@ function preencherResumo(
   }
 
 
-  if (resumoNao) {
+  if (
+    resumoNao
+  ) {
 
     resumoNao.textContent =
       geral.naoRealizaram;
@@ -3029,7 +3196,9 @@ function preencherResumo(
     $("percentual-resumo-realizaram");
 
 
-  if (percentualRealizaram) {
+  if (
+    percentualRealizaram
+  ) {
 
     percentualRealizaram.textContent =
       formatarPorcentagem(
@@ -3046,7 +3215,9 @@ function preencherResumo(
     $("percentual-resumo-processo");
 
 
-  if (percentualProcesso) {
+  if (
+    percentualProcesso
+  ) {
 
     percentualProcesso.textContent =
       formatarPorcentagem(
@@ -3063,7 +3234,9 @@ function preencherResumo(
     $("percentual-resumo-nao");
 
 
-  if (percentualNao) {
+  if (
+    percentualNao
+  ) {
 
     percentualNao.textContent =
       formatarPorcentagem(
@@ -3076,11 +3249,59 @@ function preencherResumo(
   }
 
 
+  /* =======================================================
+     INDICADORES SECUNDÁRIOS DE GEMBA
+
+     Estes dois números serão mostrados no Resumo Geral
+     quando adicionarmos os elementos no index.html.
+
+     1) Gemba feito / Be a Rep não iniciado
+     2) Gemba + Be a Rep em processo
+  ======================================================= */
+
+  const resumoGembaPendente =
+    $("resumo-gemba-pendente");
+
+
+  const resumoGembaProcesso =
+    $("resumo-gemba-processo");
+
+
+  if (
+    resumoGembaPendente
+  ) {
+
+    resumoGembaPendente.textContent =
+      Array.isArray(
+        dados.guembaPendenteBeARep
+      )
+        ? dados.guembaPendenteBeARep.length
+        : 0;
+
+  }
+
+
+  if (
+    resumoGembaProcesso
+  ) {
+
+    resumoGembaProcesso.textContent =
+      Array.isArray(
+        dados.guembaProcessandoBeARep
+      )
+        ? dados.guembaProcessandoBeARep.length
+        : 0;
+
+  }
+
+
   const situacaoAtual =
     $("situacao-atual");
 
 
-  if (situacaoAtual) {
+  if (
+    situacaoAtual
+  ) {
 
     situacaoAtual.textContent =
       formatarPorcentagem(
@@ -3104,7 +3325,8 @@ function preencherMeta(
     hc,
     realizaram,
     percentual
-  } = dados.geral;
+  } =
+    dados.geral;
 
 
   const minimo =
@@ -3126,7 +3348,9 @@ function preencherMeta(
     $("percentual-meta-dashboard");
 
 
-  if (percentualMeta) {
+  if (
+    percentualMeta
+  ) {
 
     percentualMeta.textContent =
       formatarPorcentagem(
@@ -3140,7 +3364,9 @@ function preencherMeta(
     $("texto-progresso-meta");
 
 
-  if (textoProgresso) {
+  if (
+    textoProgresso
+  ) {
 
     textoProgresso.textContent =
       `${formatarPorcentagem(percentual)} de 90%`;
@@ -3152,7 +3378,9 @@ function preencherMeta(
     $("barra-meta-preenchida");
 
 
-  if (barra) {
+  if (
+    barra
+  ) {
 
     barra.style.width =
       `${Math.min(
@@ -3168,7 +3396,9 @@ function preencherMeta(
     $("situacao-faltam");
 
 
-  if (situacaoFaltam) {
+  if (
+    situacaoFaltam
+  ) {
 
     situacaoFaltam.textContent =
       faltam;
@@ -3197,7 +3427,9 @@ function preencherMeta(
     0
   ) {
 
-    if (statusMeta) {
+    if (
+      statusMeta
+    ) {
 
       statusMeta.textContent =
         "🏆 META BATIDA";
@@ -3205,7 +3437,9 @@ function preencherMeta(
     }
 
 
-    if (mensagemMeta) {
+    if (
+      mensagemMeta
+    ) {
 
       mensagemMeta.textContent =
         `Meta atingida com ${realizaram} pessoas realizando.`;
@@ -3213,7 +3447,9 @@ function preencherMeta(
     }
 
 
-    if (tituloSituacao) {
+    if (
+      tituloSituacao
+    ) {
 
       tituloSituacao.textContent =
         "Meta do mês atingida";
@@ -3221,7 +3457,9 @@ function preencherMeta(
     }
 
 
-    if (descricaoSituacao) {
+    if (
+      descricaoSituacao
+    ) {
 
       descricaoSituacao.textContent =
         "O resultado já alcançou ou superou o target de 90%.";
@@ -3232,7 +3470,9 @@ function preencherMeta(
 
   else {
 
-    if (statusMeta) {
+    if (
+      statusMeta
+    ) {
 
       statusMeta.textContent =
         "Target: 90%";
@@ -3240,7 +3480,9 @@ function preencherMeta(
     }
 
 
-    if (mensagemMeta) {
+    if (
+      mensagemMeta
+    ) {
 
       mensagemMeta.textContent =
         `Faltam ${faltam} pessoa${faltam === 1 ? "" : "s"} para atingir o target.`;
@@ -3248,7 +3490,9 @@ function preencherMeta(
     }
 
 
-    if (tituloSituacao) {
+    if (
+      tituloSituacao
+    ) {
 
       tituloSituacao.textContent =
         "Meta em andamento";
@@ -3256,7 +3500,9 @@ function preencherMeta(
     }
 
 
-    if (descricaoSituacao) {
+    if (
+      descricaoSituacao
+    ) {
 
       descricaoSituacao.textContent =
         `${realizaram} pessoas realizaram. Faltam ${faltam} para chegar aos 90%.`;
@@ -3266,8 +3512,6 @@ function preencherMeta(
   }
 
 }
-
-
 /* =========================================================
    PREENCHER MÊS
 ========================================================= */
@@ -3372,11 +3616,63 @@ function preencherArteGeral(
   }
 
 
+  /* =======================================================
+     INDICADORES PEQUENOS DE GEMBA
+
+     Esses dois números serão exibidos na Arte Geral
+     depois que ajustarmos o index.html.
+
+     1) Gemba feito + Be a Rep não iniciado
+     2) Gemba feito + Be a Rep em processo
+  ======================================================= */
+
+  const arteGembaPendente =
+    $("arte-geral-gemba-pendente");
+
+
+  const arteGembaProcesso =
+    $("arte-geral-gemba-processo");
+
+
+  if (
+    arteGembaPendente
+  ) {
+
+    arteGembaPendente.textContent =
+      Array.isArray(
+        dados.guembaPendenteBeARep
+      )
+        ? dados.guembaPendenteBeARep.length
+        : 0;
+
+  }
+
+
+  if (
+    arteGembaProcesso
+  ) {
+
+    arteGembaProcesso.textContent =
+      Array.isArray(
+        dados.guembaProcessandoBeARep
+      )
+        ? dados.guembaProcessandoBeARep.length
+        : 0;
+
+  }
+
+
+  /* =======================================================
+     PERCENTUAL — REALIZARAM
+  ======================================================= */
+
   const pctRealizaram =
     $("arte-percentual-realizaram");
 
 
-  if (pctRealizaram) {
+  if (
+    pctRealizaram
+  ) {
 
     pctRealizaram.textContent =
       formatarPorcentagem(
@@ -3389,11 +3685,17 @@ function preencherArteGeral(
   }
 
 
+  /* =======================================================
+     PERCENTUAL — EM PROCESSO
+  ======================================================= */
+
   const pctProcesso =
     $("arte-percentual-processo");
 
 
-  if (pctProcesso) {
+  if (
+    pctProcesso
+  ) {
 
     pctProcesso.textContent =
       formatarPorcentagem(
@@ -3406,11 +3708,17 @@ function preencherArteGeral(
   }
 
 
+  /* =======================================================
+     PERCENTUAL — NÃO REALIZARAM
+  ======================================================= */
+
   const pctNao =
     $("arte-percentual-nao");
 
 
-  if (pctNao) {
+  if (
+    pctNao
+  ) {
 
     pctNao.textContent =
       formatarPorcentagem(
@@ -3446,7 +3754,9 @@ function preencherTabelaAreas(
     $("lista-areas");
 
 
-  if (!container) {
+  if (
+    !container
+  ) {
 
     return;
 
@@ -3481,7 +3791,9 @@ function preencherTabelaAreas(
         ];
 
 
-      if (!area) {
+      if (
+        !area
+      ) {
 
         return;
 
@@ -3541,6 +3853,12 @@ function preencherTabelaAreas(
 
   /* =======================================================
      SEM CADASTRO DE ÁREA
+
+     Importante:
+     Head Site NÃO entra aqui porque é considerado
+     um cadastro válido.
+
+     Ele só não entra nas cinco áreas operacionais.
   ======================================================= */
 
   const semCadastro =
@@ -3635,8 +3953,6 @@ function preencherTabelaAreas(
   }
 
 }
-
-
 /* =========================================================
    ALERTA — PESSOAS SEM CADASTRO DE ÁREA
 ========================================================= */
@@ -4016,6 +4332,8 @@ function preencherAlertaSemCadastro(
   );
 
 }
+
+
 /* =========================================================
    LISTAS COM EXCEÇÕES
 ========================================================= */
@@ -4233,24 +4551,22 @@ function dividirLista(
     );
 
 }
-
-
 /* =========================================================
    MONTAR LISTA COM TEMPO
 ========================================================= */
 
 function montarListaComTempo(
-  pessoas,
-  idContainer
+  lista,
+  containerId
 ) {
 
   const container =
-    $(
-      idContainer
-    );
+    $(containerId);
 
 
-  if (!container) {
+  if (
+    !container
+  ) {
 
     return;
 
@@ -4262,32 +4578,24 @@ function montarListaComTempo(
 
 
   if (
-    !Array.isArray(pessoas) ||
-    pessoas.length ===
+    !Array.isArray(lista) ||
+    lista.length ===
     0
   ) {
 
-    container.className =
-      "listas-grid colunas-1";
-
-
     container.innerHTML = `
 
-      <div class="tabela">
+      <div
+        style="
+          padding:28px 18px;
+          text-align:center;
+          color:#667085;
+          font-size:14px;
+          font-weight:600;
+        "
+      >
 
-        <div
-          class="linha-pessoa processo"
-          style="
-            grid-template-columns:1fr;
-            text-align:center;
-          "
-        >
-
-          <div>
-            Nenhuma pessoa nesta lista.
-          </div>
-
-        </div>
+        Nenhuma pessoa nesta situação.
 
       </div>
 
@@ -4299,74 +4607,134 @@ function montarListaComTempo(
   }
 
 
-  const colunas =
+  const quantidade =
     quantidadeColunas(
-      pessoas.length
+      lista.length
     );
 
 
-  container.className =
-    `listas-grid colunas-${colunas}`;
+  const grupos =
+    dividirLista(
+      lista,
+      quantidade
+    );
 
 
-  dividirLista(
-    pessoas,
-    colunas
-  )
-    .forEach(
-      grupo => {
-
-        const tabela =
-          document.createElement(
-            "div"
-          );
+  container.style.display =
+    "grid";
 
 
-        tabela.className =
-          "tabela";
+  container.style.gridTemplateColumns =
+    `repeat(${grupos.length}, minmax(0, 1fr))`;
 
 
-        let html = `
-
-          <div
-            class="linha-pessoa processo cabecalho-tabela"
-          >
-
-            <div>
-              NOME
-            </div>
-
-            <div class="setor">
-              SETOR
-            </div>
-
-            <div class="tempo">
-              TEMPO
-            </div>
-
-          </div>
-
-        `;
+  container.style.gap =
+    "14px";
 
 
-        grupo.forEach(
-          pessoa => {
+  grupos.forEach(
+    grupo => {
 
-            html += `
+      const coluna =
+        document.createElement(
+          "div"
+        );
+
+
+      coluna.style.cssText = `
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:8px;
+
+      `;
+
+
+      grupo.forEach(
+        pessoa => {
+
+          const item =
+            document.createElement(
+              "div"
+            );
+
+
+          item.style.cssText = `
+
+            background:#ffffff;
+
+            border:1px solid #e7e9ee;
+
+            border-radius:12px;
+
+            padding:11px 12px;
+
+            box-sizing:border-box;
+
+            box-shadow:0 4px 12px rgba(0,0,0,.035);
+
+          `;
+
+
+          const tempoExibicao =
+            pessoa.tempo ||
+            formatarMinutos(
+              pessoa.minutos
+            );
+
+
+          item.innerHTML = `
+
+            <div
+              style="
+                display:flex;
+                justify-content:space-between;
+                gap:12px;
+                align-items:flex-start;
+              "
+            >
 
               <div
-                class="linha-pessoa processo"
+                style="
+                  min-width:0;
+                  flex:1;
+                "
               >
 
-                <div class="nome-pessoa">
+                <div
+                  style="
+                    color:#071b61;
+                    font-size:13px;
+                    font-weight:900;
+                    line-height:1.25;
+                  "
+                >
 
                   ${escaparHTML(
-                    pessoa.nome
+                    pessoa.nome ||
+                    "-"
                   )}
 
                 </div>
 
-                <div class="setor">
+
+                <div
+                  style="
+                    color:#667085;
+                    font-size:11px;
+                    margin-top:4px;
+                    line-height:1.3;
+                  "
+                >
+
+                  ${escaparHTML(
+                    pessoa.area ||
+                    "SEM ÁREA"
+                  )}
+
+                  •
 
                   ${escaparHTML(
                     pessoa.setor ||
@@ -4375,33 +4743,48 @@ function montarListaComTempo(
 
                 </div>
 
-                <div class="tempo">
+              </div>
 
-                  ${escaparHTML(
-                    pessoa.tempo ||
-                    ""
-                  )}
 
-                </div>
+              <div
+                style="
+                  flex:0 0 auto;
+                  background:#eef4ff;
+                  color:#1849a9;
+                  border-radius:999px;
+                  padding:5px 8px;
+                  font-size:11px;
+                  font-weight:900;
+                  white-space:nowrap;
+                "
+              >
+
+                ${escaparHTML(
+                  tempoExibicao ||
+                  "-"
+                )}
 
               </div>
 
-            `;
+            </div>
 
-          }
-        );
-
-
-        tabela.innerHTML =
-          html;
+          `;
 
 
-        container.appendChild(
-          tabela
-        );
+          coluna.appendChild(
+            item
+          );
 
-      }
-    );
+        }
+      );
+
+
+      container.appendChild(
+        coluna
+      );
+
+    }
+  );
 
 }
 
@@ -4411,17 +4794,17 @@ function montarListaComTempo(
 ========================================================= */
 
 function montarListaSemTempo(
-  pessoas,
-  idContainer
+  lista,
+  containerId
 ) {
 
   const container =
-    $(
-      idContainer
-    );
+    $(containerId);
 
 
-  if (!container) {
+  if (
+    !container
+  ) {
 
     return;
 
@@ -4433,32 +4816,24 @@ function montarListaSemTempo(
 
 
   if (
-    !Array.isArray(pessoas) ||
-    pessoas.length ===
+    !Array.isArray(lista) ||
+    lista.length ===
     0
   ) {
 
-    container.className =
-      "listas-grid colunas-1";
-
-
     container.innerHTML = `
 
-      <div class="tabela">
+      <div
+        style="
+          padding:28px 18px;
+          text-align:center;
+          color:#667085;
+          font-size:14px;
+          font-weight:600;
+        "
+      >
 
-        <div
-          class="linha-pessoa nao-realizou"
-          style="
-            grid-template-columns:1fr;
-            text-align:center;
-          "
-        >
-
-          <div>
-            Nenhuma pessoa nesta lista.
-          </div>
-
-        </div>
+        Nenhuma pessoa nesta situação.
 
       </div>
 
@@ -4470,92 +4845,1284 @@ function montarListaSemTempo(
   }
 
 
-  const colunas =
+  const quantidade =
     quantidadeColunas(
-      pessoas.length
+      lista.length
     );
 
 
-  container.className =
-    `listas-grid colunas-${colunas}`;
+  const grupos =
+    dividirLista(
+      lista,
+      quantidade
+    );
 
 
-  dividirLista(
-    pessoas,
-    colunas
-  )
-    .forEach(
-      grupo => {
-
-        const tabela =
-          document.createElement(
-            "div"
-          );
+  container.style.display =
+    "grid";
 
 
-        tabela.className =
-          "tabela";
+  container.style.gridTemplateColumns =
+    `repeat(${grupos.length}, minmax(0, 1fr))`;
 
 
-        let html = `
-
-          <div
-            class="linha-pessoa nao-realizou cabecalho-tabela"
-          >
-
-            <div>
-              NOME
-            </div>
-
-            <div class="setor">
-              SETOR
-            </div>
-
-          </div>
-
-        `;
+  container.style.gap =
+    "14px";
 
 
-        grupo.forEach(
-          pessoa => {
+  grupos.forEach(
+    grupo => {
 
-            html += `
-
-              <div
-                class="linha-pessoa nao-realizou"
-              >
-
-                <div class="nome-pessoa">
-
-                  ${escaparHTML(
-                    pessoa.nome
-                  )}
-
-                </div>
-
-                <div class="setor">
-
-                  ${escaparHTML(
-                    pessoa.setor ||
-                    "SEM SETOR"
-                  )}
-
-                </div>
-
-              </div>
-
-            `;
-
-          }
+      const coluna =
+        document.createElement(
+          "div"
         );
 
 
-        tabela.innerHTML =
-          html;
+      coluna.style.cssText = `
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:8px;
+
+      `;
 
 
-        container.appendChild(
-          tabela
+      grupo.forEach(
+        pessoa => {
+
+          const item =
+            document.createElement(
+              "div"
+            );
+
+
+          item.style.cssText = `
+
+            background:#ffffff;
+
+            border:1px solid #e7e9ee;
+
+            border-radius:12px;
+
+            padding:11px 12px;
+
+            box-sizing:border-box;
+
+            box-shadow:0 4px 12px rgba(0,0,0,.035);
+
+          `;
+
+
+          item.innerHTML = `
+
+            <div
+              style="
+                color:#071b61;
+                font-size:13px;
+                font-weight:900;
+                line-height:1.25;
+              "
+            >
+
+              ${escaparHTML(
+                pessoa.nome ||
+                "-"
+              )}
+
+            </div>
+
+
+            <div
+              style="
+                color:#667085;
+                font-size:11px;
+                margin-top:4px;
+                line-height:1.3;
+              "
+            >
+
+              ${escaparHTML(
+                pessoa.area ||
+                "SEM ÁREA"
+              )}
+
+              •
+
+              ${escaparHTML(
+                pessoa.setor ||
+                "SEM SETOR"
+              )}
+
+            </div>
+
+          `;
+
+
+          coluna.appendChild(
+            item
+          );
+
+        }
+      );
+
+
+      container.appendChild(
+        coluna
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FORMATAR MINUTOS
+========================================================= */
+
+function formatarMinutos(
+  minutos
+) {
+
+  const total =
+    Number(
+      minutos
+    );
+
+
+  if (
+    !Number.isFinite(total) ||
+    total <= 0
+  ) {
+
+    return "0 min";
+
+  }
+
+
+  if (
+    total < 60
+  ) {
+
+    return `${Math.round(total)} min`;
+
+  }
+
+
+  const horas =
+    Math.floor(
+      total /
+      60
+    );
+
+
+  const resto =
+    Math.round(
+      total %
+      60
+    );
+
+
+  if (
+    resto ===
+    0
+  ) {
+
+    return `${horas}h`;
+
+  }
+
+
+  return `${horas}h ${resto}min`;
+
+}
+
+
+/* =========================================================
+   ORDENAR POR NOME
+========================================================= */
+
+function ordenarNome(
+  a,
+  b
+) {
+
+  return String(
+    a?.nome ||
+    ""
+  ).localeCompare(
+    String(
+      b?.nome ||
+      ""
+    ),
+    "pt-BR"
+  );
+
+}
+
+
+/* =========================================================
+   ORDENAR POR TEMPO E NOME
+========================================================= */
+
+function ordenarTempoNome(
+  a,
+  b
+) {
+
+  const tempoA =
+    Number(
+      a?.minutos
+    ) ||
+    0;
+
+
+  const tempoB =
+    Number(
+      b?.minutos
+    ) ||
+    0;
+
+
+  if (
+    tempoA !==
+    tempoB
+  ) {
+
+    return tempoB -
+      tempoA;
+
+  }
+
+
+  return ordenarNome(
+    a,
+    b
+  );
+
+}
+
+
+/* =========================================================
+   CRIAR ESTRUTURA DAS ÁREAS
+========================================================= */
+
+function criarEstruturaAreas() {
+
+  const estrutura =
+    {};
+
+
+  AREAS_VALIDAS.forEach(
+    area => {
+
+      estrutura[
+        area
+      ] = {
+
+        hc:
+          0,
+
+        realizaram:
+          0,
+
+        processo:
+          0,
+
+        naoRealizaram:
+          0,
+
+        percentual:
+          0
+
+      };
+
+    }
+  );
+
+
+  return estrutura;
+
+}
+
+
+/* =========================================================
+   CALCULAR GERAL POR REGISTROS
+
+   IMPORTANTE:
+   O Resumo Geral contempla Gemba + Be a Rep.
+
+   Isso significa:
+
+   REALIZOU
+   = concluiu o Be a Rep
+
+   EM_PROCESSO
+   = iniciou Be a Rep e ainda não concluiu
+     OU realizou Gemba e está avançando no fluxo
+
+   NAO_REALIZOU
+   = ainda não concluiu nenhuma das etapas
+     suficientes para entrar nos grupos acima
+========================================================= */
+
+function calcularGeralPorRegistros(
+  registros
+) {
+
+  const hc =
+    registros.length;
+
+
+  let realizaram =
+    0;
+
+
+  let processo =
+    0;
+
+
+  let naoRealizaram =
+    0;
+
+
+  registros.forEach(
+    pessoa => {
+
+      if (
+        pessoa.situacao ===
+        "REALIZOU"
+      ) {
+
+        realizaram++;
+
+      }
+
+      else if (
+        pessoa.situacao ===
+        "EM_PROCESSO"
+      ) {
+
+        processo++;
+
+      }
+
+      else {
+
+        naoRealizaram++;
+
+      }
+
+    }
+  );
+
+
+  const percentual =
+    hc > 0
+      ? realizaram /
+        hc
+      : 0;
+
+
+  return {
+
+    hc:
+      hc,
+
+    realizaram:
+      realizaram,
+
+    processo:
+      processo,
+
+    naoRealizaram:
+      naoRealizaram,
+
+    percentual:
+      percentual
+
+  };
+
+}
+
+
+/* =========================================================
+   CLASSIFICAÇÃO CENTRAL
+
+   Aqui está a regra principal do dashboard.
+
+   BE A REP:
+   - OPEX = 10 minutos
+   - demais áreas = 60 minutos
+
+   GEMBA:
+   - não transforma alguém em "Realizou o Be a Rep"
+   - serve para acompanhar o avanço do fluxo
+========================================================= */
+
+function classificarSituacao(
+  valorGemba,
+  valorBar,
+  minutos,
+  area
+) {
+
+  const pessoaTemBeARepConcluido =
+    beRepConcluido({
+
+      statusBar:
+        valorBar,
+
+      minutos:
+        minutos,
+
+      area:
+        area
+
+    });
+
+
+  if (
+    pessoaTemBeARepConcluido
+  ) {
+
+    return "REALIZOU";
+
+  }
+
+
+  const pessoaTemBeARepEmProcesso =
+    beRepEmProcesso({
+
+      statusBar:
+        valorBar,
+
+      minutos:
+        minutos,
+
+      area:
+        area
+
+    });
+
+
+  if (
+    pessoaTemBeARepEmProcesso
+  ) {
+
+    return "EM_PROCESSO";
+
+  }
+
+
+  if (
+    gembaConcluido(
+      valorGemba
+    )
+  ) {
+
+    return "EM_PROCESSO";
+
+  }
+
+
+  return "NAO_REALIZOU";
+
+}
+/* =========================================================
+   BE A REP — TEMPO MÍNIMO DE CONCLUSÃO
+========================================================= */
+
+function obterTempoMinimoBeARep(
+  area
+) {
+
+  /*
+   * REGRA:
+   *
+   * OPEX:
+   * 10 minutos para concluir o Be a Rep.
+   *
+   * Demais áreas:
+   * 60 minutos.
+   */
+
+  return area ===
+    "OPEX"
+      ? 10
+      : 60;
+
+}
+
+
+/* =========================================================
+   BE A REP — INICIADO
+========================================================= */
+
+function beRepIniciado(
+  pessoa
+) {
+
+  const minutos =
+    Number(
+      pessoa?.minutos
+    ) ||
+    0;
+
+
+  return minutos >
+    0;
+
+}
+
+
+/* =========================================================
+   BE A REP — CONCLUÍDO
+========================================================= */
+
+function beRepConcluido(
+  pessoa
+) {
+
+  const minutos =
+    Number(
+      pessoa?.minutos
+    ) ||
+    0;
+
+
+  const tempoMinimo =
+    obterTempoMinimoBeARep(
+      pessoa?.area ||
+      ""
+    );
+
+
+  return minutos >=
+    tempoMinimo;
+
+}
+
+
+/* =========================================================
+   BE A REP — EM PROCESSO
+========================================================= */
+
+function beRepEmProcesso(
+  pessoa
+) {
+
+  const minutos =
+    Number(
+      pessoa?.minutos
+    ) ||
+    0;
+
+
+  const tempoMinimo =
+    obterTempoMinimoBeARep(
+      pessoa?.area ||
+      ""
+    );
+
+
+  return (
+    minutos >
+      0 &&
+    minutos <
+      tempoMinimo
+  );
+
+}
+
+
+/* =========================================================
+   GEMBA CONCLUÍDO
+========================================================= */
+
+function gembaConcluido(
+  gemba
+) {
+
+  const status =
+    normalizarTexto(
+      gemba
+    );
+
+
+  const concluidos = [
+
+    "HECHO",
+    "CUMPLIO",
+    "REALIZADO",
+    "CONCLUIDO"
+
+  ];
+
+
+  return concluidos.includes(
+    status
+  );
+
+}
+
+
+/* =========================================================
+   NORMALIZAR ÁREA
+========================================================= */
+
+function normalizarArea(
+  valor
+) {
+
+  const texto =
+    normalizarTexto(
+      valor
+    );
+
+
+  /* =======================================================
+     OUTBOUND
+  ======================================================= */
+
+  if (
+    texto ===
+      "OUTBOUND" ||
+    texto ===
+      "OUT" ||
+    texto.includes(
+      "OUTBOUND"
+    )
+  ) {
+
+    return "Outbound";
+
+  }
+
+
+  /* =======================================================
+     INBOUND
+  ======================================================= */
+
+  if (
+    texto ===
+      "INBOUND" ||
+    texto ===
+      "IN" ||
+    texto.includes(
+      "INBOUND"
+    )
+  ) {
+
+    return "Inbound";
+
+  }
+
+
+  /* =======================================================
+     OPEX
+  ======================================================= */
+
+  if (
+    texto ===
+      "OPEX" ||
+    texto.includes(
+      "OPEX"
+    )
+  ) {
+
+    return "OPEX";
+
+  }
+
+
+  /* =======================================================
+     ICQA
+  ======================================================= */
+
+  if (
+    texto ===
+      "ICQA" ||
+    texto.includes(
+      "ICQA"
+    )
+  ) {
+
+    return "ICQA";
+
+  }
+
+
+  /* =======================================================
+     LINE HAUL
+  ======================================================= */
+
+  if (
+    texto ===
+      "LINE HAUL" ||
+    texto ===
+      "LINEHAUL" ||
+    texto.includes(
+      "LINE HAUL"
+    ) ||
+    texto.includes(
+      "LINEHAUL"
+    )
+  ) {
+
+    return "Line Haul";
+
+  }
+
+
+  /* =======================================================
+     HEAD SITE
+
+     Head Site é cadastro válido.
+
+     Ele entra:
+     - HC Geral
+     - Realizaram
+     - Em Processo
+     - Não Realizaram
+     - Gemba
+
+     Mas NÃO entra na divisão das cinco áreas
+     operacionais.
+  ======================================================= */
+
+  if (
+    texto ===
+      "HEAD SITE" ||
+    texto ===
+      "HEADSITE" ||
+    texto.includes(
+      "HEAD SITE"
+    )
+  ) {
+
+    return "Head Site";
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================================
+   AJUSTAR SETOR NA ARTE
+========================================================= */
+
+function ajustarSetorNaArte(
+  nome,
+  setor
+) {
+
+  const nomeNormalizado =
+    normalizarTexto(
+      nome
+    );
+
+
+  /*
+   * Ajustes específicos que já existiam
+   * no dashboard.
+   */
+
+  if (
+    nomeNormalizado ===
+    "PATRICIA GOMES MELO"
+  ) {
+
+    return "GERENTE OUT";
+
+  }
+
+
+  if (
+    nomeNormalizado ===
+    "THIAGO COUTO BALDO"
+  ) {
+
+    return "GERENTE IN";
+
+  }
+
+
+  return limparTexto(
+    setor
+  )
+    .toUpperCase();
+
+}
+
+
+/* =========================================================
+   CONVERTER TEMPO PARA MINUTOS
+========================================================= */
+
+function converterTempoParaMinutos(
+  valor
+) {
+
+  /*
+   * A Query pode retornar o tempo em
+   * diferentes formatos.
+   *
+   * Exemplos:
+   *
+   * 01:05:00
+   * 00:35:00
+   * 1h 5m
+   * 35m
+   * 65
+   */
+
+
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+
+    return 0;
+
+  }
+
+
+  /* =======================================================
+     VALOR NUMÉRICO
+  ======================================================= */
+
+  if (
+    typeof valor ===
+    "number"
+  ) {
+
+    if (
+      !Number.isFinite(
+        valor
+      )
+    ) {
+
+      return 0;
+
+    }
+
+
+    /*
+     * Se o valor vier como fração de dia,
+     * como ocorre em alguns arquivos Excel,
+     * convertemos para minutos.
+     */
+
+    if (
+      valor > 0 &&
+      valor < 1
+    ) {
+
+      return Math.round(
+        valor *
+        24 *
+        60
+      );
+
+    }
+
+
+    return valor;
+
+  }
+
+
+  const textoOriginal =
+    limparTexto(
+      valor
+    );
+
+
+  if (
+    !textoOriginal
+  ) {
+
+    return 0;
+
+  }
+
+
+  const texto =
+    textoOriginal
+      .toLowerCase();
+
+
+  /* =======================================================
+     FORMATO HH:MM:SS
+  ======================================================= */
+
+  if (
+    /^\d{1,3}:\d{1,2}(:\d{1,2})?$/.test(
+      texto
+    )
+  ) {
+
+    const partes =
+      texto
+        .split(
+          ":"
+        )
+        .map(
+          Number
+        );
+
+
+    const horas =
+      partes[0] ||
+      0;
+
+
+    const minutos =
+      partes[1] ||
+      0;
+
+
+    const segundos =
+      partes[2] ||
+      0;
+
+
+    return (
+      horas *
+      60
+    ) +
+    minutos +
+    (
+      segundos /
+      60
+    );
+
+  }
+
+
+  /* =======================================================
+     FORMATO "1h 20m"
+  ======================================================= */
+
+  const horas =
+    Number(
+      texto.match(
+        /(\d+(?:[.,]\d+)?)\s*h/
+      )?.[1]
+        ?.replace(
+          ",",
+          "."
+        ) ||
+      0
+    );
+
+
+  const minutos =
+    Number(
+      texto.match(
+        /(\d+(?:[.,]\d+)?)\s*m/
+      )?.[1]
+        ?.replace(
+          ",",
+          "."
+        ) ||
+      0
+    );
+
+
+  if (
+    horas > 0 ||
+    minutos > 0
+  ) {
+
+    return (
+      horas *
+      60
+    ) +
+    minutos;
+
+  }
+
+
+  /* =======================================================
+     SOMENTE NÚMERO
+  ======================================================= */
+
+  const numero =
+    Number(
+      texto
+        .replace(
+          ",",
+          "."
+        )
+    );
+
+
+  if (
+    Number.isFinite(
+      numero
+    )
+  ) {
+
+    return numero;
+
+  }
+
+
+  return 0;
+
+}
+
+
+/* =========================================================
+   MÊS PREDOMINANTE
+========================================================= */
+
+function obterMesPredominante(
+  registros
+) {
+
+  const contagem =
+    {};
+
+
+  registros.forEach(
+    registro => {
+
+      const mes =
+        normalizarReferenciaMes(
+          registro.mes
+        );
+
+
+      if (
+        !mes
+      ) {
+
+        return;
+
+      }
+
+
+      contagem[
+        mes
+      ] =
+        (
+          contagem[
+            mes
+          ] ||
+          0
+        ) +
+        1;
+
+    }
+  );
+
+
+  const maior =
+    Object.entries(
+      contagem
+    )
+      .sort(
+        (
+          a,
+          b
+        ) =>
+          b[1] -
+          a[1]
+      )[0];
+
+
+  return maior
+    ? formatarReferenciaFiltro(
+        maior[0]
+      )
+    : formatarReferenciaFiltro(
+        referenciaSelecionada
+      );
+
+}
+/* =========================================================
+   STATUS / UTILITÁRIOS
+========================================================= */
+
+function atualizarStatus(
+  mensagem,
+  tipo = ""
+) {
+
+  if (
+    !statusArquivo
+  ) {
+
+    return;
+
+  }
+
+
+  statusArquivo.textContent =
+    mensagem;
+
+
+  statusArquivo.classList.remove(
+    "sucesso",
+    "erro"
+  );
+
+
+  if (
+    tipo
+  ) {
+
+    statusArquivo.classList.add(
+      tipo
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   EXIBIR DASHBOARD
+========================================================= */
+
+function exibirDashboard() {
+
+  if (
+    resumoDados
+  ) {
+
+    resumoDados.hidden =
+      false;
+
+  }
+
+
+  if (
+    menuArtes
+  ) {
+
+    menuArtes.hidden =
+      false;
+
+  }
+
+
+  if (
+    areaArtes
+  ) {
+
+    areaArtes.hidden =
+      false;
+
+  }
+
+
+  if (
+    botaoBaixar
+  ) {
+
+    botaoBaixar.hidden =
+      false;
+
+  }
+
+}
+
+
+/* =========================================================
+   OCULTAR DASHBOARD
+========================================================= */
+
+function ocultarDashboard() {
+
+  if (
+    resumoDados
+  ) {
+
+    resumoDados.hidden =
+      true;
+
+  }
+
+
+  if (
+    menuArtes
+  ) {
+
+    menuArtes.hidden =
+      true;
+
+  }
+
+
+  if (
+    areaArtes
+  ) {
+
+    areaArtes.hidden =
+      true;
+
+  }
+
+
+  if (
+    botaoBaixar
+  ) {
+
+    botaoBaixar.hidden =
+      true;
+
+  }
+
+}
+
+
+/* =========================================================
+   MOSTRAR ARTE
+========================================================= */
+
+function mostrarArte(
+  nomeArte
+) {
+
+  arteAtual =
+    nomeArte;
+
+
+  botoesArte.forEach(
+    botao => {
+
+      botao.classList.toggle(
+        "ativo",
+        botao.dataset.arte ===
+          nomeArte
+      );
+
+    }
+  );
+
+
+  document
+    .querySelectorAll(
+      ".arte"
+    )
+    .forEach(
+      arte => {
+
+        arte.classList.toggle(
+          "ativa",
+          arte.dataset.arte ===
+            nomeArte
         );
 
       }
@@ -4565,12 +6132,623 @@ function montarListaSemTempo(
 
 
 /* =========================================================
+   BAIXAR ARTE ATUAL
+========================================================= */
+
+async function baixarArteAtual() {
+
+  try {
+
+    const arte =
+      document.querySelector(
+        `.arte[data-arte="${arteAtual}"]`
+      );
+
+
+    if (
+      !arte
+    ) {
+
+      throw new Error(
+        "Não foi possível encontrar a arte selecionada."
+      );
+
+    }
+
+
+    if (
+      typeof html2canvas !==
+      "function"
+    ) {
+
+      throw new Error(
+        "A biblioteca de geração de imagem não foi carregada."
+      );
+
+    }
+
+
+    if (
+      botaoBaixar
+    ) {
+
+      botaoBaixar.disabled =
+        true;
+
+
+      botaoBaixar.textContent =
+        "Gerando imagem...";
+
+    }
+
+
+    const canvas =
+      await html2canvas(
+        arte,
+        {
+
+          scale:
+            2,
+
+          backgroundColor:
+            "#ffffff",
+
+          useCORS:
+            true
+
+        }
+      );
+
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+
+    const nomeMes =
+      normalizarTexto(
+        dadosProcessados?.mes ||
+        referenciaSelecionada
+      )
+        .replace(
+          /\s+/g,
+          "-"
+        );
+
+
+    const nomeArteArquivo =
+      normalizarTexto(
+        arteAtual
+      )
+        .replace(
+          /\s+/g,
+          "-"
+        );
+
+
+    link.download =
+      `be-a-rep-${nomeArteArquivo}-${nomeMes}.png`;
+
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+
+    link.click();
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "❌ Erro ao gerar PNG:",
+      erro
+    );
+
+
+    atualizarStatus(
+      `❌ Não foi possível gerar a imagem: ${erro.message}`,
+      "erro"
+    );
+
+  }
+
+  finally {
+
+    if (
+      botaoBaixar
+    ) {
+
+      botaoBaixar.disabled =
+        false;
+
+
+      botaoBaixar.textContent =
+        "⬇ Baixar PNG";
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   NORMALIZAR TEXTO
+========================================================= */
+
+function normalizarTexto(
+  valor
+) {
+
+  return String(
+    valor ??
+    ""
+  )
+    .trim()
+    .normalize(
+      "NFD"
+    )
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
+    .toUpperCase();
+
+}
+
+
+/* =========================================================
+   LIMPAR TEXTO
+========================================================= */
+
+function limparTexto(
+  valor
+) {
+
+  return String(
+    valor ??
+    ""
+  )
+    .trim();
+
+}
+
+
+/* =========================================================
+   OBTER VALOR DO OBJETO
+========================================================= */
+
+function obterValorObjeto(
+  objeto,
+  chaves
+) {
+
+  if (
+    !objeto ||
+    typeof objeto !==
+      "object"
+  ) {
+
+    return "";
+
+  }
+
+
+  /* =======================================================
+     TENTATIVA DIRETA
+  ======================================================= */
+
+  for (
+    const chave of
+    chaves
+  ) {
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        objeto,
+        chave
+      )
+    ) {
+
+      const valor =
+        objeto[chave];
+
+
+      if (
+        valor !== null &&
+        valor !== undefined
+      ) {
+
+        return valor;
+
+      }
+
+    }
+
+  }
+
+
+  /* =======================================================
+     COMPARAÇÃO NORMALIZADA
+  ======================================================= */
+
+  const mapa =
+    new Map();
+
+
+  Object.keys(
+    objeto
+  )
+    .forEach(
+      chave => {
+
+        mapa.set(
+          normalizarTexto(
+            chave
+          ),
+          objeto[chave]
+        );
+
+      }
+    );
+
+
+  for (
+    const chave of
+    chaves
+  ) {
+
+    const normalizada =
+      normalizarTexto(
+        chave
+      );
+
+
+    if (
+      mapa.has(
+        normalizada
+      )
+    ) {
+
+      const valor =
+        mapa.get(
+          normalizada
+        );
+
+
+      if (
+        valor !== null &&
+        valor !== undefined
+      ) {
+
+        return valor;
+
+      }
+
+    }
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================================
+   FORMATAR PORCENTAGEM
+========================================================= */
+
+function formatarPorcentagem(
+  valor
+) {
+
+  const numero =
+    Number(
+      valor
+    );
+
+
+  if (
+    !Number.isFinite(
+      numero
+    )
+  ) {
+
+    return "0%";
+
+  }
+
+
+  return (
+    numero *
+    100
+  )
+    .toLocaleString(
+      "pt-BR",
+      {
+
+        minimumFractionDigits:
+          1,
+
+        maximumFractionDigits:
+          1
+
+      }
+    ) +
+    "%";
+
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
+function escaparHTML(
+  valor
+) {
+
+  return String(
+    valor ??
+    ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   PROCESSAR ARQUIVO MANUAL
+========================================================= */
+
+async function processarArquivo(
+  arquivo
+) {
+
+  try {
+
+    atualizarStatus(
+      `Lendo ${arquivo.name}...`,
+      ""
+    );
+
+
+    if (
+      typeof XLSX ===
+      "undefined"
+    ) {
+
+      throw new Error(
+        "A biblioteca XLSX não foi carregada."
+      );
+
+    }
+
+
+    const buffer =
+      await arquivo.arrayBuffer();
+
+
+    const workbook =
+      XLSX.read(
+        buffer,
+        {
+
+          type:
+            "array"
+
+        }
+      );
+
+
+    const primeiraAba =
+      workbook.SheetNames[
+        0
+      ];
+
+
+    if (
+      !primeiraAba
+    ) {
+
+      throw new Error(
+        "O arquivo não possui abas válidas."
+      );
+
+    }
+
+
+    const worksheet =
+      workbook.Sheets[
+        primeiraAba
+      ];
+
+
+    const registros =
+      XLSX.utils.sheet_to_json(
+        worksheet,
+        {
+
+          defval:
+            ""
+
+        }
+      );
+
+
+    if (
+      !Array.isArray(
+        registros
+      ) ||
+      registros.length ===
+        0
+    ) {
+
+      throw new Error(
+        "Nenhum registro foi encontrado no arquivo."
+      );
+
+    }
+
+
+    console.log(
+      "📄 Arquivo manual carregado:",
+      registros.length
+    );
+
+
+    dadosApiBrutos =
+      registros;
+
+
+    montarFiltroMes(
+      dadosApiBrutos
+    );
+
+
+    referenciaSelecionada =
+      obterReferenciaMesAtual();
+
+
+    if (
+      filtroMes
+    ) {
+
+      filtroMes.value =
+        referenciaSelecionada;
+
+    }
+
+
+    try {
+
+      dadosProcessados =
+        processarDadosApi(
+          dadosApiBrutos,
+          referenciaSelecionada
+        );
+
+
+      atualizarTudo();
+
+
+      atualizarStatus(
+        `✅ ${arquivo.name} carregado com sucesso.`,
+        "sucesso"
+      );
+
+
+      if (
+        textoAtualizacao
+      ) {
+
+        textoAtualizacao.textContent =
+          `Arquivo manual carregado. Exibindo ${formatarReferenciaFiltro(referenciaSelecionada)}.`;
+
+      }
+
+    }
+
+    catch (
+      erroMes
+    ) {
+
+      console.warn(
+        "⚠️ Arquivo carregado, mas sem dados no mês atual:",
+        erroMes
+      );
+
+
+      preencherMes(
+        formatarReferenciaFiltro(
+          referenciaSelecionada
+        )
+      );
+
+
+      atualizarStatus(
+        `⚠️ O arquivo foi carregado, mas não possui dados obrigatórios para ${formatarReferenciaFiltro(referenciaSelecionada)}. Selecione outro mês.`,
+        "erro"
+      );
+
+
+      if (
+        textoAtualizacao
+      ) {
+
+        textoAtualizacao.textContent =
+          "Arquivo carregado. Escolha outro mês no filtro para consultar os dados disponíveis.";
+
+      }
+
+
+      ocultarDashboard();
+
+    }
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "❌ Erro ao processar arquivo:",
+      erro
+    );
+
+
+    atualizarStatus(
+      `❌ Erro ao processar o arquivo: ${erro.message}`,
+      "erro"
+    );
+
+
+    ocultarDashboard();
+
+  }
+
+}
+/* =========================================================
+   EXCEÇÕES
+========================================================= */
+
+
+/* =========================================================
    ADICIONAR EXCEÇÃO
 ========================================================= */
 
 function adicionarExcecao() {
 
-  if (!dadosProcessados) {
+  if (
+    !dadosProcessados
+  ) {
 
     return alert(
       "Carregue os dados antes de adicionar uma exceção."
@@ -4609,7 +6787,9 @@ function adicionarExcecao() {
     );
 
 
-  if (!nomeDigitado) {
+  if (
+    !nomeDigitado
+  ) {
 
     return alert(
       "Selecione ou digite o nome da pessoa."
@@ -4630,7 +6810,9 @@ function adicionarExcecao() {
     );
 
 
-  if (!pessoa) {
+  if (
+    !pessoa
+  ) {
 
     return alert(
       "Nome não encontrado na base atual."
@@ -4651,7 +6833,9 @@ function adicionarExcecao() {
     );
 
 
-  if (jaExiste) {
+  if (
+    jaExiste
+  ) {
 
     return alert(
       "Essa pessoa já está ocultada das listas."
@@ -4694,6 +6878,8 @@ function adicionarExcecao() {
   preencherDatalistExcecoes();
 
 }
+
+
 /* =========================================================
    REMOVER EXCEÇÃO
 ========================================================= */
@@ -4720,7 +6906,9 @@ function removerExcecao(
   renderizarExcecoes();
 
 
-  if (dadosProcessados) {
+  if (
+    dadosProcessados
+  ) {
 
     preencherListasComExcecoes();
 
@@ -4956,1215 +7144,9 @@ function salvarExcecoes() {
 
 
 /* =========================================================
-   EXIBIR DASHBOARD
-========================================================= */
-
-function exibirDashboard() {
-
-  resumoDados
-    ?.classList
-    .remove(
-      "oculto"
-    );
-
-
-  menuArtes
-    ?.classList
-    .remove(
-      "oculto"
-    );
-
-
-  areaArtes
-    ?.classList
-    .remove(
-      "oculto"
-    );
-
-}
-
-
-/* =========================================================
-   OCULTAR DASHBOARD
-========================================================= */
-
-function ocultarDashboard() {
-
-  resumoDados
-    ?.classList
-    .add(
-      "oculto"
-    );
-
-
-  menuArtes
-    ?.classList
-    .add(
-      "oculto"
-    );
-
-
-  areaArtes
-    ?.classList
-    .add(
-      "oculto"
-    );
-
-}
-
-
-/* =========================================================
-   MOSTRAR ARTE
-========================================================= */
-
-function mostrarArte(
-  nome
-) {
-
-  arteAtual =
-    nome;
-
-
-  document
-    .querySelectorAll(
-      ".arte"
-    )
-    .forEach(
-      arte =>
-        arte.classList.remove(
-          "ativa"
-        )
-    );
-
-
-  botoesArte.forEach(
-    botao => {
-
-      botao.classList.toggle(
-        "ativo",
-        botao.dataset.arte ===
-          nome
-      );
-
-    }
-  );
-
-
-  $(
-    `arte-${nome}`
-  )
-    ?.classList
-    .add(
-      "ativa"
-    );
-
-}
-
-
-/* =========================================================
-   BAIXAR ARTE
-========================================================= */
-
-async function baixarArteAtual() {
-
-  const arte =
-    $(
-      `arte-${arteAtual}`
-    );
-
-
-  if (!arte) {
-
-    return alert(
-      "Arte não encontrada."
-    );
-
-  }
-
-
-  if (
-    typeof html2canvas ===
-    "undefined"
-  ) {
-
-    return alert(
-      "Não foi possível carregar o gerador de PNG."
-    );
-
-  }
-
-
-  const textoOriginal =
-    botaoBaixar?.textContent ||
-    "Baixar PNG";
-
-
-  try {
-
-    if (botaoBaixar) {
-
-      botaoBaixar.disabled =
-        true;
-
-      botaoBaixar.textContent =
-        "⏳ Gerando PNG...";
-
-    }
-
-
-    await aguardarImagens(
-      arte
-    );
-
-
-    const canvas =
-      await html2canvas(
-        arte,
-        {
-
-          backgroundColor:
-            "#ffffff",
-
-          scale:
-            2,
-
-          useCORS:
-            true,
-
-          logging:
-            false,
-
-          scrollX:
-            0,
-
-          scrollY:
-            0
-
-        }
-      );
-
-
-    const nomeBase =
-      arte.dataset.nomeArquivo ||
-      "Be-a-Rep";
-
-
-    const mes =
-      dadosProcessados?.mes ||
-      "";
-
-
-    const nomeArquivo =
-      `${nomeBase}${mes ? "-" + mes.replace(/\s+/g, "-") : ""}.png`;
-
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
-
-    link.download =
-      nomeArquivo;
-
-
-    link.href =
-      canvas.toDataURL(
-        "image/png"
-      );
-
-
-    document.body.appendChild(
-      link
-    );
-
-
-    link.click();
-
-
-    link.remove();
-
-  }
-
-  catch (erro) {
-
-    console.error(
-      erro
-    );
-
-
-    alert(
-      `Não foi possível gerar o PNG.\n\n${erro.message}`
-    );
-
-  }
-
-  finally {
-
-    if (botaoBaixar) {
-
-      botaoBaixar.disabled =
-        false;
-
-      botaoBaixar.textContent =
-        textoOriginal;
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
-   AGUARDAR IMAGENS
-========================================================= */
-
-async function aguardarImagens(
-  elemento
-) {
-
-  const imagens =
-    Array.from(
-      elemento.querySelectorAll(
-        "img"
-      )
-    );
-
-
-  await Promise.all(
-    imagens.map(
-      imagem => {
-
-        if (imagem.complete) {
-
-          return Promise.resolve();
-
-        }
-
-
-        return new Promise(
-          resolve => {
-
-            imagem.addEventListener(
-              "load",
-              resolve,
-              {
-                once:
-                  true
-              }
-            );
-
-
-            imagem.addEventListener(
-              "error",
-              resolve,
-              {
-                once:
-                  true
-              }
-            );
-
-          }
-        );
-
-      }
-    )
-  );
-
-}
-
-
-/* =========================================================
-   CLASSIFICAR SITUAÇÃO
-========================================================= */
-
-function classificarSituacao(
-  valorGemba,
-  valorBar
-) {
-
-  const gemba =
-    normalizarTexto(
-      valorGemba
-    );
-
-
-  const bar =
-    normalizarTexto(
-      valorBar
-    );
-
-
-  const realizado = [
-
-    "HECHO",
-    "CUMPLIO",
-    "REALIZADO",
-    "CONCLUIDO"
-
-  ];
-
-
-  const processando = [
-
-    "EN PROCESO",
-    "EM PROCESSO",
-    "EN CURSO",
-    "INICIADO"
-
-  ];
-
-
-  if (
-    realizado.includes(
-      gemba
-    ) ||
-    realizado.includes(
-      bar
-    )
-  ) {
-
-    return "REALIZOU";
-
-  }
-
-
-  if (
-    processando.includes(
-      gemba
-    ) ||
-    processando.includes(
-      bar
-    )
-  ) {
-
-    return "EM_PROCESSO";
-
-  }
-
-
-  return "NAO_REALIZOU";
-
-}
-/* =========================================================
-   GEMBA CONCLUÍDO
-========================================================= */
-
-function gembaConcluido(
-  gemba
-) {
-
-  return [
-
-    "HECHO",
-    "CUMPLIO",
-    "REALIZADO",
-    "CONCLUIDO"
-
-  ].includes(
-    normalizarTexto(
-      gemba
-    )
-  );
-
-}
-
-
-/* =========================================================
-   CRIAR ESTRUTURA DE ÁREAS
-========================================================= */
-
-function criarEstruturaAreas() {
-
-  const areas =
-    {};
-
-
-  AREAS_VALIDAS.forEach(
-    area => {
-
-      areas[
-        area
-      ] = {
-
-        hc:
-          0,
-
-        realizaram:
-          0,
-
-        processo:
-          0,
-
-        naoRealizaram:
-          0,
-
-        percentual:
-          0
-
-      };
-
-    }
-  );
-
-
-  return areas;
-
-}
-
-
-/* =========================================================
-   CALCULAR GERAL
-========================================================= */
-
-function calcularGeralPorRegistros(
-  registros
-) {
-
-  const geral = {
-
-    hc:
-      registros.length,
-
-    realizaram:
-      0,
-
-    processo:
-      0,
-
-    naoRealizaram:
-      0,
-
-    percentual:
-      0
-
-  };
-
-
-  registros.forEach(
-    pessoa => {
-
-      if (
-        pessoa.situacao ===
-        "REALIZOU"
-      ) {
-
-        geral.realizaram++;
-
-      }
-
-      else if (
-        pessoa.situacao ===
-        "EM_PROCESSO"
-      ) {
-
-        geral.processo++;
-
-      }
-
-      else {
-
-        geral.naoRealizaram++;
-
-      }
-
-    }
-  );
-
-
-  geral.percentual =
-    geral.hc > 0
-      ? geral.realizaram /
-        geral.hc
-      : 0;
-
-
-  return geral;
-
-}
-
-
-/* =========================================================
-   NORMALIZAR ÁREA
-========================================================= */
-
-function normalizarArea(
-  valor
-) {
-
-  const texto =
-    normalizarTexto(
-      valor
-    );
-
-
-  if (
-    texto ===
-      "OUTBOUND" ||
-    texto ===
-      "OUT" ||
-    texto.includes(
-      "OUTBOUND"
-    )
-  ) {
-
-    return "Outbound";
-
-  }
-
-
-  if (
-    texto ===
-      "INBOUND" ||
-    texto ===
-      "IN" ||
-    texto.includes(
-      "INBOUND"
-    )
-  ) {
-
-    return "Inbound";
-
-  }
-
-
-  if (
-    texto ===
-      "OPEX" ||
-    texto.includes(
-      "OPEX"
-    )
-  ) {
-
-    return "OPEX";
-
-  }
-
-
-  if (
-    texto ===
-      "ICQA" ||
-    texto.includes(
-      "ICQA"
-    )
-  ) {
-
-    return "ICQA";
-
-  }
-
-
-  if (
-  texto ===
-    "LINE HAUL" ||
-  texto ===
-    "LINEHAUL" ||
-  texto.includes(
-    "LINE HAUL"
-  ) ||
-  texto.includes(
-    "LINEHAUL"
-  )
-) {
-
-  return "Line Haul";
-
-}
-
-
-if (
-  texto ===
-    "HEAD SITE" ||
-  texto ===
-    "HEADSITE" ||
-  texto.includes(
-    "HEAD SITE"
-  )
-) {
-
-  return "Head Site";
-
-}
-
-
-return "";
-
-}
-
-/* =========================================================
-   AJUSTAR SETOR NA ARTE
-========================================================= */
-
-function ajustarSetorNaArte(
-  nome,
-  setor
-) {
-
-  const nomeNormalizado =
-    normalizarTexto(
-      nome
-    );
-
-
-  if (
-    nomeNormalizado ===
-    "PATRICIA GOMES MELO"
-  ) {
-
-    return "GERENTE OUT";
-
-  }
-
-
-  if (
-    nomeNormalizado ===
-    "THIAGO COUTO BALDO"
-  ) {
-
-    return "GERENTE IN";
-
-  }
-
-
-  return limparTexto(
-    setor
-  )
-    .toUpperCase();
-
-}
-
-
-/* =========================================================
-   CONVERTER TEMPO PARA MINUTOS
-========================================================= */
-
-function converterTempoParaMinutos(
-  valor
-) {
-
-  const texto =
-    limparTexto(
-      valor
-    )
-      .toLowerCase();
-
-
-  if (!texto) {
-
-    return 0;
-
-  }
-
-
-  const horas =
-    Number(
-      texto.match(
-        /(\d+)\s*h/
-      )?.[1] ||
-      0
-    );
-
-
-  const minutos =
-    Number(
-      texto.match(
-        /(\d+)\s*m/
-      )?.[1] ||
-      0
-    );
-
-
-  return (
-    horas *
-    60
-  ) +
-  minutos;
-
-}
-
-
-/* =========================================================
-   MÊS PREDOMINANTE
-========================================================= */
-
-function obterMesPredominante(
-  registros
-) {
-
-  const contagem =
-    {};
-
-
-  registros.forEach(
-    registro => {
-
-      const mes =
-        limparTexto(
-          registro.mes
-        );
-
-
-      if (!mes) {
-
-        return;
-
-      }
-
-
-      contagem[
-        mes
-      ] =
-        (
-          contagem[
-            mes
-          ] ||
-          0
-        ) +
-        1;
-
-    }
-  );
-
-
-  const maior =
-    Object.entries(
-      contagem
-    )
-      .sort(
-        (
-          a,
-          b
-        ) =>
-          b[1] -
-          a[1]
-      )[0];
-
-
-  return maior
-    ? formatarMes(
-        maior[0]
-      )
-    : "";
-
-}
-
-
-/* =========================================================
-   FORMATAR MÊS
-========================================================= */
-
-function formatarMes(
-  valor
-) {
-
-  const nome =
-    normalizarTexto(
-      valor
-    )
-      .split(
-        "-"
-      )[0]
-      .trim();
-
-
-  const meses = {
-
-    JANEIRO:
-      "Janeiro",
-
-    ENERO:
-      "Janeiro",
-
-    FEVEREIRO:
-      "Fevereiro",
-
-    FEBRERO:
-      "Fevereiro",
-
-    MARCO:
-      "Março",
-
-    MARZO:
-      "Março",
-
-    ABRIL:
-      "Abril",
-
-    MAIO:
-      "Maio",
-
-    MAYO:
-      "Maio",
-
-    JUNHO:
-      "Junho",
-
-    JUNIO:
-      "Junho",
-
-    JULHO:
-      "Julho",
-
-    JULIO:
-      "Julho",
-
-    AGOSTO:
-      "Agosto",
-
-    SETEMBRO:
-      "Setembro",
-
-    SEPTIEMBRE:
-      "Setembro",
-
-    OUTUBRO:
-      "Outubro",
-
-    OCTUBRE:
-      "Outubro",
-
-    NOVEMBRO:
-      "Novembro",
-
-    NOVIEMBRE:
-      "Novembro",
-
-    DEZEMBRO:
-      "Dezembro",
-
-    DICIEMBRE:
-      "Dezembro"
-
-  };
-
-
-  return (
-    meses[
-      nome
-    ] ||
-    limparTexto(
-      valor
-    )
-  );
-
-}
-
-
-/* =========================================================
-   ATUALIZAR STATUS
-========================================================= */
-
-function atualizarStatus(
-  texto,
-  classe
-) {
-
-  if (!statusArquivo) {
-
-    return;
-
-  }
-
-
-  statusArquivo.textContent =
-    texto;
-
-
-  statusArquivo.className =
-    "status-arquivo";
-
-
-  if (classe) {
-
-    statusArquivo.classList.add(
-      classe
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   OBTER VALOR DO OBJETO
-========================================================= */
-
-function obterValorObjeto(
-  objeto,
-  nomesPossiveis
-) {
-
-  if (
-    !objeto ||
-    typeof objeto !==
-      "object"
-  ) {
-
-    return "";
-
-  }
-
-
-  for (
-    const nome of
-    nomesPossiveis
-  ) {
-
-    if (
-      Object.prototype
-        .hasOwnProperty
-        .call(
-          objeto,
-          nome
-        )
-    ) {
-
-      return objeto[
-        nome
-      ];
-
-    }
-
-  }
-
-
-  const chaves =
-    Object.keys(
-      objeto
-    );
-
-
-  for (
-    const nome of
-    nomesPossiveis
-  ) {
-
-    const nomeNormalizado =
-      normalizarTexto(
-        nome
-      );
-
-
-    const chaveEncontrada =
-      chaves.find(
-        chave =>
-          normalizarTexto(
-            chave
-          ) ===
-          nomeNormalizado
-      );
-
-
-    if (
-      chaveEncontrada
-    ) {
-
-      return objeto[
-        chaveEncontrada
-      ];
-
-    }
-
-  }
-
-
-  return "";
-
-}
-/* =========================================================
-   ORDENAÇÕES
-========================================================= */
-
-function ordenarNome(
-  pessoaA,
-  pessoaB
-) {
-
-  return limparTexto(
-    pessoaA?.nome
-  )
-    .localeCompare(
-      limparTexto(
-        pessoaB?.nome
-      ),
-      "pt-BR"
-    );
-
-}
-
-
-function ordenarTempoNome(
-  pessoaA,
-  pessoaB
-) {
-
-  const minutosA =
-    Number(
-      pessoaA?.minutos
-    ) ||
-    0;
-
-
-  const minutosB =
-    Number(
-      pessoaB?.minutos
-    ) ||
-    0;
-
-
-  if (
-    minutosB !==
-    minutosA
-  ) {
-
-    return (
-      minutosB -
-      minutosA
-    );
-
-  }
-
-
-  return ordenarNome(
-    pessoaA,
-    pessoaB
-  );
-
-}
-
-
-/* =========================================================
-   EXTENSÃO
-========================================================= */
-
-function obterExtensao(
-  nome
-) {
-
-  return String(
-    nome ||
-    ""
-  )
-    .split(
-      "."
-    )
-    .pop()
-    .toLowerCase();
-
-}
-
-
-/* =========================================================
-   LIMPAR TEXTO
-========================================================= */
-
-function limparTexto(
-  valor
-) {
-
-  return String(
-    valor ??
-    ""
-  )
-    .trim();
-
-}
-
-
-/* =========================================================
-   NORMALIZAR TEXTO
-========================================================= */
-
-function normalizarTexto(
-  valor
-) {
-
-  return String(
-    valor ??
-    ""
-  )
-    .trim()
-    .normalize(
-      "NFD"
-    )
-    .replace(
-      /[\u0300-\u036f]/g,
-      ""
-    )
-    .toUpperCase();
-
-}
-
-
-/* =========================================================
-   FORMATAR PORCENTAGEM
-========================================================= */
-
-function formatarPorcentagem(
-  valor
-) {
-
-  return `${(
-    (
-      Number(
-        valor
-      ) ||
-      0
-    ) *
-    100
-  )
-    .toFixed(
-      1
-    )
-    .replace(
-      ".",
-      ","
-    )}%`;
-
-}
-
-
-/* =========================================================
-   ESCAPAR HTML
-========================================================= */
-
-function escaparHTML(
-  valor
-) {
-
-  return String(
-    valor ??
-    ""
-  )
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-/* =========================================================
-   FINAL
+   FIM DO SCRIPT
 ========================================================= */
 
 console.log(
-  "✅ script.js V2.3 — filtro de mês carregado por completo"
+  "✅ Central Be a Rep V2.4 carregada com sucesso."
 );
