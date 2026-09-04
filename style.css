@@ -194,7 +194,6 @@
 }
 
 
-
 /* =========================================================
    SINCRONIZAÇÃO
 ========================================================= */
@@ -331,7 +330,6 @@
 }
 
 
-
 /* =========================================================
    STATUS DA BASE
 ========================================================= */
@@ -349,7 +347,6 @@
   font-size: 10px;
   font-weight: 700;
 }
-
 
 
 /* =========================================================
@@ -519,7 +516,6 @@
 }
 
 
-
 /* =========================================================
    MINI BARRA DO KPI DE REALIZAÇÃO
 ========================================================= */
@@ -552,7 +548,6 @@
 
   transition: width 0.45s ease;
 }
-
 
 
 /* =========================================================
@@ -655,7 +650,6 @@
 }
 
 
-
 /* =========================================================
    BOTÕES — AJUSTES PARA O NOVO TOPO
 ========================================================= */
@@ -700,7 +694,6 @@
 
   cursor: pointer;
 }
-
 
 
 /* =========================================================
@@ -900,7 +893,6 @@
 }
 
 
-
 /* =========================================================
    CABEÇALHO
 ========================================================= */
@@ -975,7 +967,6 @@
   font-size: 10px;
   font-weight: 900;
 }
-
 
 
 /* =========================================================
@@ -1089,7 +1080,6 @@
 }
 
 
-
 /* =========================================================
    ESTADO INICIAL
 ========================================================= */
@@ -1154,7 +1144,6 @@
 }
 
 
-
 /* =========================================================
    RESULTADO
 ========================================================= */
@@ -1167,7 +1156,6 @@
 
   background: #ffffff;
 }
-
 
 
 /* =========================================================
@@ -1257,7 +1245,6 @@
 }
 
 
-
 /* =========================================================
    BADGE DE STATUS GERAL
 ========================================================= */
@@ -1280,8 +1267,6 @@
   text-transform: uppercase;
 }
 
-
-/* Será utilizado pelo JavaScript */
 
 .consulta-status-badge.status-concluido {
   background: #e6f8f0;
@@ -1309,7 +1294,6 @@
 
   color: #bd332c;
 }
-
 
 
 /* =========================================================
@@ -1390,7 +1374,6 @@
 }
 
 
-
 /* =========================================================
    DADOS OPERACIONAIS
 ========================================================= */
@@ -1449,10 +1432,8 @@
 }
 
 
-
 /* =========================================================
-   ESTADO — PESSOA NÃO ENCONTRADA
-   Será aplicado pelo JS depois
+   STATUS COMPLEMENTARES
 ========================================================= */
 
 .consulta-not-found {
@@ -1473,12 +1454,6 @@
 }
 
 
-
-/* =========================================================
-   PEQUENOS DESTAQUES DE STATUS
-   Para usarmos no JavaScript
-========================================================= */
-
 .text-success {
   color: #16895b !important;
 }
@@ -1497,7 +1472,6 @@
 .text-info {
   color: #2388dd !important;
 }
-
 
 
 /* =========================================================
@@ -1600,6 +1574,8 @@
   }
 
 }
+
+
 /* =========================================================
    CENTRAL BE A REP — DASHBOARD V3
    JORNADA + DESEMPENHO POR ÁREA
@@ -1936,7 +1912,6 @@
 }
 
 
-
 /* =========================================================
    DESEMPENHO POR ÁREA
 ========================================================= */
@@ -2081,7 +2056,6 @@
 }
 
 
-
 /* =========================================================
    RANKING DAS ÁREAS
 ========================================================= */
@@ -2110,11 +2084,6 @@
   font-weight: 700;
 }
 
-
-/*
-   As classes abaixo serão criadas pelo script.js
-   quando montarmos o ranking automaticamente.
-*/
 
 .area-rank-item {
   display: grid;
@@ -2239,7 +2208,6 @@
 }
 
 
-
 /* =========================================================
    CORES DINÂMICAS PARA O RANKING
 ========================================================= */
@@ -2274,7 +2242,6 @@
 }
 
 
-
 /* =========================================================
    TABELA DETALHADA — ABRIR / FECHAR
 ========================================================= */
@@ -2300,7 +2267,6 @@
   cursor: pointer;
 
   list-style: none;
-
   user-select: none;
 }
 
@@ -2317,8 +2283,6 @@
 
   font-size: 16px;
   font-weight: 900;
-
-  transition: transform 0.2s ease;
 }
 
 
@@ -2348,7 +2312,6 @@
 .area-details-body {
   padding: 0 16px 16px;
 }
-
 
 
 /* =========================================================
@@ -2400,11 +2363,6 @@
   text-align: left;
 }
 
-
-/*
-   O script criará essas linhas para
-   lista-areas-dashboard.
-*/
 
 .dashboard-area-row {
   display: grid;
@@ -2473,9 +2431,8 @@
 }
 
 
-
 /* =========================================================
-   RESPONSIVIDADE
+   RESPONSIVIDADE — JORNADA / ÁREAS
 ========================================================= */
 
 @media (max-width: 1000px) {
@@ -2578,18 +2535,18 @@
 
 }
 /* =========================================================
-   CENTRAL BE A REP — DASHBOARD V3
-   CENTRAL DE ARTES + AJUSTES DO DASHBOARD
+   CENTRAL BE A REP — CENTRAL DE ARTES
+   VISUAL DAS ARTES PARA PNG
 ========================================================= */
 
 
 /* =========================================================
-   CENTRAL DE ARTES
+   CENTRAL DE ARTES — CARD EXTERNO
 ========================================================= */
 
 .art-center {
   margin-top: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 
   padding: 22px 24px;
 
@@ -2620,9 +2577,9 @@
 
   color: #2388dd;
 
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 1.3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
 }
 
 
@@ -2631,8 +2588,8 @@
 
   color: #071b61;
 
-  font-size: 20px;
-  font-weight: 900;
+  font-size: 21px;
+  font-weight: 700;
 }
 
 
@@ -2641,8 +2598,9 @@
 
   color: #818a9e;
 
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 
@@ -2660,7 +2618,7 @@
 
   font-family: inherit;
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 700;
 
   cursor: pointer;
 
@@ -2690,14 +2648,12 @@
 
 
 .art-tab {
-  position: relative;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  min-height: 74px;
+  min-height: 78px;
 
   padding: 10px;
 
@@ -2736,14 +2692,14 @@
 .art-tab > span {
   margin-bottom: 5px;
 
-  font-size: 16px;
+  font-size: 17px;
 }
 
 
 .art-tab strong {
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.25;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 
@@ -2754,9 +2710,9 @@
 
   color: #9aa2b3;
 
-  font-size: 7px;
+  font-size: 8px;
   line-height: 1.2;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 
@@ -2778,27 +2734,1274 @@
 
 
 .art-tab.ativo small {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 
 /* =========================================================
-   ÁREA QUE EXIBE AS ARTES
+   ÁREA DE EXIBIÇÃO
 ========================================================= */
 
 .area-artes {
-  margin-bottom: 24px;
+  width: 100%;
+
+  margin-bottom: 26px;
 }
 
 
-.area-artes > .arte {
-  margin-left: auto;
-  margin-right: auto;
+/*
+ * Somente a arte selecionada deve aparecer.
+ */
+
+.arte {
+  display: none;
+}
+
+
+.arte.ativa {
+  display: block;
 }
 
 
 /* =========================================================
-   AJUSTES DO DASHBOARD
+   BASE DAS 6 ARTES
+
+   IMPORTANTE:
+   A largura fixa deixa o PNG consistente.
+========================================================= */
+
+.area-artes > .arte {
+  overflow: hidden;
+
+  width: 1080px;
+  max-width: 100%;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  border: 1px solid #dfe4ec;
+  border-radius: 26px;
+
+  background: #ffffff;
+
+  color: #182230;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 18px 50px rgba(14, 31, 75, 0.11);
+}
+
+
+.area-artes > .arte,
+.area-artes > .arte * {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CABEÇALHO DA ARTE
+========================================================= */
+
+.arte-header {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 20px;
+
+  min-height: 122px;
+
+  padding: 20px 30px;
+
+  background:
+    radial-gradient(
+      circle at 93% 10%,
+      rgba(255, 230, 0, 0.14),
+      transparent 31%
+    ),
+    linear-gradient(
+      135deg,
+      #071b61 0%,
+      #0b277c 67%,
+      #12389c 100%
+    );
+
+  color: #ffffff;
+}
+
+
+.arte-header::after {
+  content: "";
+
+  position: absolute;
+  right: -36px;
+  bottom: -70px;
+
+  width: 160px;
+  height: 160px;
+
+  border: 25px solid rgba(255, 230, 0, 0.07);
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   LOGO — CORREÇÃO PRINCIPAL
+========================================================= */
+
+.arte-logo {
+  display: block;
+
+  width: 78px !important;
+  height: 78px !important;
+  max-width: 78px !important;
+  max-height: 78px !important;
+
+  padding: 9px;
+
+  border-radius: 19px;
+
+  background: #ffe600;
+
+  object-fit: contain;
+
+  box-shadow:
+    0 9px 20px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================================
+   TÍTULO DA ARTE
+========================================================= */
+
+.arte-title {
+  min-width: 0;
+}
+
+
+.arte-title h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 31px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+
+.arte-title p {
+  margin: 7px 0 0;
+
+  color: #ffe600;
+
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+
+/* =========================================================
+   MÊS NAS ARTES
+========================================================= */
+
+.month-pill {
+  position: relative;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-width: 145px;
+
+  padding: 10px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  color: rgba(255, 255, 255, 0.86);
+
+  font-size: 10px;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+
+.month-pill strong {
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* Mantemos as classes específicas por compatibilidade */
+
+.month-blue,
+.month-green,
+.month-orange,
+.month-red {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+/* =========================================================
+   ARTE 1 — RESUMO GERAL
+========================================================= */
+
+.arte-geral {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f7f9fd 100%
+    );
+}
+
+
+/* =========================================================
+   RESUMO PRINCIPAL
+========================================================= */
+
+.summary-top {
+  display: grid;
+  grid-template-columns: 0.95fr 2.05fr;
+
+  gap: 16px;
+
+  padding: 24px 28px 18px;
+}
+
+
+/* =========================================================
+   RESULTADO GERAL
+========================================================= */
+
+.overall-card {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 218px;
+
+  padding: 23px;
+
+  border-radius: 20px;
+
+  background:
+    radial-gradient(
+      circle at 78% 12%,
+      rgba(255, 230, 0, 0.2),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #071b61,
+      #12389c
+    );
+
+  color: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 13px 25px rgba(7, 27, 97, 0.15);
+}
+
+
+.overall-card > span {
+  color: rgba(255, 255, 255, 0.66);
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+
+.overall-card > strong {
+  display: block;
+
+  margin: 13px 0 5px;
+
+  color: #ffe600;
+
+  font-size: 56px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+
+.overall-card > p {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+
+/* =========================================================
+   QUATRO CARDS DO RESUMO
+========================================================= */
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+
+.summary-card {
+  position: relative;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+
+  gap: 13px;
+
+  min-height: 102px;
+
+  padding: 15px 17px;
+
+  border: 1px solid #e6eaf1;
+  border-radius: 17px;
+
+  background: #ffffff;
+}
+
+
+.summary-card::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 4px;
+  height: 100%;
+}
+
+
+.summary-card > span {
+  display: grid;
+  place-items: center;
+
+  width: 39px;
+  height: 39px;
+
+  border-radius: 12px;
+
+  background: #f5f7fb;
+
+  font-size: 18px;
+}
+
+
+.summary-card small {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #8c95a7;
+
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+
+.summary-card strong {
+  display: inline-block;
+
+  margin-right: 7px;
+
+  color: #071b61;
+
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+
+.summary-card p {
+  display: inline-block;
+
+  margin: 0;
+
+  color: #7e8799;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.summary-green::before {
+  background: #18a56b;
+}
+
+
+.summary-orange::before {
+  background: #f39a2e;
+}
+
+
+.summary-red::before {
+  background: #d43c32;
+}
+
+
+.summary-blue::before {
+  background: #2388dd;
+}
+
+
+.summary-green strong {
+  color: #16895b;
+}
+
+
+.summary-orange strong {
+  color: #d98019;
+}
+
+
+.summary-red strong {
+  color: #c83a31;
+}
+
+
+.summary-blue strong {
+  color: #176db5;
+}
+
+
+/* =========================================================
+   INDICADORES COMPLEMENTARES — GEMBA
+========================================================= */
+
+.gemba-mini-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+
+  padding: 0 28px 20px;
+}
+
+
+.gemba-mini-summary > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 12px;
+
+  min-height: 70px;
+
+  padding: 12px 16px;
+
+  border: 1px solid #e4e9f1;
+  border-radius: 15px;
+
+  background: #ffffff;
+}
+
+
+.gemba-mini-summary > div > span {
+  display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  border-radius: 11px;
+
+  background: #eef4ff;
+
+  font-size: 17px;
+}
+
+
+.gemba-mini-summary p {
+  margin: 0;
+
+  color: #071b61;
+
+  font-size: 11px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+
+.gemba-mini-summary p small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #8993a5;
+
+  font-size: 9px;
+  font-weight: 500;
+}
+
+
+.gemba-mini-summary strong {
+  min-width: 43px;
+
+  color: #071b61;
+
+  text-align: right;
+
+  font-size: 27px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   SEÇÕES INTERNAS DAS ARTES
+========================================================= */
+
+.area-section,
+.list-section {
+  padding: 0 28px 24px;
+}
+
+
+/* =========================================================
+   TÍTULO DE SEÇÃO
+========================================================= */
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 10px;
+}
+
+
+.section-heading > span {
+  display: grid;
+  place-items: center;
+
+  width: 31px;
+  height: 31px;
+
+  border-radius: 9px;
+
+  background: #edf3ff;
+
+  font-size: 14px;
+}
+
+
+.section-heading h3 {
+  margin: 0;
+
+  color: #071b61;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+
+.green-heading > span {
+  background: #e7f7f0;
+}
+
+
+.orange-heading > span {
+  background: #fff2e1;
+}
+
+
+.red-heading > span {
+  background: #fdebea;
+}
+
+
+.blue-heading > span {
+  background: #eaf2ff;
+}
+
+
+/* =========================================================
+   TABELA DE RESULTADO POR ÁREA — ARTE GERAL
+========================================================= */
+
+.arte .areas-table {
+  overflow: hidden;
+
+  width: 100%;
+
+  border: 1px solid #e2e7ef;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+
+.arte .areas-table-head,
+.arte #lista-areas .area-row {
+  display: grid;
+
+  grid-template-columns:
+    1.35fr
+    0.9fr
+    0.9fr
+    1.1fr
+    0.75fr
+    1fr;
+
+  align-items: center;
+}
+
+
+.arte .areas-table-head {
+  min-height: 43px;
+
+  padding: 0 15px;
+
+  background: #071b61;
+
+  color: #ffffff;
+}
+
+
+.arte .areas-table-head span {
+  font-size: 8px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: center;
+}
+
+
+.arte .areas-table-head span:first-child {
+  text-align: left;
+}
+
+
+.arte #lista-areas .area-row {
+  min-height: 46px;
+
+  padding: 0 15px;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+
+.arte #lista-areas .area-row:last-child {
+  border-bottom: 0;
+}
+
+
+.arte #lista-areas .area-row > span,
+.arte #lista-areas .area-row > strong {
+  color: #657086;
+
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+
+.arte #lista-areas .area-row > span:first-child {
+  color: #071b61;
+
+  font-weight: 700;
+  text-align: left;
+}
+
+
+.arte #lista-areas .area-row > strong {
+  color: #071b61;
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   ARTES DE LISTAGEM
+========================================================= */
+
+.arte-listagem {
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f8fafd 100%
+    );
+}
+
+
+/* =========================================================
+   HERO DAS ARTES DE LISTAGEM
+========================================================= */
+
+.list-hero {
+  position: relative;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 18px;
+
+  margin: 22px 28px 20px;
+  padding: 18px 21px;
+
+  border-radius: 18px;
+
+  background: #f6f8fc;
+}
+
+
+.list-hero::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 5px;
+  height: 100%;
+}
+
+
+.hero-green {
+  border: 1px solid #ccebdc;
+
+  background:
+    linear-gradient(
+      100deg,
+      #f1fbf6,
+      #ffffff
+    );
+}
+
+
+.hero-green::before {
+  background: #18a56b;
+}
+
+
+.hero-orange {
+  border: 1px solid #f1ddc1;
+
+  background:
+    linear-gradient(
+      100deg,
+      #fff8ee,
+      #ffffff
+    );
+}
+
+
+.hero-orange::before {
+  background: #f39a2e;
+}
+
+
+.hero-red {
+  border: 1px solid #efd4d2;
+
+  background:
+    linear-gradient(
+      100deg,
+      #fff5f4,
+      #ffffff
+    );
+}
+
+
+.hero-red::before {
+  background: #d43c32;
+}
+
+
+.hero-blue {
+  border: 1px solid #d5e4f3;
+
+  background:
+    linear-gradient(
+      100deg,
+      #f2f7fd,
+      #ffffff
+    );
+}
+
+
+.hero-blue::before {
+  background: #2388dd;
+}
+
+
+/* =========================================================
+   ÍCONE PRINCIPAL
+========================================================= */
+
+.list-hero .hero-icon {
+  display: grid;
+  place-items: center;
+
+  width: 58px;
+  height: 58px;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  font-size: 27px;
+
+  box-shadow:
+    0 7px 18px rgba(14, 31, 75, 0.08);
+}
+
+
+.list-hero h3 {
+  margin: 0 0 6px;
+
+  color: #071b61;
+
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+
+.list-hero > div:nth-child(2) > strong {
+  display: inline-block;
+
+  margin-right: 8px;
+
+  color: #071b61;
+
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+
+.hero-green > div:nth-child(2) > strong {
+  color: #16895b;
+}
+
+
+.hero-orange > div:nth-child(2) > strong {
+  color: #d98019;
+}
+
+
+.hero-red > div:nth-child(2) > strong {
+  color: #c83a31;
+}
+
+
+.hero-blue > div:nth-child(2) > strong {
+  color: #176db5;
+}
+
+
+.list-hero p {
+  display: inline;
+
+  margin: 0;
+
+  color: #7d8799;
+
+  font-size: 10px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+
+.hero-side {
+  display: grid;
+  place-items: center;
+
+  width: 52px;
+  height: 52px;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  font-size: 23px;
+}
+
+
+/* =========================================================
+   TABELA — REALIZARAM O BE A REP
+========================================================= */
+
+.realizaram-detalhe {
+  overflow: hidden;
+
+  width: 100%;
+
+  border: 1px solid #e1e6ee;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+
+.realizaram-detalhe-head {
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1.35fr
+    1.45fr
+    0.8fr
+    0.9fr
+    1fr;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 43px;
+
+  padding: 0 12px;
+
+  background: #071b61;
+
+  color: #ffffff;
+}
+
+
+.realizaram-detalhe-head span {
+  color: #ffffff;
+
+  font-size: 7.5px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+}
+
+
+/*
+ * As linhas internas são criadas pelo JavaScript.
+ * Este bloco garante que fiquem dentro da arte.
+ */
+
+#lista-realizaram-detalhe {
+  width: 100%;
+}
+
+
+#lista-realizaram-detalhe > div {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LISTAS DAS OUTRAS ARTES
+========================================================= */
+
+.listas-grid {
+  width: 100%;
+  min-height: 50px;
+}
+
+
+/*
+ * O JavaScript define o grid e os cards inline.
+ * Aqui fazemos pequenos ajustes globais.
+ */
+
+.arte .listas-grid > div {
+  min-width: 0;
+}
+
+
+.arte .listas-grid > div > div {
+  break-inside: avoid;
+}
+
+
+/* =========================================================
+   ESTADO SEM PESSOAS
+========================================================= */
+
+.arte .empty-list,
+.arte .empty-state {
+  padding: 30px 20px;
+
+  border: 1px dashed #d9dfe8;
+  border-radius: 13px;
+
+  background: #fafbfc;
+
+  color: #9099aa;
+
+  text-align: center;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   RODAPÉ DAS ARTES
+========================================================= */
+
+.arte-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 48px;
+
+  padding: 12px 24px;
+
+  border-top: 1px solid #e6eaf1;
+
+  background: #f7f9fc;
+
+  color: #69758d;
+
+  text-align: center;
+
+  font-size: 10px;
+}
+
+
+.arte-footer strong {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+.footer-green {
+  border-top-color: #d7ecdf;
+
+  background: #f3fbf7;
+
+  color: #39765d;
+}
+
+
+.footer-orange {
+  border-top-color: #f0dfc7;
+
+  background: #fff9f1;
+
+  color: #936529;
+}
+
+
+.footer-red {
+  border-top-color: #efd9d7;
+
+  background: #fff7f6;
+
+  color: #954b46;
+}
+
+
+.footer-blue {
+  border-top-color: #d9e5f1;
+
+  background: #f4f8fd;
+
+  color: #486b8d;
+}
+
+
+/* =========================================================
+   PROTEÇÃO DAS IMAGENS DENTRO DAS ARTES
+========================================================= */
+
+.arte img {
+  object-fit: contain;
+}
+
+
+/*
+ * Esta regra impede novamente o problema
+ * do logo ocupar a arte inteira.
+ */
+
+.arte img.arte-logo {
+  width: 78px !important;
+  height: 78px !important;
+
+  max-width: 78px !important;
+  max-height: 78px !important;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE DA CENTRAL DE ARTES
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .art-tabs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .art-center-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+
+  .btn-download {
+    width: 100%;
+  }
+
+
+  .summary-top {
+    grid-template-columns: 1fr;
+  }
+
+
+  .overall-card {
+    min-height: 170px;
+  }
+
+
+  .gemba-mini-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .arte-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+
+  .month-pill {
+    grid-column: 1 / -1;
+
+    justify-self: start;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .art-center {
+    padding: 18px;
+  }
+
+
+  .art-tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+
+  .summary-top,
+  .gemba-mini-summary,
+  .area-section,
+  .list-section {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+
+  .list-hero {
+    margin-left: 18px;
+    margin-right: 18px;
+
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+
+  .hero-side {
+    display: none;
+  }
+
+
+  .arte-header {
+    padding: 18px;
+  }
+
+
+  .arte-logo {
+    width: 62px !important;
+    height: 62px !important;
+
+    max-width: 62px !important;
+    max-height: 62px !important;
+  }
+
+
+  .arte-title h2 {
+    font-size: 25px;
+  }
+
+
+  .arte .areas-table {
+    overflow-x: auto;
+  }
+
+
+  .arte .areas-table-head,
+  .arte #lista-areas .area-row {
+    min-width: 720px;
+  }
+
+
+  .realizaram-detalhe {
+    overflow-x: auto;
+  }
+
+
+  .realizaram-detalhe-head,
+  #lista-realizaram-detalhe {
+    min-width: 900px;
+  }
+
+}
+/* =========================================================
+   CENTRAL BE A REP — AJUSTES DO DASHBOARD
+========================================================= */
+
+
+/* =========================================================
+   CARD DE AJUSTES
 ========================================================= */
 
 .dashboard-settings {
@@ -2832,7 +4035,6 @@
   cursor: pointer;
 
   list-style: none;
-
   user-select: none;
 
   background:
@@ -2882,8 +4084,8 @@
 
   color: #8993a7;
 
-  font-size: 8px;
-  font-weight: 900;
+  font-size: 9px;
+  font-weight: 700;
   letter-spacing: 1px;
 }
 
@@ -2893,8 +4095,8 @@
 
   color: #071b61;
 
-  font-size: 13px;
-  font-weight: 900;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 
@@ -2905,8 +4107,8 @@
 
   color: #9199aa;
 
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 400;
 }
 
 
@@ -2926,7 +4128,7 @@
   color: #071b61;
 
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 800;
 
   transition: transform 0.2s ease;
 }
@@ -2980,8 +4182,8 @@
 
   color: #d98019;
 
-  font-size: 8px;
-  font-weight: 900;
+  font-size: 9px;
+  font-weight: 700;
   letter-spacing: 1px;
 }
 
@@ -2991,8 +4193,8 @@
 
   color: #071b61;
 
-  font-size: 17px;
-  font-weight: 900;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 
@@ -3001,8 +4203,9 @@
 
   color: #818a9e;
 
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 
@@ -3017,8 +4220,8 @@
 
   color: #c87516;
 
-  font-size: 8px;
-  font-weight: 900;
+  font-size: 9px;
+  font-weight: 700;
 }
 
 
@@ -3053,9 +4256,9 @@
 
   color: #768198;
 
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.45;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 
@@ -3065,6 +4268,7 @@
 
 .exception-form {
   display: grid;
+
   grid-template-columns:
     minmax(0, 1.4fr)
     minmax(0, 1fr)
@@ -3096,8 +4300,8 @@
 .field-group label {
   color: #69748a;
 
-  font-size: 8px;
-  font-weight: 900;
+  font-size: 9px;
+  font-weight: 600;
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
@@ -3119,8 +4323,8 @@
   color: #071b61;
 
   font-family: inherit;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 
@@ -3146,7 +4350,7 @@
 
   font-family: inherit;
   font-size: 9px;
-  font-weight: 900;
+  font-weight: 700;
 
   cursor: pointer;
 }
@@ -3180,8 +4384,8 @@
 
   color: #071b61;
 
-  font-size: 10px;
-  font-weight: 900;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 
@@ -3192,8 +4396,8 @@
 
   color: #969eae;
 
-  font-size: 8px;
-  font-weight: 600;
+  font-size: 9px;
+  font-weight: 400;
 }
 
 
@@ -3217,14 +4421,9 @@
   text-align: center;
 
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
-
-/*
-   Estas classes podem ser utilizadas pelas linhas
-   que o script atual já cria para as exceções.
-*/
 
 .exception-item {
   display: flex;
@@ -3255,7 +4454,7 @@
   color: #071b61;
 
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 700;
 
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3270,7 +4469,7 @@
   color: #929aab;
 
   font-size: 8px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 
@@ -3288,7 +4487,7 @@
 
   font-family: inherit;
   font-size: 8px;
-  font-weight: 900;
+  font-weight: 700;
 
   cursor: pointer;
 }
@@ -3316,117 +4515,54 @@
   color: #9ba3b2;
 
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 
 .site-footer span:first-child {
   color: #071b61;
 
-  font-weight: 900;
+  font-weight: 700;
 }
 
 
 /* =========================================================
-   RESPONSIVIDADE
-========================================================= */
-
-@media (max-width: 1000px) {
-
-  .art-tabs {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-}
-
-
-@media (max-width: 750px) {
-
-  .art-center-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-
-  .btn-download {
-    width: 100%;
-  }
-
-
-  .exception-form {
-    grid-template-columns: 1fr;
-  }
-
-
-  .exception-form .btn-dark {
-    width: 100%;
-  }
-
-}
-
-
-@media (max-width: 580px) {
-
-  .art-center {
-    padding: 18px;
-  }
-
-
-  .art-tabs {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-
-  .settings-summary {
-    padding: 15px;
-  }
-
-
-  .settings-content {
-    padding: 0 12px 12px;
-  }
-
-
-  .settings-exception-card {
-    padding: 15px;
-  }
-
-
-  .exceptions-header {
-    flex-direction: column;
-  }
-
-
-  .exception-counter {
-    align-self: flex-start;
-  }
-
-
-  .site-footer {
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: 4px;
-  }
-
-}
-
-/* =========================================================
-   CENTRAL BE A REP — TIPOGRAFIA V3
-   Mais limpa, moderna e confortável para dashboard
+   BASE GERAL DO SITE
 ========================================================= */
 
 @import url(
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap'
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap"
 );
 
 
-/* =========================================================
-   BASE
-========================================================= */
+* {
+  box-sizing: border-box;
+}
+
+
+html {
+  min-height: 100%;
+
+  background: #f4f6fa;
+}
+
 
 body {
+  min-height: 100vh;
+
+  margin: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f5f7fb 0%,
+      #eef2f7 100%
+    );
+
+  color: #182230;
+
   font-family: "Inter", Arial, sans-serif;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.45;
 
@@ -3435,8 +4571,85 @@ body {
 }
 
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+img {
+  max-width: 100%;
+}
+
+
 /* =========================================================
-   MONTSERRAT SOMENTE PARA GRANDES DESTAQUES
+   CONTAINER PRINCIPAL
+========================================================= */
+
+.app {
+  width: min(1440px, calc(100% - 40px));
+
+  margin: 0 auto;
+  padding: 28px 0 10px;
+}
+
+
+/* =========================================================
+   CLASSE FUNDAMENTAL DO JAVASCRIPT
+========================================================= */
+
+.oculto {
+  display: none !important;
+}
+
+
+/* =========================================================
+   BOTÃO BASE
+========================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 42px;
+
+  padding: 0 15px;
+
+  border-radius: 11px;
+
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+
+/* =========================================================
+   TIPOGRAFIA — GRANDES DESTAQUES
 ========================================================= */
 
 .hero-brand h1,
@@ -3447,12 +4660,10 @@ body {
 
 
 /* =========================================================
-   CABEÇALHO
+   TIPOGRAFIA — CABEÇALHO
 ========================================================= */
 
 .hero-brand .eyebrow {
-  font-family: "Inter", sans-serif;
-
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -3481,8 +4692,6 @@ body {
 
 
 .hero-month-box strong {
-  font-family: "Inter", sans-serif;
-
   font-size: 16px;
   font-weight: 700;
 }
@@ -3495,7 +4704,7 @@ body {
 
 
 /* =========================================================
-   EYEBROWS / PEQUENOS TÍTULOS
+   EYEBROWS / TÍTULOS PEQUENOS
 ========================================================= */
 
 .eyebrow,
@@ -3559,8 +4768,6 @@ body {
 .performance-header p,
 .art-center-header p,
 .exceptions-header p {
-  font-family: "Inter", sans-serif;
-
   font-size: 12px;
   font-weight: 400;
   line-height: 1.5;
@@ -3568,12 +4775,10 @@ body {
 
 
 /* =========================================================
-   KPIs
+   KPIs — REFINO DE TIPOGRAFIA
 ========================================================= */
 
 .dashboard-kpis-v2 .metric-card > p {
-  font-family: "Inter", sans-serif;
-
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.25px;
@@ -3581,8 +4786,6 @@ body {
 
 
 .dashboard-kpis-v2 .metric-card > strong {
-  font-family: "Inter", sans-serif;
-
   font-size: 34px;
   font-weight: 700;
   letter-spacing: -1.2px;
@@ -3613,8 +4816,6 @@ body {
 
 
 .status-meta-v2 h3 {
-  font-family: "Inter", sans-serif;
-
   font-size: 16px;
   font-weight: 700;
 }
@@ -3633,50 +4834,16 @@ body {
 
 
 .status-meta-numeros strong {
-  font-family: "Inter", sans-serif;
-
   font-size: 17px;
   font-weight: 700;
 }
 
 
 /* =========================================================
-   FILTRO / BOTÕES
-========================================================= */
-
-.filtro-mes-box label {
-  font-size: 10px;
-  font-weight: 600;
-}
-
-
-.filtro-mes-box select {
-  font-family: "Inter", sans-serif;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-
-.btn,
-.sync-actions .btn,
-.consulta-search .btn-dark,
-.btn-download,
-.exception-form .btn-dark {
-  font-family: "Inter", sans-serif;
-
-  font-weight: 600;
-  letter-spacing: 0;
-}
-
-
-/* =========================================================
-   CONSULTA RÁPIDA
+   CONSULTA RÁPIDA — TIPOGRAFIA
 ========================================================= */
 
 .consulta-input-wrap input {
-  font-family: "Inter", sans-serif;
-
   font-size: 13px;
   font-weight: 500;
 }
@@ -3695,8 +4862,6 @@ body {
 
 
 .consulta-profile-info h3 {
-  font-family: "Inter", sans-serif;
-
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.3px;
@@ -3742,7 +4907,7 @@ body {
 
 
 /* =========================================================
-   JORNADA
+   JORNADA — TIPOGRAFIA
 ========================================================= */
 
 .journey-step small {
@@ -3753,8 +4918,6 @@ body {
 
 
 .journey-step strong {
-  font-family: "Inter", sans-serif;
-
   font-size: 13px;
   font-weight: 700;
 }
@@ -3767,8 +4930,6 @@ body {
 
 
 .journey-step > b {
-  font-family: "Inter", sans-serif;
-
   font-size: 22px;
   font-weight: 700;
 }
@@ -3781,7 +4942,7 @@ body {
 
 
 /* =========================================================
-   DESEMPENHO POR ÁREA
+   DESEMPENHO POR ÁREA — TIPOGRAFIA
 ========================================================= */
 
 .performance-legend span {
@@ -3797,8 +4958,6 @@ body {
 
 
 .area-rank-percent {
-  font-family: "Inter", sans-serif;
-
   font-size: 12px;
   font-weight: 700;
 }
@@ -3833,73 +4992,7 @@ body {
 
 
 /* =========================================================
-   CENTRAL DE ARTES
-========================================================= */
-
-.art-tab strong {
-  font-size: 9px;
-  font-weight: 600;
-}
-
-
-.art-tab small {
-  font-size: 8px;
-  font-weight: 400;
-}
-
-
-/* =========================================================
-   AJUSTES / EXCEÇÕES
-========================================================= */
-
-.settings-summary strong {
-  font-family: "Inter", sans-serif;
-
-  font-size: 14px;
-  font-weight: 600;
-}
-
-
-.settings-summary small {
-  font-size: 10px;
-  font-weight: 400;
-}
-
-
-.settings-warning p {
-  font-size: 10px;
-  font-weight: 400;
-}
-
-
-.field-group label {
-  font-size: 9px;
-  font-weight: 600;
-}
-
-
-.field-group input {
-  font-family: "Inter", sans-serif;
-
-  font-size: 11px;
-  font-weight: 500;
-}
-
-
-.exception-list-title strong {
-  font-size: 11px;
-  font-weight: 600;
-}
-
-
-.exception-list-title span {
-  font-size: 9px;
-  font-weight: 400;
-}
-
-
-/* =========================================================
-   MELHOR LEITURA DOS NÚMEROS
+   NÚMEROS
 ========================================================= */
 
 #resumo-hc,
@@ -3909,16 +5002,111 @@ body {
 #percentual-meta-dashboard,
 #resumo-gemba-pendente,
 #resumo-gemba-processo,
-#jornada-berep-concluido {
+#jornada-berep-concluido,
+#percentual-geral,
+#total-realizaram-lista,
+#total-processo,
+#total-nao,
+#total-guemba-pendente,
+#total-guemba-processando {
   font-variant-numeric: tabular-nums;
 }
 
 
 /* =========================================================
-   MOBILE
+   PROTEÇÕES DAS ARTES PARA O HTML2CANVAS
 ========================================================= */
 
+.area-artes > .arte {
+  isolation: isolate;
+}
+
+
+.area-artes > .arte.ativa {
+  visibility: visible;
+}
+
+
+.arte canvas,
+.arte svg,
+.arte img {
+  vertical-align: middle;
+}
+
+
+/*
+   Impede quebra estranha de elementos ao capturar PNG.
+ */
+
+.summary-card,
+.gemba-mini-summary > div,
+.list-hero,
+.realizaram-detalhe,
+.arte-footer,
+.arte #lista-areas .area-row {
+  break-inside: avoid;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE — AJUSTES / SITE
+========================================================= */
+
+@media (max-width: 750px) {
+
+  .exception-form {
+    grid-template-columns: 1fr;
+  }
+
+
+  .exception-form .btn-dark {
+    width: 100%;
+  }
+
+
+  .exceptions-header {
+    flex-direction: column;
+  }
+
+
+  .exception-counter {
+    align-self: flex-start;
+  }
+
+}
+
+
 @media (max-width: 580px) {
+
+  .app {
+    width: min(100% - 24px, 1440px);
+
+    padding-top: 16px;
+  }
+
+
+  .settings-summary {
+    padding: 15px;
+  }
+
+
+  .settings-content {
+    padding: 0 12px 12px;
+  }
+
+
+  .settings-exception-card {
+    padding: 15px;
+  }
+
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 4px;
+  }
+
 
   .hero-brand h1 {
     font-size: 27px;
@@ -3938,3 +5126,8 @@ body {
   }
 
 }
+
+
+/* =========================================================
+   FIM — CENTRAL BE A REP V3
+========================================================= */
