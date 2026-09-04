@@ -5569,5 +5569,121 @@ img {
 }
 
 /* =========================================================
+   AJUSTE — MAIS COLUNAS NAS LISTAS DAS ARTES
+   Reduz a altura das imagens exportadas
+========================================================= */
+
+
+/* 4 COLUNAS NAS LISTAS DE PESSOAS */
+
+.arte .listas-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+
+/* CARD MAIS COMPACTO */
+
+.arte .person-list-item {
+  min-height: 64px;
+
+  padding:
+    11px
+    12px
+    11px
+    16px;
+
+  border-radius: 13px;
+}
+
+
+/* NOME */
+
+.arte .person-list-main strong {
+  margin-bottom: 4px;
+
+  font-size: 10px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ÁREA + SETOR */
+
+.arte .person-list-main span {
+  font-size: 8px;
+  line-height: 1.25;
+
+  font-weight: 500;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* TEMPO NAS ARTES QUE POSSUEM TEMPO */
+
+.arte .person-list-time {
+  min-width: 58px;
+
+  padding: 7px 8px;
+
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   ARTES SEM TEMPO
+========================================================= */
+
+#listas-nao .person-list-item,
+#listas-guemba-pendente .person-list-item {
+  grid-template-columns: 1fr;
+}
+
+
+/* =========================================================
+   ARTES COM TEMPO
+========================================================= */
+
+#listas-processo .person-list-item,
+#listas-guemba-processando .person-list-item {
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+}
+
+
+/* =========================================================
+   TELAS MENORES
+   Isso só afeta a visualização na tela.
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .arte .listas-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .arte .listas-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+/* =========================================================
    FIM — CENTRAL BE A REP V3
 ========================================================= */
