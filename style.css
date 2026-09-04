@@ -5685,5 +5685,141 @@ img {
 }
 
 /* =========================================================
+   AJUSTE FINAL — LISTAS GRANDES DAS ARTES
+   MAIS LEGÍVEL + ALTURA CONTROLADA
+========================================================= */
+
+
+/* 3 COLUNAS */
+
+.arte .listas-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+}
+
+
+/* CARD */
+
+.arte .person-list-item {
+  min-height: 58px;
+
+  padding:
+    10px
+    12px
+    10px
+    16px;
+
+  border-radius: 12px;
+}
+
+
+/* NOME */
+
+.arte .person-list-main strong {
+  margin-bottom: 3px;
+
+  color: #071b61;
+
+  font-size: 11px;
+  line-height: 1.18;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ÁREA + SETOR */
+
+.arte .person-list-main span {
+  color: #727d90;
+
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 500;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* TEMPO */
+
+.arte .person-list-time {
+  min-width: 60px;
+
+  padding: 7px 8px;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   COMPACTAR A PARTE ANTES DA LISTA
+========================================================= */
+
+.arte-listagem .list-hero {
+  margin-top: 18px;
+  margin-bottom: 14px;
+
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+
+.arte-listagem .list-section {
+  padding-bottom: 18px;
+}
+
+
+.arte-listagem .section-heading {
+  margin-bottom: 8px;
+}
+
+
+/* =========================================================
+   NÃO REALIZARAM — AINDA MAIS EFICIENTE
+========================================================= */
+
+#arte-nao .person-list-item {
+  min-height: 56px;
+}
+
+
+#arte-nao .person-list-main strong {
+  font-size: 10.5px;
+}
+
+
+#arte-nao .person-list-main span {
+  font-size: 8.5px;
+}
+
+
+/* =========================================================
+   TELAS MENORES
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .arte .listas-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 580px) {
+
+  .arte .listas-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* =========================================================
    FIM — CENTRAL BE A REP V3
 ========================================================= */
