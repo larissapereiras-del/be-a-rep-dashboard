@@ -5127,6 +5127,446 @@ img {
 
 }
 
+/* =========================================================
+   CORREÇÃO FINAL — LISTAS DINÂMICAS DAS ARTES
+   REALIZARAM + PROCESSO + NÃO REALIZARAM + GEMBA
+========================================================= */
+
+
+/* =========================================================
+   ARTE REALIZARAM
+   Alinha cada pessoa com o cabeçalho da tabela
+========================================================= */
+
+#lista-realizaram-detalhe {
+  width: 100%;
+}
+
+
+.realizado-item {
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1.35fr
+    1.45fr
+    0.8fr
+    0.9fr
+    1fr;
+
+  align-items: center;
+  gap: 8px;
+
+  min-height: 68px;
+
+  padding: 10px 12px;
+
+  border-bottom: 1px solid #edf0f4;
+
+  background: #ffffff;
+}
+
+
+.realizado-item:nth-child(even) {
+  background: #fafbfc;
+}
+
+
+.realizado-item:last-child {
+  border-bottom: 0;
+}
+
+
+/* =========================================================
+   NOME + ÁREA + SETOR
+
+   O JS entrega nome e, logo abaixo,
+   área • setor dentro de realizado-identificacao.
+========================================================= */
+
+.realizado-identificacao {
+  min-width: 0;
+}
+
+
+.realizado-identificacao strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #071b61;
+
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+
+.realizado-identificacao span {
+  display: block;
+
+  color: #7d8798;
+
+  font-size: 9px;
+  line-height: 1.25;
+  font-weight: 500;
+
+  overflow-wrap: anywhere;
+}
+
+
+/*
+   Como área e setor vêm juntos dentro do JS,
+   usamos o primeiro bloco como identificação.
+   Os demais campos ficam distribuídos abaixo.
+*/
+
+.realizado-info {
+  display: contents;
+}
+
+
+/* =========================================================
+   CAMPOS LOCAL / TEMPO / PEÇAS / PROD.
+========================================================= */
+
+.realizado-info > span {
+  min-width: 0;
+
+  text-align: center;
+}
+
+
+.realizado-info > span:first-child {
+  text-align: left;
+}
+
+
+.realizado-info small {
+  display: none;
+}
+
+
+.realizado-info strong {
+  display: block;
+
+  color: #344054;
+
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+}
+
+
+.realizado-info > span:first-child strong {
+  color: #475467;
+
+  font-size: 9px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   AJUSTE PARA ÁREA E SETOR OCUPAREM COLUNAS SEPARADAS
+
+   O JS atual entrega "Área • Setor" juntos.
+   Visualmente mantemos organizado e compacto.
+========================================================= */
+
+.realizado-identificacao {
+  grid-column: 1 / 4;
+}
+
+
+.realizado-info > span:nth-child(1) {
+  grid-column: 4;
+}
+
+
+.realizado-info > span:nth-child(2) {
+  grid-column: 5;
+}
+
+
+.realizado-info > span:nth-child(3) {
+  grid-column: 6;
+}
+
+
+.realizado-info > span:nth-child(4) {
+  grid-column: 7;
+}
+
+
+/* =========================================================
+   LISTAS SIMPLES
+   Processo / Não realizaram / Gemba / Gemba + processo
+========================================================= */
+
+.listas-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   CARD DA PESSOA
+========================================================= */
+
+.person-list-item {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 12px;
+
+  min-height: 68px;
+
+  padding: 12px 14px 12px 17px;
+
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 3px 10px rgba(14, 31, 75, 0.035);
+
+  overflow: hidden;
+}
+
+
+.person-list-item::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 4px;
+  height: 100%;
+
+  background: #2388dd;
+}
+
+
+/* =========================================================
+   CORES POR ARTE
+========================================================= */
+
+#listas-processo .person-list-item::before {
+  background: #f39a2e;
+}
+
+
+#listas-nao .person-list-item::before {
+  background: #d43c32;
+}
+
+
+#listas-guemba-pendente .person-list-item::before {
+  background: #18a56b;
+}
+
+
+#listas-guemba-processando .person-list-item::before {
+  background: #2388dd;
+}
+
+
+/* =========================================================
+   IDENTIFICAÇÃO
+========================================================= */
+
+.person-list-main {
+  min-width: 0;
+}
+
+
+.person-list-main strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #071b61;
+
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+
+.person-list-main span {
+  display: block;
+
+  color: #7c8799;
+
+  font-size: 9px;
+  line-height: 1.3;
+  font-weight: 500;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   TEMPO
+========================================================= */
+
+.person-list-time {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 72px;
+
+  padding: 8px 10px;
+
+  border-radius: 999px;
+
+  background: #f3f6fb;
+
+  color: #071b61;
+
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+#listas-processo .person-list-time {
+  background: #fff3e3;
+
+  color: #c87516;
+}
+
+
+#listas-guemba-processando .person-list-time {
+  background: #eaf2ff;
+
+  color: #176db5;
+}
+
+
+/* =========================================================
+   LISTAS SEM TEMPO
+========================================================= */
+
+#listas-nao .person-list-item,
+#listas-guemba-pendente .person-list-item {
+  grid-template-columns: 1fr;
+}
+
+
+/* =========================================================
+   ESTADO VAZIO
+========================================================= */
+
+.listas-grid .empty-list {
+  grid-column: 1 / -1;
+
+  padding: 28px 20px;
+
+  border: 1px dashed #d9dfe8;
+  border-radius: 14px;
+
+  background: #fafbfc;
+
+  color: #8f98aa;
+
+  text-align: center;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   AJUSTES PARA PNG
+========================================================= */
+
+.realizado-item,
+.person-list-item {
+  break-inside: avoid;
+}
+
+
+#lista-realizaram-detalhe,
+.listas-grid {
+  break-inside: auto;
+}
+
+
+/* =========================================================
+   TELAS MENORES
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .listas-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .realizado-item {
+    min-width: 900px;
+  }
+
+
+  #lista-realizaram-detalhe {
+    min-width: 900px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .person-list-item {
+    min-height: 62px;
+
+    padding: 11px 12px 11px 15px;
+  }
+
+
+  .person-list-main strong {
+    font-size: 10px;
+  }
+
+
+  .person-list-main span {
+    font-size: 8px;
+  }
+
+
+  .person-list-time {
+    min-width: 64px;
+
+    font-size: 9px;
+  }
+
+}
 
 /* =========================================================
    FIM — CENTRAL BE A REP V3
