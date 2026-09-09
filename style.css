@@ -5823,3 +5823,104 @@ img {
 /* =========================================================
    FIM — CENTRAL BE A REP V3
 ========================================================= */
+
+/* =========================================================
+   AJUSTE FINAL 2026-09-09
+   DETALHAMENTO REALIZARAM - 5 COLUNAS
+   ÁREA + SETOR ABAIXO DO NOME
+========================================================= */
+
+.realizaram-detalhe-head,
+.realizado-item {
+  grid-template-columns:
+    minmax(320px, 2.35fr)
+    minmax(320px, 1.85fr)
+    minmax(95px, 0.65fr)
+    minmax(95px, 0.65fr)
+    minmax(125px, 0.85fr) !important;
+}
+
+.realizaram-detalhe-head {
+  gap: 16px;
+  min-height: 52px;
+  padding: 0 18px;
+}
+
+.realizaram-detalhe-head span {
+  font-size: 8.5px;
+}
+
+.realizado-item {
+  gap: 16px;
+  min-height: 88px;
+  padding: 14px 18px;
+}
+
+.realizado-col {
+  min-width: 0;
+}
+
+.realizado-col-nome {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.realizado-col-nome strong {
+  color: #071b61;
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.realizado-subinfo {
+  display: block;
+  color: #7d8798;
+  font-size: 9px;
+  line-height: 1.25;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.realizado-col-local {
+  color: #475467;
+  font-size: 9.5px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.realizado-col-tempo,
+.realizado-col-pecas,
+.realizado-col-produtividade {
+  text-align: center;
+}
+
+.realizado-col-tempo strong,
+.realizado-col-pecas strong,
+.realizado-col-produtividade strong {
+  color: #344054;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* Neutraliza regras antigas de 7 colunas */
+.realizado-identificacao,
+.realizado-info > span:nth-child(1),
+.realizado-info > span:nth-child(2),
+.realizado-info > span:nth-child(3),
+.realizado-info > span:nth-child(4) {
+  grid-column: auto !important;
+}
+
+@media (max-width: 900px) {
+  .realizaram-detalhe {
+    overflow-x: auto;
+  }
+
+  .realizaram-detalhe-head,
+  .realizado-item {
+    min-width: 900px;
+  }
+}
