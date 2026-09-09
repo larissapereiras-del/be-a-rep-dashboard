@@ -845,20 +845,91 @@ async function carregarDadosAutomaticos() {
     atualizarTudo();
 
 
-    /* =====================================================
-       HORÁRIO
-    ===================================================== */
+    atualizarStatus(
+      `✅ Dados de ${formatarReferenciaFiltro(referenciaSelecionada)} carregados com sucesso.`,
+      "sucesso"
+    );
 
-   /* =========================================================
+
+    if (
+      textoAtualizacao
+    ) {
+
+      textoAtualizacao.textContent =
+        `Dados de ${formatarReferenciaFiltro(referenciaSelecionada)} carregados. Você pode selecionar outro mês quando quiser.`;
+
+    }
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "❌ Erro ao carregar os dados:",
+      erro
+    );
+
+
+    atualizarStatus(
+      `❌ ${erro?.message || "Erro ao carregar os dados."}`,
+      "erro"
+    );
+
+
+    if (
+      textoAtualizacao
+    ) {
+
+      textoAtualizacao.textContent =
+        "Não foi possível carregar os dados da base. Tente atualizar novamente.";
+
+    }
+
+
+    ocultarDashboard();
+
+  }
+
+  finally {
+
+    /*
+     * IMPORTANTE:
+     * sempre libera novamente o botão,
+     * mesmo quando a API retornar erro.
+     */
+
+    if (
+      botaoAtualizar
+    ) {
+
+      botaoAtualizar.disabled =
+        false;
+
+
+      botaoAtualizar.textContent =
+        textoOriginal;
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
    CONVERTER VALOR NUMÉRICO DA QUERY
 ========================================================= */
+
 /*
-   Aceita:
-   125
-   "125"
-   "125,5"
-   "125.5"
-========================================================= */
+ * Aceita:
+ *
+ * 125
+ * "125"
+ * "125,5"
+ * "125.5"
+ */
 
 function numeroSeguroBeARep(
   valor
@@ -941,8 +1012,6 @@ function numeroSeguroBeARep(
     : 0;
 
 }
-
-
 /* =========================================================
    REMOVER DUPLICIDADES
 ========================================================= */
@@ -1684,7 +1753,9 @@ function criarPessoaLista(
   };
 
 }
-     /* =========================================================
+
+
+/* =========================================================
    ATUALIZAR TODO O DASHBOARD
 ========================================================= */
 
@@ -1859,8 +1930,6 @@ function preencherJornadaBeARep() {
   }
 
 }
-
-
 /* =========================================================
    DESEMPENHO POR ÁREA
 ========================================================= */
@@ -2528,8 +2597,6 @@ function localizarPessoaConsulta(
   );
 
 }
-
-
 /* =========================================================
    EXECUTAR CONSULTA
 ========================================================= */
@@ -2586,7 +2653,9 @@ function consultarPessoaSelecionada() {
   );
 
 }
-     /* =========================================================
+
+
+/* =========================================================
    PREENCHER RESULTADO DA CONSULTA
 ========================================================= */
 
@@ -3080,15 +3149,6 @@ function limparResultadoConsulta() {
     );
 
 
-    /*
-     * Restauramos o conteúdo padrão.
-     *
-     * Isso também corrige o problema em que,
-     * depois de uma busca sem resultado,
-     * a mensagem "Pessoa não encontrada"
-     * continuava aparecendo.
-     */
-
     consultaVazia.innerHTML = `
 
       <div class="consulta-empty-icon">
@@ -3251,10 +3311,6 @@ function preencherMeta(
     0;
 
 
-  /*
-   * Quantidade necessária para chegar a 90%.
-   */
-
   const metaQuantidade =
     Math.ceil(
       hc *
@@ -3281,10 +3337,6 @@ function preencherMeta(
     );
 
 
-  /* =======================================================
-     BARRA
-  ======================================================= */
-
   const barra =
     $("barra-meta-preenchida");
 
@@ -3299,10 +3351,6 @@ function preencherMeta(
   }
 
 
-  /* =======================================================
-     TEXTO DA BARRA
-  ======================================================= */
-
   const textoProgresso =
     $("texto-progresso-meta");
 
@@ -3316,10 +3364,6 @@ function preencherMeta(
 
   }
 
-
-  /* =======================================================
-     SITUAÇÃO
-  ======================================================= */
 
   const tituloSituacao =
     $("titulo-situacao");
@@ -3408,10 +3452,6 @@ function preencherMeta(
 
   }
 
-
-  /* =======================================================
-     COMPATIBILIDADE COM O LAYOUT ANTIGO
-  ======================================================= */
 
   const statusMeta =
     $("status-meta");
@@ -3532,10 +3572,6 @@ function preencherArteGeral(
     {};
 
 
-  /* =======================================================
-     PERCENTUAL PRINCIPAL
-  ======================================================= */
-
   definirTextoElemento(
     "percentual-geral",
     formatarPorcentagem(
@@ -3544,10 +3580,6 @@ function preencherArteGeral(
     )
   );
 
-
-  /* =======================================================
-     REALIZARAM
-  ======================================================= */
 
   definirTextoElemento(
     "arte-geral-realizaram",
@@ -3567,10 +3599,6 @@ function preencherArteGeral(
   );
 
 
-  /* =======================================================
-     EM PROCESSO
-  ======================================================= */
-
   definirTextoElemento(
     "arte-geral-processo",
     geral.processo ||
@@ -3588,10 +3616,6 @@ function preencherArteGeral(
     )
   );
 
-
-  /* =======================================================
-     NÃO REALIZARAM
-  ======================================================= */
 
   definirTextoElemento(
     "arte-geral-nao",
@@ -3611,20 +3635,12 @@ function preencherArteGeral(
   );
 
 
-  /* =======================================================
-     HC
-  ======================================================= */
-
   definirTextoElemento(
     "arte-geral-hc",
     geral.hc ||
       0
   );
 
-
-  /* =======================================================
-     GEMBA
-  ======================================================= */
 
   const totalGembaPendente =
     Array.isArray(
@@ -3654,11 +3670,6 @@ function preencherArteGeral(
   );
 
 
-  /*
-   * Esses mesmos IDs aparecem na Jornada
-   * do dashboard novo.
-   */
-
   definirTextoElemento(
     "resumo-gemba-pendente",
     totalGembaPendente
@@ -3670,10 +3681,6 @@ function preencherArteGeral(
     totalGembaProcessando
   );
 
-
-  /* =======================================================
-     ÁREAS DA ARTE GERAL
-  ======================================================= */
 
   const listaAreas =
     $("lista-areas");
@@ -3840,52 +3847,58 @@ function preencherArteRealizaram(
 
 
       /* ===================================================
-         NOVA ESTRUTURA:
-         7 COLUNAS REAIS E INDEPENDENTES
+         DETALHAMENTO EM 5 COLUNAS
 
          NOME
-         ÁREA
-         SETOR
          LOCAL
          TEMPO
          PEÇAS
          PRODUTIVIDADE
+
+         ÁREA + SETOR ficam abaixo do nome.
       =================================================== */
 
       item.innerHTML = `
 
         <div class="realizado-col realizado-col-nome">
+
           <strong>
             ${escaparHTML(pessoa.nome || "SEM NOME")}
           </strong>
-        </div>
 
-        <div class="realizado-col realizado-col-area">
-          <span>
+          <span class="realizado-subinfo">
+
             ${escaparHTML(pessoa.area || "SEM ÁREA")}
+            •
+            ${escaparHTML(pessoa.setor || "SEM SETOR")}
+
           </span>
+
         </div>
 
-        <div class="realizado-col realizado-col-setor">
-          <span>
-            ${escaparHTML(pessoa.setor || "SEM SETOR")}
-          </span>
-        </div>
 
         <div class="realizado-col realizado-col-local">
+
           <span>
             ${escaparHTML(pessoa.local || "—")}
           </span>
+
         </div>
 
+
         <div class="realizado-col realizado-col-tempo">
+
           <strong>
             ${escaparHTML(pessoa.tempo || "—")}
           </strong>
+
         </div>
 
+
         <div class="realizado-col realizado-col-pecas">
+
           <strong>
+
             ${
               Number.isFinite(
                 unidades
@@ -3899,11 +3912,16 @@ function preencherArteRealizaram(
                   )
                 : "—"
             }
+
           </strong>
+
         </div>
 
+
         <div class="realizado-col realizado-col-produtividade">
+
           <strong>
+
             ${
               Number.isFinite(
                 produtividade
@@ -3920,7 +3938,9 @@ function preencherArteRealizaram(
                   )
                 : "—"
             }
+
           </strong>
+
         </div>
 
       `;
@@ -4019,7 +4039,7 @@ function preencherListasComExcecoes() {
   );
 
 }
-     /* =========================================================
+/* =========================================================
    PREENCHER LISTA SIMPLES
 ========================================================= */
 
@@ -4879,7 +4899,9 @@ function ajustarSetorNaArte(
     .toUpperCase();
 
 }
-     /* =========================================================
+
+
+/* =========================================================
    CONVERTER TEMPO PARA MINUTOS
 ========================================================= */
 
@@ -5091,8 +5113,6 @@ function converterTempoParaMinutos(
   return 0;
 
 }
-
-
 /* =========================================================
    MÊS PREDOMINANTE
 ========================================================= */
@@ -5624,6 +5644,7 @@ async function baixarArteAtual() {
         "sucesso"
       );
 
+
       return;
 
     }
@@ -5700,6 +5721,7 @@ async function baixarArteAtual() {
         "✅ Arte gerada com sucesso.",
         "sucesso"
       );
+
 
       return;
 
@@ -5877,6 +5899,11 @@ async function baixarArteAtual() {
     }
 
     finally {
+
+      /*
+       * Depois de gerar todas as imagens,
+       * devolvemos a lista ao estado normal.
+       */
 
       itens.forEach(
         (
@@ -6180,331 +6207,185 @@ function escaparHTML(
     );
 
 }
-   /* =========================================================
-   CLASSIFICAÇÃO CENTRAL
-
-   ESSA É A REGRA DO RESUMO GERAL.
+/* =========================================================
+   OBTER REFERÊNCIA DO MÊS ATUAL
 ========================================================= */
 
-function classificarSituacao(
-  valorGemba,
-  valorBar,
-  minutos,
-  area
-) {
+function obterReferenciaMesAtual() {
 
-  const fezGemba =
-    gembaConcluido(
-      valorGemba
-    );
+  const agora =
+    new Date();
 
 
-  const concluiuBeARep =
-    beRepConcluido({
-
-      statusBar:
-        valorBar,
-
-      minutos:
-        minutos,
-
-      area:
-        area
-
-    });
+  const mes =
+    agora.getMonth() +
+    1;
 
 
-  const iniciouBeARep =
-    beRepIniciado({
-
-      statusBar:
-        valorBar,
-
-      minutos:
-        minutos,
-
-      area:
-        area
-
-    });
+  const ano =
+    agora.getFullYear();
 
 
-  /*
-   * RESUMO GERAL
-   *
-   * REALIZOU
-   * = GEMBA OU BE A REP CONCLUÍDO
-   */
-
-  if (
-    fezGemba ||
-    concluiuBeARep
-  ) {
-
-    return "REALIZOU";
-
-  }
-
-
-  /*
-   * EM PROCESSO
-   * = iniciou o Be a Rep,
-   * mas ainda não atingiu a meta.
-   */
-
-  if (
-    iniciouBeARep
-  ) {
-
-    return "EM_PROCESSO";
-
-  }
-
-
-  /*
-   * NÃO REALIZOU
-   * = não fez Gemba
-   * e não iniciou Be a Rep.
-   */
-
-  return "NAO_REALIZOU";
+  return `${String(mes).padStart(2, "0")}-${ano}`;
 
 }
 
 
 /* =========================================================
-   BE A REP - TEMPO MÍNIMO
+   NORMALIZAR REFERÊNCIA DE MÊS
 ========================================================= */
 
-function obterTempoMinimoBeARep(
-  area
-) {
-
-  /*
-   * REGRA OFICIAL:
-   *
-   * OPEX:
-   * 10 minutos
-   *
-   * DEMAIS ÁREAS:
-   * 60 minutos
-   */
-
-  return area ===
-    "OPEX"
-      ? 10
-      : 60;
-
-}
-
-
-/* =========================================================
-   BE A REP - INICIADO
-========================================================= */
-
-function beRepIniciado(
-  pessoa
-) {
-
-  const minutos =
-    Number(
-      pessoa?.minutos
-    ) ||
-    0;
-
-
-  return minutos > 0;
-
-}
-
-
-/* =========================================================
-   BE A REP - CONCLUÍDO
-========================================================= */
-
-function beRepConcluido(
-  pessoa
-) {
-
-  const minutos =
-    Number(
-      pessoa?.minutos
-    ) ||
-    0;
-
-
-  const tempoMinimo =
-    obterTempoMinimoBeARep(
-      pessoa?.area ||
-      ""
-    );
-
-
-  return (
-    minutos >=
-    tempoMinimo
-  );
-
-}
-
-
-/* =========================================================
-   BE A REP - EM PROCESSO
-========================================================= */
-
-function beRepEmProcesso(
-  pessoa
-) {
-
-  const minutos =
-    Number(
-      pessoa?.minutos
-    ) ||
-    0;
-
-
-  const tempoMinimo =
-    obterTempoMinimoBeARep(
-      pessoa?.area ||
-      ""
-    );
-
-
-  return (
-    minutos > 0 &&
-    minutos < tempoMinimo
-  );
-
-}
-
-
-/* =========================================================
-   GEMBA CONCLUÍDO
-========================================================= */
-
-function gembaConcluido(
-  gemba
-) {
-
-  const status =
-    normalizarTexto(
-      gemba
-    );
-
-
-  const concluidos = [
-
-    "HECHO",
-    "CUMPLIO",
-    "REALIZADO",
-    "CONCLUIDO"
-
-  ];
-
-
-  return concluidos.includes(
-    status
-  );
-
-}
-
-
-/* =========================================================
-   NORMALIZAR ÁREA
-========================================================= */
-
-function normalizarArea(
+function normalizarReferenciaMes(
   valor
 ) {
 
-  const texto =
-    normalizarTexto(
+  if (
+    valor === null ||
+    valor === undefined
+  ) {
+
+    return "";
+
+  }
+
+
+  let texto =
+    String(
       valor
+    )
+      .trim()
+      .toUpperCase();
+
+
+  if (
+    !texto
+  ) {
+
+    return "";
+
+  }
+
+
+  const meses = {
+
+    JANEIRO:
+      "01",
+
+    FEVEREIRO:
+      "02",
+
+    MARCO:
+      "03",
+
+    MARÇO:
+      "03",
+
+    ABRIL:
+      "04",
+
+    MAIO:
+      "05",
+
+    JUNHO:
+      "06",
+
+    JULHO:
+      "07",
+
+    AGOSTO:
+      "08",
+
+    SETEMBRO:
+      "09",
+
+    OUTUBRO:
+      "10",
+
+    NOVEMBRO:
+      "11",
+
+    DEZEMBRO:
+      "12"
+
+  };
+
+
+  /*
+   * Exemplo:
+   * SETEMBRO-2026
+   */
+
+  const partesNome =
+    texto.match(
+      /^([A-ZÇÃÕ]+)[\s\-_/]+(\d{4})$/
     );
 
 
   if (
-    texto === "OUTBOUND" ||
-    texto === "OUT" ||
-    texto.includes(
-      "OUTBOUND"
-    )
+    partesNome
   ) {
 
-    return "Outbound";
-
-  }
-
-
-  if (
-    texto === "INBOUND" ||
-    texto === "IN" ||
-    texto.includes(
-      "INBOUND"
-    )
-  ) {
-
-    return "Inbound";
-
-  }
+    const nomeMes =
+      partesNome[1]
+        .normalize("NFD")
+        .replace(
+          /[\u0300-\u036f]/g,
+          ""
+        );
 
 
-  if (
-    texto === "OPEX" ||
-    texto.includes(
-      "OPEX"
-    )
-  ) {
-
-    return "OPEX";
-
-  }
+    const numeroMes =
+      meses[
+        nomeMes
+      ];
 
 
-  if (
-    texto === "ICQA" ||
-    texto.includes(
-      "ICQA"
-    )
-  ) {
+    if (
+      numeroMes
+    ) {
 
-    return "ICQA";
+      return `${numeroMes}-${partesNome[2]}`;
 
-  }
-
-
-  if (
-    texto === "LINE HAUL" ||
-    texto === "LINEHAUL" ||
-    texto.includes(
-      "LINE HAUL"
-    ) ||
-    texto.includes(
-      "LINEHAUL"
-    )
-  ) {
-
-    return "Line Haul";
+    }
 
   }
 
 
   /*
-   * HEAD SITE:
-   *
-   * Entra no HC Geral.
-   * Não entra no desempenho das 5 áreas.
+   * Exemplo:
+   * 09-2026
+   * 09/2026
+   * 09_2026
    */
 
+  const partesNumero =
+    texto.match(
+      /^(\d{1,2})[\s\-_/]+(\d{4})$/
+    );
+
+
   if (
-    texto === "HEAD SITE" ||
-    texto === "HEADSITE" ||
-    texto.includes(
-      "HEAD SITE"
-    )
+    partesNumero
   ) {
 
-    return "Head Site";
+    const mes =
+      Number(
+        partesNumero[1]
+      );
+
+
+    const ano =
+      partesNumero[2];
+
+
+    if (
+      mes >= 1 &&
+      mes <= 12
+    ) {
+
+      return `${String(mes).padStart(2, "0")}-${ano}`;
+
+    }
 
   }
 
@@ -6512,4 +6393,1862 @@ function normalizarArea(
   return "";
 
 }
-     
+
+
+/* =========================================================
+   FORMATAR REFERÊNCIA DO FILTRO
+========================================================= */
+
+function formatarReferenciaFiltro(
+  referencia
+) {
+
+  const normalizada =
+    normalizarReferenciaMes(
+      referencia
+    );
+
+
+  if (
+    !normalizada
+  ) {
+
+    return String(
+      referencia ||
+      ""
+    );
+
+  }
+
+
+  const [
+    mes,
+    ano
+  ] =
+    normalizada.split(
+      "-"
+    );
+
+
+  const nomes = {
+
+    "01":
+      "JANEIRO",
+
+    "02":
+      "FEVEREIRO",
+
+    "03":
+      "MARÇO",
+
+    "04":
+      "ABRIL",
+
+    "05":
+      "MAIO",
+
+    "06":
+      "JUNHO",
+
+    "07":
+      "JULHO",
+
+    "08":
+      "AGOSTO",
+
+    "09":
+      "SETEMBRO",
+
+    "10":
+      "OUTUBRO",
+
+    "11":
+      "NOVEMBRO",
+
+    "12":
+      "DEZEMBRO"
+
+  };
+
+
+  return `${
+    nomes[
+      mes
+    ] ||
+    mes
+  }-${ano}`;
+
+}
+
+
+/* =========================================================
+   MONTAR FILTRO DE MÊS
+========================================================= */
+
+function montarFiltroMes(
+  registros
+) {
+
+  if (
+    !filtroMes
+  ) {
+
+    return;
+
+  }
+
+
+  const referencias =
+    new Set();
+
+
+  registros.forEach(
+    registro => {
+
+      const mes =
+        normalizarReferenciaMes(
+          obterValorObjeto(
+            registro,
+            [
+              "MES",
+              "mes",
+              "MÊS"
+            ]
+          )
+        );
+
+
+      if (
+        mes
+      ) {
+
+        referencias.add(
+          mes
+        );
+
+      }
+
+    }
+  );
+
+
+  const lista =
+    Array.from(
+      referencias
+    )
+      .sort(
+        (
+          a,
+          b
+        ) => {
+
+          const [
+            mesA,
+            anoA
+          ] =
+            a.split(
+              "-"
+            );
+
+
+          const [
+            mesB,
+            anoB
+          ] =
+            b.split(
+              "-"
+            );
+
+
+          const dataA =
+            Number(
+              anoA
+            ) *
+            100 +
+            Number(
+              mesA
+            );
+
+
+          const dataB =
+            Number(
+              anoB
+            ) *
+            100 +
+            Number(
+              mesB
+            );
+
+
+          return (
+            dataB -
+            dataA
+          );
+
+        }
+      );
+
+
+  /*
+   * Garantimos que o mês atual apareça,
+   * mesmo se ainda não houver dado carregado.
+   */
+
+  const atual =
+    obterReferenciaMesAtual();
+
+
+  if (
+    !lista.includes(
+      atual
+    )
+  ) {
+
+    lista.unshift(
+      atual
+    );
+
+  }
+
+
+  filtroMes.innerHTML =
+    "";
+
+
+  lista.forEach(
+    referencia => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        referencia;
+
+
+      option.textContent =
+        formatarReferenciaFiltro(
+          referencia
+        );
+
+
+      filtroMes.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  filtroMes.value =
+    referenciaSelecionada;
+
+}
+
+
+/* =========================================================
+   PROCESSAR DADOS DA API
+========================================================= */
+
+function processarDadosApi(
+  registros,
+  referencia
+) {
+
+  if (
+    !Array.isArray(
+      registros
+    )
+  ) {
+
+    throw new Error(
+      "Formato inválido retornado pela API."
+    );
+
+  }
+
+
+  const referenciaNormalizada =
+    normalizarReferenciaMes(
+      referencia
+    );
+
+
+  const registrosDoMes =
+    registros.filter(
+      registro => {
+
+        const mesRegistro =
+          normalizarReferenciaMes(
+            obterValorObjeto(
+              registro,
+              [
+                "MES",
+                "mes",
+                "MÊS"
+              ]
+            )
+          );
+
+
+        return (
+          mesRegistro ===
+          referenciaNormalizada
+        );
+
+      }
+    );
+
+
+  if (
+    registrosDoMes.length ===
+    0
+  ) {
+
+    throw new Error(
+      `Nenhum registro encontrado para ${formatarReferenciaFiltro(referenciaNormalizada)}.`
+    );
+
+  }
+
+
+  /* =======================================================
+     NORMALIZAR REGISTROS
+  ======================================================= */
+
+  const pessoas =
+    registrosDoMes.map(
+      registro => {
+
+        const username =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "USERNAME",
+                "username",
+                "LOGIN",
+                "login"
+              ]
+            )
+          );
+
+
+        /*
+         * A Query atual utiliza CAD
+         * como identificação exibida.
+         */
+
+        const nome =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "NOME",
+                "nome",
+                "FULL_NAME",
+                "CAD",
+                "cad",
+                "USERNAME",
+                "username"
+              ]
+            )
+          );
+
+
+        const areaOriginal =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "AREA",
+                "area",
+                "ÁREA"
+              ]
+            )
+          );
+
+
+        const area =
+          normalizarArea(
+            areaOriginal
+          );
+
+
+        const setor =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "SETOR",
+                "setor",
+                "SUBPROCESSO",
+                "subprocesso",
+                "PROCESO",
+                "PROCESSO"
+              ]
+            )
+          );
+
+
+        const horas =
+          obterValorObjeto(
+            registro,
+            [
+              "HORAS",
+              "horas",
+              "TEMPO",
+              "tempo"
+            ]
+          );
+
+
+        const minutos =
+          converterTempoParaMinutos(
+            horas
+          );
+
+
+        const tempo =
+          formatarMinutos(
+            minutos
+          );
+
+
+        const unidades =
+          numeroSeguroBeARep(
+            obterValorObjeto(
+              registro,
+              [
+                "UNIDADES",
+                "unidades",
+                "PECAS",
+                "PEÇAS"
+              ]
+            )
+          );
+
+
+        const produtividade =
+          numeroSeguroBeARep(
+            obterValorObjeto(
+              registro,
+              [
+                "PRODUCTIVIDAD",
+                "PRODUTIVIDADE",
+                "produtividade"
+              ]
+            )
+          );
+
+
+        const gemba =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "GEMBA",
+                "gemba"
+              ]
+            )
+          );
+
+
+        const statusBar =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "ESTADO_BAR",
+                "estado_bar",
+                "STATUS_BAR"
+              ]
+            )
+          );
+
+
+        const local =
+          limparTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "PROCESOS_LMS",
+                "processos_lms",
+                "LOCAL",
+                "local",
+                "PROCESSO",
+                "processo"
+              ]
+            )
+          );
+
+
+        const obrigatoriedade =
+          normalizarTexto(
+            obterValorObjeto(
+              registro,
+              [
+                "FLAG_OBLIGATORIEDAD",
+                "flag_obligatoriedad",
+                "OBRIGATORIEDADE"
+              ]
+            )
+          );
+
+
+        /*
+         * Se a Query não informar área reconhecida,
+         * a pessoa continua no HC Geral,
+         * mas fica como sem cadastro.
+         */
+
+        const temCadastroArea =
+          Boolean(
+            area
+          );
+
+
+        const situacao =
+          classificarSituacao(
+            gemba,
+            statusBar,
+            minutos,
+            area
+          );
+
+
+        return {
+
+          username:
+            username,
+
+          nome:
+            nome ||
+            username ||
+            "SEM NOME",
+
+          areaOriginal:
+            areaOriginal,
+
+          area:
+            area,
+
+          setor:
+            setor,
+
+          setorCadastro:
+            setor,
+
+          temCadastroArea:
+            temCadastroArea,
+
+          minutos:
+            minutos,
+
+          tempo:
+            tempo,
+
+          unidades:
+            unidades,
+
+          produtividade:
+            produtividade,
+
+          gemba:
+            gemba,
+
+          statusBar:
+            statusBar,
+
+          local:
+            local,
+
+          obrigatoriedade:
+            obrigatoriedade,
+
+          mes:
+            referenciaNormalizada,
+
+          situacao:
+            situacao,
+
+          registroOriginal:
+            registro
+
+        };
+
+      }
+    );
+
+
+  /* =======================================================
+     SOMENTE OBRIGATÓRIOS
+  ======================================================= */
+
+  const obrigatorios =
+    pessoas.filter(
+      pessoa => {
+
+        const flag =
+          pessoa.obrigatoriedade;
+
+
+        if (
+          !flag
+        ) {
+
+          /*
+           * Se o campo vier vazio,
+           * não descartamos a pessoa.
+           */
+
+          return true;
+
+        }
+
+
+        return ![
+          "NO",
+          "NAO",
+          "NÃO",
+          "FALSE",
+          "0",
+          "NO OBLIGATORIO",
+          "NAO OBRIGATORIO",
+          "NÃO OBRIGATÓRIO"
+        ].includes(
+          flag
+        );
+
+      }
+    );
+
+
+  const semDuplicidade =
+    removerDuplicidades(
+      obrigatorios
+    );
+
+
+  if (
+    semDuplicidade.length ===
+    0
+  ) {
+
+    throw new Error(
+      `Nenhuma pessoa obrigatória encontrada para ${formatarReferenciaFiltro(referenciaNormalizada)}.`
+    );
+
+  }
+
+
+  return processarRegistros(
+    semDuplicidade
+  );
+
+}
+
+
+/* =========================================================
+   PROCESSAR ARQUIVO MANUAL
+========================================================= */
+
+async function processarArquivo(
+  arquivo
+) {
+
+  if (
+    !arquivo
+  ) {
+
+    return;
+
+  }
+
+
+  try {
+
+    atualizarStatus(
+      "Lendo arquivo...",
+      ""
+    );
+
+
+    if (
+      typeof XLSX ===
+      "undefined"
+    ) {
+
+      throw new Error(
+        "Biblioteca XLSX não carregada."
+      );
+
+    }
+
+
+    const buffer =
+      await arquivo.arrayBuffer();
+
+
+    const workbook =
+      XLSX.read(
+        buffer,
+        {
+          type:
+            "array"
+        }
+      );
+
+
+    const primeiraAba =
+      workbook.SheetNames[
+        0
+      ];
+
+
+    if (
+      !primeiraAba
+    ) {
+
+      throw new Error(
+        "O arquivo não possui nenhuma aba."
+      );
+
+    }
+
+
+    const worksheet =
+      workbook.Sheets[
+        primeiraAba
+      ];
+
+
+    const registros =
+      XLSX.utils.sheet_to_json(
+        worksheet,
+        {
+          defval:
+            ""
+        }
+      );
+
+
+    if (
+      registros.length ===
+      0
+    ) {
+
+      throw new Error(
+        "O arquivo enviado está vazio."
+      );
+
+    }
+
+
+    dadosApiBrutos =
+      registros;
+
+
+    montarFiltroMes(
+      registros
+    );
+
+
+    referenciaSelecionada =
+      obterReferenciaMesAtual();
+
+
+    if (
+      filtroMes
+    ) {
+
+      filtroMes.value =
+        referenciaSelecionada;
+
+    }
+
+
+    try {
+
+      dadosProcessados =
+        processarDadosApi(
+          registros,
+          referenciaSelecionada
+        );
+
+    }
+
+    catch {
+
+      /*
+       * Se o mês atual não estiver no arquivo,
+       * usa o primeiro mês disponível.
+       */
+
+      const primeiraReferencia =
+        Array.from(
+          new Set(
+            registros
+              .map(
+                registro =>
+                  normalizarReferenciaMes(
+                    obterValorObjeto(
+                      registro,
+                      [
+                        "MES",
+                        "mes",
+                        "MÊS"
+                      ]
+                    )
+                  )
+              )
+              .filter(
+                Boolean
+              )
+          )
+        )[0];
+
+
+      if (
+        !primeiraReferencia
+      ) {
+
+        throw new Error(
+          "Não foi possível identificar o mês dos registros."
+        );
+
+      }
+
+
+      referenciaSelecionada =
+        primeiraReferencia;
+
+
+      if (
+        filtroMes
+      ) {
+
+        filtroMes.value =
+          primeiraReferencia;
+
+      }
+
+
+      dadosProcessados =
+        processarDadosApi(
+          registros,
+          primeiraReferencia
+        );
+
+    }
+
+
+    atualizarTudo();
+
+
+    atualizarStatus(
+      `✅ Arquivo carregado. Exibindo ${formatarReferenciaFiltro(referenciaSelecionada)}.`,
+      "sucesso"
+    );
+
+
+    if (
+      textoAtualizacao
+    ) {
+
+      textoAtualizacao.textContent =
+        `Arquivo manual carregado com ${registros.length.toLocaleString("pt-BR")} registros.`;
+
+    }
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.error(
+      "❌ Erro ao processar arquivo:",
+      erro
+    );
+
+
+    atualizarStatus(
+      `❌ ${erro?.message || "Erro ao processar o arquivo."}`,
+      "erro"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CARREGAR EXCEÇÕES
+========================================================= */
+
+function carregarExcecoes() {
+
+  try {
+
+    const salvo =
+      localStorage.getItem(
+        STORAGE_EXCECOES
+      );
+
+
+    if (
+      !salvo
+    ) {
+
+      return [];
+
+    }
+
+
+    const lista =
+      JSON.parse(
+        salvo
+      );
+
+
+    return Array.isArray(
+      lista
+    )
+      ? lista
+      : [];
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.warn(
+      "⚠️ Não foi possível carregar exceções:",
+      erro
+    );
+
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+   SALVAR EXCEÇÕES
+========================================================= */
+
+function salvarExcecoes() {
+
+  try {
+
+    localStorage.setItem(
+      STORAGE_EXCECOES,
+      JSON.stringify(
+        excecoes
+      )
+    );
+
+  }
+
+  catch (
+    erro
+  ) {
+
+    console.warn(
+      "⚠️ Não foi possível salvar exceções:",
+      erro
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PREENCHER DATALIST DE EXCEÇÕES
+========================================================= */
+
+function preencherDatalistExcecoes() {
+
+  const datalist =
+    obterElementoPorIds(
+      "lista-pessoas-excecao",
+      "datalist-excecoes"
+    );
+
+
+  if (
+    !datalist
+  ) {
+
+    return;
+
+  }
+
+
+  datalist.innerHTML =
+    "";
+
+
+  const registros =
+    Array.isArray(
+      dadosProcessados?.registros
+    )
+      ? dadosProcessados.registros
+      : [];
+
+
+  [
+    ...registros
+  ]
+    .sort(
+      ordenarNome
+    )
+    .forEach(
+      pessoa => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          pessoa.nome ||
+          "";
+
+
+        datalist.appendChild(
+          option
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   ADICIONAR EXCEÇÃO
+========================================================= */
+
+function adicionarExcecao() {
+
+  const input =
+    obterElementoPorIds(
+      "nome-excecao",
+      "input-excecao",
+      "pessoa-excecao"
+    );
+
+
+  if (
+    !input
+  ) {
+
+    return;
+
+  }
+
+
+  const nome =
+    limparTexto(
+      input.value
+    );
+
+
+  if (
+    !nome
+  ) {
+
+    return;
+
+  }
+
+
+  const jaExiste =
+    excecoes.some(
+      excecao =>
+        normalizarTexto(
+          excecao?.nome
+        ) ===
+        normalizarTexto(
+          nome
+        )
+    );
+
+
+  if (
+    jaExiste
+  ) {
+
+    input.value =
+      "";
+
+    return;
+
+  }
+
+
+  excecoes.push({
+
+    nome:
+      nome
+
+  });
+
+
+  salvarExcecoes();
+
+
+  renderizarExcecoes();
+
+
+  preencherListasComExcecoes();
+
+
+  input.value =
+    "";
+
+}
+
+
+/* =========================================================
+   REMOVER EXCEÇÃO
+========================================================= */
+
+function removerExcecao(
+  nome
+) {
+
+  excecoes =
+    excecoes.filter(
+      excecao =>
+        normalizarTexto(
+          excecao?.nome
+        ) !==
+        normalizarTexto(
+          nome
+        )
+    );
+
+
+  salvarExcecoes();
+
+
+  renderizarExcecoes();
+
+
+  preencherListasComExcecoes();
+
+}
+
+
+/* =========================================================
+   RENDERIZAR EXCEÇÕES
+========================================================= */
+
+function renderizarExcecoes() {
+
+  const lista =
+    obterElementoPorIds(
+      "lista-excecoes",
+      "excecoes-lista"
+    );
+
+
+  if (
+    !lista
+  ) {
+
+    return;
+
+  }
+
+
+  lista.innerHTML =
+    "";
+
+
+  if (
+    !Array.isArray(
+      excecoes
+    ) ||
+    excecoes.length ===
+      0
+  ) {
+
+    lista.innerHTML = `
+
+      <div class="empty-list">
+        Nenhuma exceção cadastrada.
+      </div>
+
+    `;
+
+
+    return;
+
+  }
+
+
+  [
+    ...excecoes
+  ]
+    .sort(
+      (
+        a,
+        b
+      ) =>
+        String(
+          a?.nome ||
+          ""
+        ).localeCompare(
+          String(
+            b?.nome ||
+            ""
+          ),
+          "pt-BR"
+        )
+    )
+    .forEach(
+      excecao => {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+
+        item.className =
+          "excecao-item";
+
+
+        const nomeSeguro =
+          escaparHTML(
+            excecao.nome ||
+            ""
+          );
+
+
+        item.innerHTML = `
+
+          <span>
+            ${nomeSeguro}
+          </span>
+
+          <button
+            type="button"
+            class="excecao-remover"
+            aria-label="Remover exceção"
+          >
+            ×
+          </button>
+
+        `;
+
+
+        item
+          .querySelector(
+            ".excecao-remover"
+          )
+          ?.addEventListener(
+            "click",
+            () => {
+
+              removerExcecao(
+                excecao.nome
+              );
+
+            }
+          );
+
+
+        lista.appendChild(
+          item
+        );
+
+      }
+    );
+
+}
+/* =========================================================
+   UTILITÁRIO PARA DATA / HORA DA ATUALIZAÇÃO
+========================================================= */
+
+function obterHorarioAtualFormatado() {
+
+  return new Date()
+    .toLocaleTimeString(
+      "pt-BR",
+      {
+
+        hour:
+          "2-digit",
+
+        minute:
+          "2-digit"
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   ATUALIZAR TEXTO DA ÚLTIMA ATUALIZAÇÃO
+========================================================= */
+
+function atualizarTextoUltimaAtualizacao() {
+
+  if (
+    !textoAtualizacao
+  ) {
+
+    return;
+
+  }
+
+
+  textoAtualizacao.textContent =
+    `Última atualização: ${obterHorarioAtualFormatado()}.`;
+
+}
+
+
+/* =========================================================
+   VERIFICAR SE PESSOA ESTÁ EM EXCEÇÃO
+========================================================= */
+
+function pessoaEstaEmExcecao(
+  nome
+) {
+
+  const nomeNormalizado =
+    normalizarTexto(
+      nome
+    );
+
+
+  return excecoes.some(
+    excecao =>
+      normalizarTexto(
+        excecao?.nome
+      ) ===
+      nomeNormalizado
+  );
+
+}
+
+
+/* =========================================================
+   OBTER TOTAL APÓS EXCEÇÕES
+========================================================= */
+
+function obterTotalComExcecoes(
+  pessoas
+) {
+
+  return aplicarExcecoes(
+    pessoas
+  ).length;
+
+}
+
+
+/* =========================================================
+   GARANTIR ARRAY
+========================================================= */
+
+function garantirArray(
+  valor
+) {
+
+  return Array.isArray(
+    valor
+  )
+    ? valor
+    : [];
+
+}
+
+
+/* =========================================================
+   GARANTIR TEXTO
+========================================================= */
+
+function garantirTexto(
+  valor,
+  padrao = ""
+) {
+
+  const texto =
+    limparTexto(
+      valor
+    );
+
+
+  return texto ||
+    padrao;
+
+}
+
+
+/* =========================================================
+   GARANTIR NÚMERO
+========================================================= */
+
+function garantirNumero(
+  valor,
+  padrao = 0
+) {
+
+  const numero =
+    Number(
+      valor
+    );
+
+
+  return Number.isFinite(
+    numero
+  )
+    ? numero
+    : padrao;
+
+}
+
+
+/* =========================================================
+   FORMATAR NÚMERO INTEIRO
+========================================================= */
+
+function formatarNumeroInteiro(
+  valor
+) {
+
+  const numero =
+    garantirNumero(
+      valor,
+      0
+    );
+
+
+  return numero.toLocaleString(
+    "pt-BR",
+    {
+
+      maximumFractionDigits:
+        0
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FORMATAR PRODUTIVIDADE
+========================================================= */
+
+function formatarProdutividade(
+  valor
+) {
+
+  const numero =
+    Number(
+      valor
+    );
+
+
+  if (
+    !Number.isFinite(
+      numero
+    )
+  ) {
+
+    return "—";
+
+  }
+
+
+  return numero.toLocaleString(
+    "pt-BR",
+    {
+
+      minimumFractionDigits:
+        1,
+
+      maximumFractionDigits:
+        1
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FORMATAR LOCAL
+========================================================= */
+
+function formatarLocal(
+  valor
+) {
+
+  const texto =
+    limparTexto(
+      valor
+    );
+
+
+  return texto ||
+    "—";
+
+}
+
+
+/* =========================================================
+   VERIFICAR SE EXISTEM DADOS
+========================================================= */
+
+function existemDadosCarregados() {
+
+  return Boolean(
+    dadosProcessados &&
+    Array.isArray(
+      dadosProcessados.registros
+    ) &&
+    dadosProcessados.registros.length >
+      0
+  );
+
+}
+
+
+/* =========================================================
+   OBTER REGISTROS ATUAIS
+========================================================= */
+
+function obterRegistrosAtuais() {
+
+  if (
+    !existemDadosCarregados()
+  ) {
+
+    return [];
+
+  }
+
+
+  return [
+    ...dadosProcessados.registros
+  ];
+
+}
+
+
+/* =========================================================
+   OBTER PESSOA POR NOME
+========================================================= */
+
+function obterPessoaPorNome(
+  nome
+) {
+
+  const busca =
+    normalizarTexto(
+      nome
+    );
+
+
+  if (
+    !busca
+  ) {
+
+    return null;
+
+  }
+
+
+  return obterRegistrosAtuais()
+    .find(
+      pessoa =>
+        normalizarTexto(
+          pessoa?.nome
+        ) ===
+        busca
+    ) ||
+    null;
+
+}
+
+
+/* =========================================================
+   OBTER PESSOA POR USERNAME
+========================================================= */
+
+function obterPessoaPorUsername(
+  username
+) {
+
+  const busca =
+    normalizarTexto(
+      username
+    );
+
+
+  if (
+    !busca
+  ) {
+
+    return null;
+
+  }
+
+
+  return obterRegistrosAtuais()
+    .find(
+      pessoa =>
+        normalizarTexto(
+          pessoa?.username
+        ) ===
+        busca
+    ) ||
+    null;
+
+}
+
+
+/* =========================================================
+   CONTAR PESSOAS POR SITUAÇÃO
+========================================================= */
+
+function contarSituacao(
+  situacao
+) {
+
+  const situacaoNormalizada =
+    normalizarTexto(
+      situacao
+    );
+
+
+  return obterRegistrosAtuais()
+    .filter(
+      pessoa =>
+        normalizarTexto(
+          pessoa?.situacao
+        ) ===
+        situacaoNormalizada
+    )
+    .length;
+
+}
+
+
+/* =========================================================
+   OBTER PERCENTUAL
+========================================================= */
+
+function calcularPercentual(
+  quantidade,
+  total
+) {
+
+  const numeroQuantidade =
+    garantirNumero(
+      quantidade,
+      0
+    );
+
+
+  const numeroTotal =
+    garantirNumero(
+      total,
+      0
+    );
+
+
+  if (
+    numeroTotal <=
+    0
+  ) {
+
+    return 0;
+
+  }
+
+
+  return (
+    numeroQuantidade /
+    numeroTotal
+  );
+
+}
+
+
+/* =========================================================
+   OBTER STATUS DA META
+========================================================= */
+
+function obterStatusMeta(
+  percentual
+) {
+
+  const valor =
+    garantirNumero(
+      percentual,
+      0
+    );
+
+
+  return valor >=
+    TARGET
+      ? "META ATINGIDA"
+      : "EM ANDAMENTO";
+
+}
+
+
+/* =========================================================
+   OBTER QUANTIDADE PARA META
+========================================================= */
+
+function obterQuantidadeParaMeta(
+  hc
+) {
+
+  const total =
+    garantirNumero(
+      hc,
+      0
+    );
+
+
+  return Math.ceil(
+    total *
+    TARGET
+  );
+
+}
+
+
+/* =========================================================
+   OBTER QUANTIDADE FALTANTE PARA META
+========================================================= */
+
+function obterQuantidadeFaltanteMeta(
+  hc,
+  realizados
+) {
+
+  const meta =
+    obterQuantidadeParaMeta(
+      hc
+    );
+
+
+  const realizadosNumero =
+    garantirNumero(
+      realizados,
+      0
+    );
+
+
+  return Math.max(
+    0,
+    meta -
+      realizadosNumero
+  );
+
+}
+
+
+/* =========================================================
+   DEBUG DO DASHBOARD
+========================================================= */
+
+function debugDashboard() {
+
+  console.group(
+    "📊 CENTRAL BE A REP"
+  );
+
+
+  console.log(
+    "Referência:",
+    referenciaSelecionada
+  );
+
+
+  console.log(
+    "Base bruta:",
+    dadosApiBrutos.length
+  );
+
+
+  console.log(
+    "Dados processados:",
+    dadosProcessados
+  );
+
+
+  console.log(
+    "Exceções:",
+    excecoes
+  );
+
+
+  console.groupEnd();
+
+}
+
+
+/* =========================================================
+   TRATAMENTO GLOBAL DE ERROS
+========================================================= */
+
+window.addEventListener(
+  "error",
+  evento => {
+
+    console.error(
+      "❌ Erro global no dashboard:",
+      evento.error ||
+      evento.message
+    );
+
+  }
+);
+
+
+/* =========================================================
+   TRATAMENTO DE PROMISES
+========================================================= */
+
+window.addEventListener(
+  "unhandledrejection",
+  evento => {
+
+    console.error(
+      "❌ Erro assíncrono não tratado:",
+      evento.reason
+    );
+
+  }
+);
+
+
+/* =========================================================
+   FINALIZAÇÃO
+========================================================= */
+
+console.log(
+  "✅ Script Central Be a Rep carregado."
+);
