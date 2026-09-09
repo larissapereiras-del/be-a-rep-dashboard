@@ -5924,3 +5924,392 @@ img {
     min-width: 900px;
   }
 }
+/* =========================================================
+   CENTRAL BE A REP
+   AJUSTE FINAL DO DETALHAMENTO
+   5 COLUNAS
+========================================================= */
+
+
+/* =========================================================
+   CABEÇALHO DO DETALHAMENTO
+========================================================= */
+
+.realizaram-detalhe-head {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(320px, 2.35fr)
+    minmax(320px, 1.85fr)
+    minmax(95px, 0.65fr)
+    minmax(95px, 0.65fr)
+    minmax(125px, 0.85fr) !important;
+
+  align-items: center;
+
+  column-gap: 18px;
+
+  padding:
+    14px
+    18px;
+
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.realizaram-detalhe-head span {
+  min-width: 0;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   LINHA DE CADA PESSOA
+========================================================= */
+
+.realizado-item {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(320px, 2.35fr)
+    minmax(320px, 1.85fr)
+    minmax(95px, 0.65fr)
+    minmax(95px, 0.65fr)
+    minmax(125px, 0.85fr) !important;
+
+  align-items: center;
+
+  column-gap: 18px;
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding:
+    15px
+    18px;
+}
+
+
+/* =========================================================
+   TODAS AS COLUNAS
+========================================================= */
+
+.realizado-col {
+  min-width: 0;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   COLUNA NOME
+========================================================= */
+
+.realizado-col-nome {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  min-width: 0;
+}
+
+
+.realizado-col-nome strong {
+  display: block;
+
+  width: 100%;
+
+  min-width: 0;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  line-height: 1.25;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ÁREA + SETOR ABAIXO DO NOME
+========================================================= */
+
+.realizado-subinfo {
+  display: block;
+
+  width: 100%;
+
+  min-width: 0;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  line-height: 1.3;
+
+  opacity: 0.67;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   LOCAL
+========================================================= */
+
+.realizado-col-local {
+  display: flex;
+
+  align-items: center;
+
+  min-width: 0;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  line-height: 1.3;
+
+  white-space: normal;
+
+  overflow-wrap: anywhere;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   TEMPO
+========================================================= */
+
+.realizado-col-tempo {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  min-width: 0;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PEÇAS
+========================================================= */
+
+.realizado-col-pecas {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  min-width: 0;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PRODUTIVIDADE
+========================================================= */
+
+.realizado-col-produtividade {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  min-width: 0;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.realizaram-detalhe-list {
+  width: 100%;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   PROTEÇÃO CONTRA REGRAS ANTIGAS DE 7 COLUNAS
+========================================================= */
+
+#arte-realizaram .realizaram-detalhe-head,
+#arte-realizaram .realizado-item {
+  grid-template-columns:
+    minmax(320px, 2.35fr)
+    minmax(320px, 1.85fr)
+    minmax(95px, 0.65fr)
+    minmax(95px, 0.65fr)
+    minmax(125px, 0.85fr) !important;
+}
+
+
+/* =========================================================
+   ALINHAMENTO DO CABEÇALHO COM AS COLUNAS
+========================================================= */
+
+#arte-realizaram .realizaram-detalhe-head span:nth-child(1) {
+  text-align: left;
+}
+
+
+#arte-realizaram .realizaram-detalhe-head span:nth-child(2) {
+  text-align: left;
+}
+
+
+#arte-realizaram .realizaram-detalhe-head span:nth-child(3) {
+  text-align: left;
+}
+
+
+#arte-realizaram .realizaram-detalhe-head span:nth-child(4) {
+  text-align: left;
+}
+
+
+#arte-realizaram .realizaram-detalhe-head span:nth-child(5) {
+  text-align: left;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .realizaram-detalhe-head,
+  .realizado-item,
+  #arte-realizaram .realizaram-detalhe-head,
+  #arte-realizaram .realizado-item {
+
+    grid-template-columns:
+      minmax(260px, 2fr)
+      minmax(260px, 1.65fr)
+      minmax(85px, 0.65fr)
+      minmax(85px, 0.65fr)
+      minmax(110px, 0.8fr) !important;
+
+    column-gap: 12px;
+
+  }
+
+}
+
+
+/* =========================================================
+   TELAS MENORES
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .realizaram-detalhe-section {
+    overflow-x: auto;
+  }
+
+
+  .realizaram-detalhe-head,
+  .realizado-item,
+  #arte-realizaram .realizaram-detalhe-head,
+  #arte-realizaram .realizado-item {
+
+    width: 950px;
+
+    min-width: 950px;
+
+    grid-template-columns:
+      280px
+      280px
+      100px
+      100px
+      130px !important;
+
+  }
+
+}
+
+
+/* =========================================================
+   EXPORTAÇÃO PNG
+   EVITA QUEBRAS E DESALINHAMENTO
+========================================================= */
+
+.arte-capturando .realizaram-detalhe-head,
+.arte-capturando .realizado-item {
+
+  grid-template-columns:
+    minmax(320px, 2.35fr)
+    minmax(320px, 1.85fr)
+    minmax(95px, 0.65fr)
+    minmax(95px, 0.65fr)
+    minmax(125px, 0.85fr) !important;
+
+}
+
+
+.arte-capturando .realizado-col-nome strong,
+.arte-capturando .realizado-subinfo {
+
+  max-width: 100%;
+
+}
+
+
+/* =========================================================
+   FINAL
+========================================================= */
