@@ -6831,29 +6831,32 @@ function processarDadosApi(
 
 
         const horas =
-          obterValorObjeto(
-            registro,
-            [
-              "HORAS",
-              "horas",
-              "TEMPO",
-              "tempo"
-            ]
-          );
+  obterValorObjeto(
+    registro,
+    [
+      "SUMA_HORAS_MES",
+      "suma_horas_mes",
+      "SOMA_HORAS_MES",
+      "soma_horas_mes",
+      "HORAS",
+      "horas",
+      "TEMPO",
+      "tempo"
+    ]
+  );
 
 
-        const minutos =
-          converterTempoParaMinutos(
-            horas
-          );
+const minutos =
+  converterTempoParaMinutos(
+    horas
+  );
 
 
-        const tempo =
-          formatarMinutos(
-            minutos
-          );
-
-
+const tempo =
+  formatarMinutos(
+    minutos
+  );
+         
         const unidades =
           numeroSeguroBeARep(
             obterValorObjeto(
