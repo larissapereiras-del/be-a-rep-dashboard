@@ -6268,6 +6268,7 @@ function normalizarReferenciaMes(
 
   const meses = {
 
+    // PORTUGUÊS
     JANEIRO:
       "01",
 
@@ -6305,19 +6306,54 @@ function normalizarReferenciaMes(
       "11",
 
     DEZEMBRO:
+      "12",
+
+    // ESPANHOL
+    ENERO:
+      "01",
+
+    FEBRERO:
+      "02",
+
+    MARZO:
+      "03",
+
+    MAYO:
+      "05",
+
+    JUNIO:
+      "06",
+
+    JULIO:
+      "07",
+
+    SEPTIEMBRE:
+      "09",
+
+    SETIEMBRE:
+      "09",
+
+    OCTUBRE:
+      "10",
+
+    NOVIEMBRE:
+      "11",
+
+    DICIEMBRE:
       "12"
 
   };
 
 
   /*
-   * Exemplo:
+   * Exemplos:
    * SETEMBRO-2026
+   * SEPTIEMBRE-2026
    */
 
   const partesNome =
     texto.match(
-      /^([A-ZÇÃÕ]+)[\s\-_/]+(\d{4})$/
+      /^([A-ZÁÉÍÓÚÜÑÇÃÕÂÊÔ]+)[\s\-_/]+(\d{4})$/
     );
 
 
@@ -6352,7 +6388,7 @@ function normalizarReferenciaMes(
 
 
   /*
-   * Exemplo:
+   * Exemplos:
    * 09-2026
    * 09/2026
    * 09_2026
@@ -6393,8 +6429,6 @@ function normalizarReferenciaMes(
   return "";
 
 }
-
-
 /* =========================================================
    FORMATAR REFERÊNCIA DO FILTRO
 ========================================================= */
