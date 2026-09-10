@@ -5773,7 +5773,7 @@ async function baixarArteAtual() {
     ) {
 
       lista.style.gridTemplateColumns =
-        "repeat(2, minmax(0, 1fr))";
+        "repeat(3, minmax(0, 1fr))";
 
 
       lista.style.gap =
