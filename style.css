@@ -6357,6 +6357,341 @@ img {
   font-size: 14px;
   font-weight: 700;
 }
+/* =========================================================
+   CORREÇÃO FINAL DOS CABEÇALHOS DAS ABAS
+   DETALHAMENTO / PROCESSO / NÃO REALIZARAM / GEMBA
+========================================================= */
+
+
+/* =========================================================
+   CABEÇALHO DAS ARTES DE LISTAGEM
+========================================================= */
+
+#arte-realizaram .arte-header,
+#arte-processo .arte-header,
+#arte-nao .arte-header,
+#arte-guemba-pendente .arte-header,
+#arte-guemba-processando .arte-header {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto !important;
+
+  align-items: center !important;
+
+  gap: 28px !important;
+
+  min-height: 170px !important;
+
+  padding: 28px 44px !important;
+
+  background:
+    radial-gradient(
+      circle at 94% 10%,
+      rgba(255, 230, 0, 0.13),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #071b61 0%,
+      #0c287f 65%,
+      #153d8c 100%
+    ) !important;
+}
+
+
+/* =========================================================
+   BLOCO DE TEXTO
+========================================================= */
+
+#arte-realizaram .arte-header > div:first-child,
+#arte-processo .arte-header > div:first-child,
+#arte-nao .arte-header > div:first-child,
+#arte-guemba-pendente .arte-header > div:first-child,
+#arte-guemba-processando .arte-header > div:first-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  position: relative;
+  z-index: 2;
+}
+
+
+/* CENTRAL BE A REP */
+
+#arte-realizaram .arte-eyebrow,
+#arte-processo .arte-eyebrow,
+#arte-nao .arte-eyebrow,
+#arte-guemba-pendente .arte-eyebrow,
+#arte-guemba-processando .arte-eyebrow {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #ffe600 !important;
+
+  font-size: 10px !important;
+  line-height: 1;
+  font-weight: 800 !important;
+
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+
+/* TÍTULO PRINCIPAL */
+
+#arte-realizaram .arte-header h2,
+#arte-processo .arte-header h2,
+#arte-nao .arte-header h2,
+#arte-guemba-pendente .arte-header h2,
+#arte-guemba-processando .arte-header h2 {
+  margin: 0 !important;
+
+  color: #ffffff !important;
+
+  font-size: 30px !important;
+  line-height: 1.1 !important;
+  font-weight: 800 !important;
+
+  letter-spacing: -0.6px;
+}
+
+
+/* SUBTÍTULO */
+
+#arte-realizaram .arte-header p,
+#arte-processo .arte-header p,
+#arte-nao .arte-header p,
+#arte-guemba-pendente .arte-header p,
+#arte-guemba-processando .arte-header p {
+  max-width: 760px;
+
+  margin: 12px 0 0 !important;
+
+  color: rgba(255, 255, 255, 0.78) !important;
+
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+}
+
+
+/* MÊS DENTRO DO SUBTÍTULO */
+
+#arte-realizaram .arte-header p [data-mes],
+#arte-processo .arte-header p [data-mes],
+#arte-nao .arte-header p [data-mes],
+#arte-guemba-pendente .arte-header p [data-mes],
+#arte-guemba-processando .arte-header p [data-mes] {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+
+/* =========================================================
+   CARD NUMÉRICO DA DIREITA
+========================================================= */
+
+#arte-realizaram .arte-header-badge,
+#arte-processo .arte-header-badge,
+#arte-nao .arte-header-badge,
+#arte-guemba-pendente .arte-header-badge,
+#arte-guemba-processando .arte-header-badge {
+  position: relative;
+  z-index: 2;
+
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 145px;
+  min-height: 92px;
+
+  padding: 16px 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.09);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(6px);
+
+  text-align: center;
+}
+
+
+/* TEXTO PEQUENO DO CARD */
+
+#arte-realizaram .arte-header-badge span,
+#arte-processo .arte-header-badge span,
+#arte-nao .arte-header-badge span,
+#arte-guemba-pendente .arte-header-badge span,
+#arte-guemba-processando .arte-header-badge span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: rgba(255, 255, 255, 0.7) !important;
+
+  font-size: 9px !important;
+  line-height: 1;
+  font-weight: 800 !important;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+
+/* NÚMERO */
+
+#arte-realizaram .arte-header-badge strong,
+#arte-processo .arte-header-badge strong,
+#arte-nao .arte-header-badge strong,
+#arte-guemba-pendente .arte-header-badge strong,
+#arte-guemba-processando .arte-header-badge strong {
+  display: block;
+
+  color: #ffffff !important;
+
+  font-size: 30px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+
+
+/* =========================================================
+   CORES ESPECÍFICAS DE CADA ABA
+========================================================= */
+
+
+/* DETALHAMENTO */
+
+#arte-realizaram .arte-header-badge {
+  border-color: rgba(58, 210, 142, 0.28);
+
+  background:
+    rgba(24, 165, 107, 0.17);
+}
+
+#arte-realizaram .arte-header-badge strong {
+  color: #76e6b4 !important;
+}
+
+
+/* EM PROCESSO */
+
+#arte-processo .arte-header-badge {
+  border-color: rgba(243, 154, 46, 0.32);
+
+  background:
+    rgba(243, 154, 46, 0.15);
+}
+
+#arte-processo .arte-header-badge strong {
+  color: #ffc46f !important;
+}
+
+
+/* NÃO REALIZARAM */
+
+#arte-nao .arte-header-badge {
+  border-color: rgba(255, 107, 99, 0.3);
+
+  background:
+    rgba(212, 60, 50, 0.15);
+}
+
+#arte-nao .arte-header-badge strong {
+  color: #ff8e87 !important;
+}
+
+
+/* GEMBA PENDENTE */
+
+#arte-guemba-pendente .arte-header-badge {
+  border-color: rgba(35, 136, 221, 0.3);
+
+  background:
+    rgba(35, 136, 221, 0.15);
+}
+
+#arte-guemba-pendente .arte-header-badge strong {
+  color: #78beff !important;
+}
+
+
+/* GEMBA + PROCESSO */
+
+#arte-guemba-processando .arte-header-badge {
+  border-color: rgba(255, 230, 0, 0.28);
+
+  background:
+    rgba(255, 230, 0, 0.11);
+}
+
+#arte-guemba-processando .arte-header-badge strong {
+  color: #ffe600 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 800px) {
+
+  #arte-realizaram .arte-header,
+  #arte-processo .arte-header,
+  #arte-nao .arte-header,
+  #arte-guemba-pendente .arte-header,
+  #arte-guemba-processando .arte-header {
+
+    grid-template-columns: 1fr !important;
+
+    min-height: auto !important;
+
+    padding: 24px !important;
+
+  }
+
+
+  #arte-realizaram .arte-header-badge,
+  #arte-processo .arte-header-badge,
+  #arte-nao .arte-header-badge,
+  #arte-guemba-pendente .arte-header-badge,
+  #arte-guemba-processando .arte-header-badge {
+
+    width: 100%;
+
+    min-height: 72px;
+
+    flex-direction: row;
+
+    justify-content: space-between;
+
+  }
+
+
+  #arte-realizaram .arte-header-badge span,
+  #arte-processo .arte-header-badge span,
+  #arte-nao .arte-header-badge span,
+  #arte-guemba-pendente .arte-header-badge span,
+  #arte-guemba-processando .arte-header-badge span {
+
+    margin: 0;
+
+  }
+
+}
 
 /* =========================================================
    FINAL
