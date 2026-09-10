@@ -6793,18 +6793,21 @@ function processarDadosApi(
 
 
         const areaOriginal =
-          limparTexto(
-            obterValorObjeto(
-              registro,
-              [
-                "AREA",
-                "area",
-                "ÁREA"
-              ]
-            )
-          );
-
-
+  limparTexto(
+    obterValorObjeto(
+      registro,
+      [
+        "ÁREA CONSOLIDADA",
+        "AREA CONSOLIDADA",
+        "área consolidada",
+        "area consolidada",
+        "AREA",
+        "area",
+        "ÁREA"
+      ]
+    )
+  );
+         
         const area =
           normalizarArea(
             areaOriginal
