@@ -578,609 +578,579 @@
 
 
 
-      <!-- ===================================================
-           JORNADA GEMBA → BE A REP
-      ==================================================== -->
+     <!-- ===================================================
+     JORNADA GEMBA → BE A REP
+==================================================== -->
 
-      <section class="jornada-section">
+<section class="journey-card">
+
+  <div class="journey-header">
+
+    <div>
+      <span class="eyebrow">
+        JORNADA
+      </span>
+
+      <h2>
+        Gemba → Be a Rep
+      </h2>
+
+      <p>
+        Acompanhamento da evolução das pessoas entre as etapas.
+      </p>
+    </div>
+
+    <div class="journey-badge">
+      📅
+      <strong data-mes>
+        MÊS
+      </strong>
+    </div>
+
+  </div>
 
 
-        <div class="section-title-row">
+  <div class="journey-flow">
+
+    <!-- GEMBA REALIZADO -->
+
+    <article class="journey-step journey-step-green">
+
+      <div class="journey-step-icon">
+        👀
+      </div>
+
+      <div>
+        <small>
+          ETAPA 1
+        </small>
+
+        <strong>
+          GEMBA REALIZADO
+        </strong>
+
+        <span>
+          Be a Rep ainda não iniciado
+        </span>
+      </div>
+
+      <b id="resumo-gemba-pendente">
+        0
+      </b>
+
+    </article>
 
 
-          <div>
+    <div class="journey-arrow">
+      →
+    </div>
 
 
-            <span class="eyebrow">
-              JORNADA
-            </span>
+    <!-- GEMBA + BE A REP -->
+
+    <article class="journey-step journey-step-blue">
+
+      <div class="journey-step-icon">
+        🔄
+      </div>
+
+      <div>
+        <small>
+          ETAPA 2
+        </small>
+
+        <strong>
+          GEMBA + BE A REP
+        </strong>
+
+        <span>
+          Be a Rep em processo
+        </span>
+      </div>
+
+      <b id="resumo-gemba-processo">
+        0
+      </b>
+
+    </article>
 
 
-            <h2>
-              Gemba → Be a Rep
-            </h2>
+    <div class="journey-arrow">
+      →
+    </div>
 
 
-            <p>
-              Acompanhamento da evolução das pessoas entre as etapas.
-            </p>
+    <!-- BE A REP CONCLUÍDO -->
+
+    <article class="journey-step journey-step-done">
+
+      <div class="journey-step-icon">
+        🏆
+      </div>
+
+      <div>
+        <small>
+          ETAPA FINAL
+        </small>
+
+        <strong>
+          BE A REP
+        </strong>
+
+        <span>
+          Be a Rep concluído
+        </span>
+      </div>
+
+      <b id="jornada-berep-concluido">
+        0
+      </b>
+
+    </article>
+
+  </div>
 
 
-          </div>
+  <div class="journey-note">
+
+    <span>
+      ℹ️
+    </span>
+
+    <p>
+      A jornada mostra a evolução entre Gemba realizado, Be a Rep em andamento e Be a Rep concluído.
+    </p>
+
+  </div>
+
+</section>
+      
+<!-- ===================================================
+     CONSULTA INDIVIDUAL
+==================================================== -->
+
+<section class="consulta-card">
+
+  <div class="consulta-header">
+
+    <div>
+
+      <span class="eyebrow">
+        CONSULTA INDIVIDUAL
+      </span>
+
+      <h2>
+        Consulte uma pessoa
+      </h2>
+
+      <p>
+        Pesquise pelo nome ou username para visualizar a jornada individual.
+      </p>
+
+    </div>
 
 
+    <div class="consulta-mes">
+      📅
+      <strong data-mes>
+        MÊS
+      </strong>
+    </div>
+
+  </div>
+
+
+  <div class="consulta-search">
+
+    <div class="consulta-input-wrap">
+
+      <span>
+        🔎
+      </span>
+
+      <input
+        id="consulta-pessoa"
+        type="text"
+        list="lista-pessoas-consulta"
+        placeholder="Digite o nome ou username..."
+        autocomplete="off"
+      >
+
+      <datalist id="lista-pessoas-consulta"></datalist>
+
+    </div>
+
+
+    <button
+      id="botao-consultar-pessoa"
+      type="button"
+      class="btn-dark"
+    >
+      Consultar
+    </button>
+
+  </div>
+
+
+  <!-- ESTADO VAZIO -->
+
+  <div
+    id="consulta-vazia"
+    class="consulta-empty"
+  >
+
+    <div class="consulta-empty-icon">
+      👤
+    </div>
+
+    <div>
+
+      <strong>
+        Consulte uma pessoa da base
+      </strong>
+
+      <span>
+        O resultado mostrará Gemba, Be a Rep, tempo e informações operacionais.
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESULTADO -->
+
+  <div
+    id="consulta-resultado"
+    class="consulta-resultado oculto"
+  >
+
+    <div class="consulta-profile">
+
+      <div class="consulta-avatar">
+        👤
+      </div>
+
+
+      <div class="consulta-profile-info">
+
+        <span
+          id="consulta-status-geral"
+          class="consulta-status-badge"
+        >
+          STATUS
+        </span>
+
+        <h3 id="consulta-nome">
+          Nome da pessoa
+        </h3>
+
+        <p>
+          <span id="consulta-username">
+            @username
+          </span>
+
+          <span class="consulta-separador">
+            •
+          </span>
+
+          <span id="consulta-area">
+            -
+          </span>
+
+          <span class="consulta-separador">
+            •
+          </span>
+
+          <span id="consulta-setor">
+            -
+          </span>
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="consulta-status-grid">
+
+      <article class="consulta-status-item">
+
+        <div class="consulta-status-icon">
+          👀
         </div>
 
+        <div>
+          <small>
+            GEMBA
+          </small>
 
-
-        <div class="jornada-grid">
-
-
-          <!-- GEMBA CONCLUÍDO / BE A REP PENDENTE -->
-
-          <article class="jornada-card">
-
-
-            <div class="jornada-icon">
-              👀
-            </div>
-
-
-            <div>
-
-
-              <span>
-                GEMBA REALIZADO
-              </span>
-
-
-              <strong id="resumo-gemba-pendente">
-                0
-              </strong>
-
-
-              <p>
-                Be a Rep ainda não iniciado
-              </p>
-
-
-            </div>
-
-
-          </article>
-
-
-
-          <!-- GEMBA + BE A REP EM PROCESSO -->
-
-          <article class="jornada-card">
-
-
-            <div class="jornada-icon">
-              🔄
-            </div>
-
-
-            <div>
-
-
-              <span>
-                GEMBA + BE A REP
-              </span>
-
-
-              <strong id="resumo-gemba-processo">
-                0
-              </strong>
-
-
-              <p>
-                Be a Rep em processo
-              </p>
-
-
-            </div>
-
-
-          </article>
-
-
-
-          <!-- BE A REP CONCLUÍDO -->
-
-          <article class="jornada-card">
-
-
-            <div class="jornada-icon">
-              🏆
-            </div>
-
-
-            <div>
-
-
-              <span>
-                BE A REP
-              </span>
-
-
-              <strong id="jornada-berep-concluido">
-                0
-              </strong>
-
-
-              <p>
-                Be a Rep concluído
-              </p>
-
-
-            </div>
-
-
-          </article>
-
-
+          <strong id="consulta-gemba">
+            -
+          </strong>
         </div>
 
-
-      </section>
-
+      </article>
 
 
-      <!-- ===================================================
-           CONSULTA RÁPIDA
-      ==================================================== -->
+      <article class="consulta-status-item">
 
-      <section class="consulta-section">
-
-
-        <div class="section-title-row">
-
-
-          <div>
-
-
-            <span class="eyebrow">
-              CONSULTA INDIVIDUAL
-            </span>
-
-
-            <h2>
-              Consulte uma pessoa
-            </h2>
-
-
-            <p>
-              Pesquise pelo nome ou username para visualizar a jornada individual.
-            </p>
-
-
-          </div>
-
-
+        <div class="consulta-status-icon">
+          🏆
         </div>
 
-
-
-        <div class="consulta-box">
-
-
-          <div class="consulta-search">
-
-
-            <div class="consulta-input-box">
-
-
-              <span class="consulta-search-icon">
-                🔎
-              </span>
-
-
-              <input
-                id="consulta-pessoa"
-                type="text"
-                list="lista-pessoas-consulta"
-                placeholder="Digite o nome ou username..."
-                autocomplete="off"
-              >
-
-
-              <datalist id="lista-pessoas-consulta"></datalist>
-
-
-            </div>
-
-
-            <button
-              id="botao-consultar-pessoa"
-              type="button"
-              class="btn btn-primary"
-            >
-              Consultar
-            </button>
-
-
-          </div>
-
-
-
-          <!-- RESULTADO VAZIO -->
-
-          <div
-            id="consulta-vazia"
-            class="consulta-empty"
-          >
-
-
-            <div class="consulta-empty-icon">
-              👤
-            </div>
-
-
-            <div>
-
-
-              <strong>
-                Consulte uma pessoa da base
-              </strong>
-
-
-              <span>
-                O resultado mostrará Gemba, Be a Rep, tempo e informações operacionais.
-              </span>
-
-
-            </div>
-
-
-          </div>
-
-
-
-          <!-- RESULTADO DA CONSULTA -->
-
-          <div
-            id="consulta-resultado"
-            class="consulta-result oculto"
-          >
-
-
-            <div class="consulta-result-header">
-
-
-              <div>
-
-
-                <span
-                  id="consulta-status-geral"
-                  class="consulta-status"
-                >
-                  STATUS
-                </span>
-
-
-                <h3 id="consulta-nome">
-                  Nome da pessoa
-                </h3>
-
-
-                <span id="consulta-username">
-                  @username
-                </span>
-
-
-              </div>
-
-
-              <div class="consulta-identificacao">
-
-
-                <div>
-
-
-                  <span>
-                    Área
-                  </span>
-
-
-                  <strong id="consulta-area">
-                    -
-                  </strong>
-
-
-                </div>
-
-
-                <div>
-
-
-                  <span>
-                    Setor
-                  </span>
-
-
-                  <strong id="consulta-setor">
-                    -
-                  </strong>
-
-
-                </div>
-
-
-              </div>
-
-
-            </div>
-
-
-
-            <div class="consulta-result-grid">
-
-
-              <!-- GEMBA -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Gemba
-                </span>
-
-
-                <strong id="consulta-gemba">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- BE A REP -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Be a Rep
-                </span>
-
-
-                <strong id="consulta-berep">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- TEMPO -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Tempo realizado
-                </span>
-
-
-                <strong id="consulta-tempo">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- META -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Meta de tempo
-                </span>
-
-
-                <strong id="consulta-meta-tempo">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- TEMPO RESTANTE -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Tempo restante
-                </span>
-
-
-                <strong id="consulta-tempo-restante">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- PEÇAS -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Peças
-                </span>
-
-
-                <strong id="consulta-pecas">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- PRODUTIVIDADE -->
-
-              <article class="consulta-info-card">
-
-
-                <span>
-                  Produtividade
-                </span>
-
-
-                <strong id="consulta-produtividade">
-                  -
-                </strong>
-
-
-              </article>
-
-
-
-              <!-- LOCAL -->
-
-              <article class="consulta-info-card consulta-info-local">
-
-
-                <span>
-                  Local / Processo
-                </span>
-
-
-                <strong id="consulta-local">
-                  -
-                </strong>
-
-
-              </article>
-
-
-            </div>
-
-
-          </div>
-
-
+        <div>
+          <small>
+            BE A REP
+          </small>
+
+          <strong id="consulta-berep">
+            -
+          </strong>
         </div>
 
+      </article>
 
-      </section>
+
+      <article class="consulta-status-item">
+
+        <div class="consulta-status-icon">
+          ⏱️
+        </div>
+
+        <div>
+          <small>
+            TEMPO REALIZADO
+          </small>
+
+          <strong id="consulta-tempo">
+            -
+          </strong>
+        </div>
+
+      </article>
 
 
+      <article class="consulta-status-item">
+
+        <div class="consulta-status-icon">
+          🎯
+        </div>
+
+        <div>
+          <small>
+            TEMPO RESTANTE
+          </small>
+
+          <strong id="consulta-tempo-restante">
+            -
+          </strong>
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <div class="consulta-detalhes">
+
+      <div>
+        <span>
+          Meta de tempo
+        </span>
+
+        <strong id="consulta-meta-tempo">
+          -
+        </strong>
+      </div>
+
+
+      <div>
+        <span>
+          Peças
+        </span>
+
+        <strong id="consulta-pecas">
+          -
+        </strong>
+      </div>
+
+
+      <div>
+        <span>
+          Produtividade
+        </span>
+
+        <strong id="consulta-produtividade">
+          -
+        </strong>
+      </div>
+
+
+      <div>
+        <span>
+          Local / Processo
+        </span>
+
+        <strong id="consulta-local">
+          -
+        </strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+      
 
       <!-- ===================================================
-           DESEMPENHO POR ÁREA
-      ==================================================== -->
+     DESEMPENHO POR ÁREA
+==================================================== -->
 
-      <section class="areas-dashboard-section">
+<section class="performance-card">
 
+  <div class="performance-header">
 
-        <div class="section-title-row">
+    <div>
 
+      <span class="eyebrow">
+        PERFORMANCE
+      </span>
 
-          <div>
+      <h2>
+        Desempenho por área
+      </h2>
 
+      <p>
+        Comparativo de realização entre as áreas do site.
+      </p>
 
-            <span class="eyebrow">
-              PERFORMANCE
-            </span>
-
-
-            <h2>
-              Desempenho por área
-            </h2>
-
-
-            <p>
-              Comparativo de realização entre as áreas do site.
-            </p>
+    </div>
 
 
-          </div>
+    <div class="performance-legend">
+
+      <span>
+        <i class="legend-dot legend-green"></i>
+        ≥ 90%
+      </span>
+
+      <span>
+        <i class="legend-dot legend-orange"></i>
+        70% a 89,9%
+      </span>
+
+      <span>
+        <i class="legend-dot legend-red"></i>
+        &lt; 70%
+      </span>
+
+    </div>
+
+  </div>
 
 
-          <div class="target-pill">
-            Target 90%
-          </div>
+  <!-- RANKING -->
 
+  <div
+    id="ranking-areas"
+    class="area-ranking"
+  ></div>
+
+
+  <!-- DETALHAMENTO -->
+
+  <details class="area-details" open>
+
+    <summary>
+
+      <span>
+        Detalhamento por área
+      </span>
+
+      <small>
+        HC, realizados, processo e pendências
+      </small>
+
+    </summary>
+
+
+    <div class="area-details-body">
+
+      <div class="areas-table">
+
+        <div class="areas-table-head">
+
+          <span>
+            ÁREA
+          </span>
+
+          <span>
+            HC
+          </span>
+
+          <span>
+            REALIZARAM
+          </span>
+
+          <span>
+            EM PROCESSO
+          </span>
+
+          <span>
+            NÃO REALIZARAM
+          </span>
+
+          <span>
+            %
+          </span>
 
         </div>
 
 
+        <div id="lista-areas-dashboard"></div>
 
-        <!-- RANKING -->
+      </div>
 
-        <div
-          id="ranking-areas"
-          class="ranking-areas"
-        ></div>
+    </div>
 
+  </details>
 
-
-        <!-- TABELA -->
-
-        <div class="dashboard-areas-table">
+</section>
 
 
-          <div class="dashboard-area-head">
+<!-- ===================================================
+     ALERTA SEM CADASTRO
+==================================================== -->
 
+<section
+  id="alerta-sem-cadastro"
+  class="alerta-sem-cadastro oculto"
+>
 
-            <span>
-              ÁREA
-            </span>
+  <div class="alerta-sem-cadastro-icon">
+    ⚠️
+  </div>
 
+  <div>
 
-            <span>
-              HC
-            </span>
+    <strong>
+      Pessoas sem área identificada
+    </strong>
 
+    <p>
+      Existem
+      <strong id="quantidade-sem-cadastro">
+        0
+      </strong>
+      pessoa(s) que permanecem no HC Geral, mas não entram no resultado individual das áreas.
+    </p>
 
-            <span>
-              REALIZARAM
-            </span>
+  </div>
 
-
-            <span>
-              EM PROCESSO
-            </span>
-
-
-            <span>
-              NÃO REALIZARAM
-            </span>
-
-
-            <span>
-              %
-            </span>
-
-
-          </div>
-
-
-          <div id="lista-areas-dashboard"></div>
-
-
-        </div>
-
-
-      </section>
-
-
-
+</section>
+      
       <!-- ===================================================
            ALERTA SEM CADASTRO
       ==================================================== -->
