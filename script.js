@@ -7088,6 +7088,43 @@ const obrigatorios =
 
     }
   );
+
+     /* =======================================================
+     REMOVER DUPLICIDADES
+  ======================================================= */
+
+  const pessoasUnicas =
+    removerDuplicidades(
+      obrigatorios
+    );
+
+
+  /* =======================================================
+     VALIDAR RESULTADO
+  ======================================================= */
+
+  if (
+    pessoasUnicas.length ===
+    0
+  ) {
+
+    throw new Error(
+      `Nenhuma pessoa obrigatória foi encontrada para ${formatarReferenciaFiltro(referenciaNormalizada)}.`
+    );
+
+  }
+
+
+  /* =======================================================
+     PROCESSAR RESULTADO FINAL
+  ======================================================= */
+
+  return processarRegistros(
+    pessoasUnicas
+  );
+
+}
+   
 /* =========================================================
    PROCESSAR ARQUIVO MANUAL
 ========================================================= */
