@@ -22,8 +22,7 @@ const AREAS_VALIDAS = [
   "Outbound",
   "Inbound",
   "OPEX",
-  "ICQA",
-  "Line Haul"
+  "ICQA"
 
 ];
 
@@ -7024,73 +7023,71 @@ const tempo =
 
 
   /* =======================================================
-     SOMENTE OBRIGATÓRIOS
-  ======================================================= */
+   SOMENTE OBRIGATÓRIOS
 
-  const obrigatorios =
-    pessoas.filter(
-      pessoa => {
+   LINE HAUL:
+   - é opcional
+   - não entra no dashboard
+   - não entra no HC
+   - não entra nas listas
+   - não entra nos indicadores
+======================================================= */
 
-        const flag =
-          pessoa.obrigatoriedade;
+const obrigatorios =
+  pessoas.filter(
+    pessoa => {
 
+      /* ===================================================
+         EXCLUIR LINE HAUL COMPLETAMENTE
+      =================================================== */
 
-        if (
-          !flag
-        ) {
+      if (
+        pessoa.area ===
+        "Line Haul"
+      ) {
 
-          /*
-           * Se o campo vier vazio,
-           * não descartamos a pessoa.
-           */
-
-          return true;
-
-        }
-
-
-        return ![
-          "NO",
-          "NAO",
-          "NÃO",
-          "FALSE",
-          "0",
-          "NO OBLIGATORIO",
-          "NAO OBRIGATORIO",
-          "NÃO OBRIGATÓRIO"
-        ].includes(
-          flag
-        );
+        return false;
 
       }
-    );
 
 
-  const semDuplicidade =
-    removerDuplicidades(
-      obrigatorios
-    );
+      /* ===================================================
+         VALIDAR OBRIGATORIEDADE
+      =================================================== */
+
+      const flag =
+        pessoa.obrigatoriedade;
 
 
-  if (
-    semDuplicidade.length ===
-    0
-  ) {
+      if (
+        !flag
+      ) {
 
-    throw new Error(
-      `Nenhuma pessoa obrigatória encontrada para ${formatarReferenciaFiltro(referenciaNormalizada)}.`
-    );
+        /*
+         * Se o campo vier vazio,
+         * mantém a pessoa.
+         */
 
-  }
+        return true;
+
+      }
 
 
-  return processarRegistros(
-    semDuplicidade
+      return ![
+        "NO",
+        "NAO",
+        "NÃO",
+        "FALSE",
+        "0",
+        "NO OBLIGATORIO",
+        "NAO OBRIGATORIO",
+        "NÃO OBRIGATÓRIO"
+      ].includes(
+        flag
+      );
+
+    }
   );
-
-}
-
-
 /* =========================================================
    PROCESSAR ARQUIVO MANUAL
 ========================================================= */
