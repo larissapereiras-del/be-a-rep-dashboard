@@ -1415,24 +1415,28 @@ function processarRegistros(
       }
 
 
-      /* ===================================================
-         BE A REP EM PROCESSO
-      =================================================== */
+     /* ===================================================
+   BE A REP EM PROCESSO
 
-      if (
-        beARepEmProcesso
-      ) {
+   Somente quem:
+   - iniciou o Be a Rep
+   - ainda não atingiu o tempo mínimo
+   - NÃO realizou o Gemba
+=================================================== */
 
-        processo.push(
-          criarPessoaLista(
-            pessoa,
-            true
-          )
-        );
+if (
+  beARepEmProcesso &&
+  !fezGemba
+) {
 
-      }
+  processo.push(
+    criarPessoaLista(
+      pessoa,
+      true
+    )
+  );
 
-
+}
       /* ===================================================
          NÃO REALIZARAM
 
