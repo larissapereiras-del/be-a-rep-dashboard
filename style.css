@@ -6696,3 +6696,8 @@ img {
 /* =========================================================
    FINAL
 ========================================================= */
+/* Filtros de liderança — Central Be a Rep */
+.filtro-lideranca-box select { min-width: 185px; max-width: 235px; width: 100%; }
+.sync-actions { flex-wrap: wrap; }
+@media (max-width: 900px) { .filtro-lideranca-box { flex: 1 1 190px; } .filtro-lideranca-box select { max-width: none; } }
+@media (max-width: 700px) { .filtro-lideranca-box, .filtro-lideranca-box select { width: 100%; max-width: none; } }
