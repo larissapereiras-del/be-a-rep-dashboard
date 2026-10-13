@@ -2469,9 +2469,14 @@ function preencherMeta(dados) {
 function preencherAlertaSemCadastro(dados) {
 
   const semCadastro =
-    Array.isArray(dados?.semCadastro)
+    (Array.isArray(dados?.semCadastro)
       ? dados.semCadastro
-      : [];
+      : []
+    ).filter(pessoa =>
+      String(pessoa.username || "")
+        .trim()
+        .toLowerCase() !== "clgoncalves"
+    );
 
   const quantidade =
     semCadastro.length;
