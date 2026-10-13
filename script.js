@@ -487,17 +487,16 @@ function configurarEventos() {
 /* =======================================================
    FILTRO DE ÁREA
 ======================================================= */
-
 $("filtro-area")
   ?.addEventListener("change", () => {
 
-    areaSelecionada =
-      $("filtro-area").value;
+    areaSelecionada = $("filtro-area").value;
 
+    atualizarFiltrosLideranca();
     aplicarFiltrosLideranca();
 
   });
-
+   
   /* =======================================================
      FILTRO DE SUPERVISOR
   ======================================================= */
@@ -3342,17 +3341,118 @@ function obterNomeExibicaoLideranca(username) {
    ATUALIZAR OPÇÕES DOS FILTROS
 ========================================================= */
 
+
 function atualizarFiltrosLideranca() {
 
-  const filtroGerente =
-    $("filtro-gerente");
-
-  const filtroSupervisor =
-    $("filtro-supervisor");
+  const filtroGerente = $("filtro-gerente");
+  const filtroSupervisor = $("filtro-supervisor");
 
   const pessoas = Array.isArray(pessoasMesSemFiltro)
     ? pessoasMesSemFiltro
     : [];
+
+  const normalizar = valor =>
+    String(valor || "").trim().toLowerCase();
+
+  const pessoasDaArea = pessoas.filter(pessoa =>
+    !areaSelecionada ||
+    normalizar(pessoa.area) === normalizar(areaSelecionada)
+  );
+
+  // Gerentes oficiais presentes na base e na área
+  const gerentes = Object.keys(LIDERANCAS_OFICIAIS)
+    .filter(username =>
+      pessoasDaArea.some(pessoa =>
+        normalizarUsernameLideranca(
+          pessoa.gerenteUsername
+        ) === username
+      )
+    );
+
+  if (
+    gerenteSelecionado &&
+    !gerentes.includes(gerenteSelecionado)
+  ) {
+    gerenteSelecionado = "";
+    supervisorSelecionado = "";
+  }
+
+  if (filtroGerente) {
+    filtroGerente.innerHTML = "";
+    filtroGerente.add(
+      new Option("Todos os gerentes", "")
+    );
+
+    gerentes.forEach(username => {
+      filtroGerente.add(
+        new Option(
+          LIDERANCAS_OFICIAIS[username].nome,
+          username
+        )
+      );
+    });
+
+    filtroGerente.value = gerenteSelecionado;
+  }
+
+  // Supervisores vinculados aos gerentes oficiais
+  const supervisoresPermitidos = gerenteSelecionado
+    ? LIDERANCAS_OFICIAIS[gerenteSelecionado]
+        ?.supervisores || []
+    : Object.values(LIDERANCAS_OFICIAIS)
+        .flatMap(gerente => gerente.supervisores);
+
+  const supervisores = [
+    ...new Set(supervisoresPermitidos)
+  ].filter(username =>
+    pessoasDaArea.some(pessoa => {
+
+      const supervisor =
+        normalizarUsernameLideranca(
+          pessoa.supervisorUsername
+        );
+
+      const gerente =
+        normalizarUsernameLideranca(
+          pessoa.gerenteUsername
+        );
+
+      return (
+        supervisor === username &&
+        (
+          !gerenteSelecionado ||
+          gerente === gerenteSelecionado
+        )
+      );
+    })
+  );
+
+  if (
+    supervisorSelecionado &&
+    !supervisores.includes(supervisorSelecionado)
+  ) {
+    supervisorSelecionado = "";
+  }
+
+  if (filtroSupervisor) {
+    filtroSupervisor.innerHTML = "";
+    filtroSupervisor.add(
+      new Option("Todos os supervisores", "")
+    );
+
+    supervisores.forEach(username => {
+      filtroSupervisor.add(
+        new Option(
+          NOMES_SUPERVISORES[username] || username,
+          username
+        )
+      );
+    });
+
+    filtroSupervisor.value = supervisorSelecionado;
+  }
+}
+
 
   /* =====================================================
      GERENTES DISPONÍVEIS
