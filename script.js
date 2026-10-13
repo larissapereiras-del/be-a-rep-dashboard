@@ -4496,121 +4496,52 @@ function pessoaPossuiExcecao(pessoa) {
    RENDERIZAR LISTA DE PENDÊNCIAS
 ========================================================= */
 
-function preencherListaPendencias(
-  idElemento,
-  pessoas,
-  mensagemVazia,
-  mostrarTempo = false
-) {
-
+function preencherListaPendencias(idElemento, pessoas, mensagemVazia, mostrarTempo = false) {
   const elemento = $(idElemento);
-
   if (!elemento) {
+    console.warn("Lista da arte não encontrada:", idElemento);
     return;
   }
-
-  elemento.innerHTML = "";
-
-  const lista =
-    Array.isArray(pessoas)
-      ? pessoas
-      : [];
-
+  elemento.replaceChildren();
+  const lista = Array.isArray(pessoas) ? pessoas : [];
   if (!lista.length) {
-
-    const vazio =
-      document.createElement("div");
-
+    const vazio = document.createElement("div");
     vazio.className = "empty-list";
     vazio.textContent = mensagemVazia;
-
     elemento.appendChild(vazio);
-
     return;
-
   }
-
+  const fragmento = document.createDocumentFragment();
   lista.forEach(pessoa => {
-
-    const item =
-      document.createElement("div");
-
-    const possuiExcecao =
-      pessoaPossuiExcecao(pessoa);
-
-    item.className =
-      "pendencia-item" +
-      (possuiExcecao ? " pendencia-excecao" : "");
-
-    const nome =
-      escaparHTML(
-        pessoa.nome || "SEM NOME"
-      );
-
-    const username =
-      escaparHTML(
-        pessoa.username || ""
-      );
-
-    const area =
-      escaparHTML(
-        pessoa.area || "SEM ÁREA"
-      );
-
-    const setor =
-      escaparHTML(
-        pessoa.setor || "SEM SETOR"
-      );
-
-    const minutos =
-      Number(pessoa.minutos) || 0;
-
-    const tempo =
-      escaparHTML(
-        pessoa.tempo || formatarMinutos(minutos)
-      );
-
-    item.innerHTML = `
-
-      <div class="pendencia-info">
-
-        <strong class="pendencia-nome">
-          ${nome}
-        </strong>
-
-        <span class="pendencia-detalhe">
-          ${username ? `@${username} • ` : ""}
-          ${area} • ${setor}
-        </span>
-
-      </div>
-
-      ${
-        mostrarTempo
-          ? `
-            <div class="pendencia-tempo">
-              ${tempo}
-            </div>
-          `
-          : ""
-      }
-
-      ${
-        possuiExcecao
-          ? `
-            <span class="pendencia-tag-excecao">
-              Exceção
-            </span>
-          `
-          : ""
-      }
-
-    `;
-
-    elemento.appendChild(item);
-
+    const item = document.createElement("div");
+    item.className = "pendencia-item" + (pessoaPossuiExcecao(pessoa) ? " pendencia-excecao" : "");
+    const info = document.createElement("div");
+    info.className = "pendencia-info";
+    const nome = document.createElement("strong");
+    nome.className = "pendencia-nome";
+    nome.textContent = pessoa.nome || "SEM NOME";
+    const descricao = document.createElement("span");
+    descricao.className = "pendencia-detalhe";
+    descricao.textContent = [pessoa.username ? "@" + pessoa.username : "", pessoa.area || "SEM ÁREA", pessoa.setor || "SEM SETOR"].filter(Boolean).join(" • ");
+    info.append(nome, descricao);
+    item.appendChild(info);
+    if (mostrarTempo) {
+      const tempo = document.createElement("span");
+      tempo.className = "pendencia-tempo";
+      const minutos = Number(pessoa.minutos) || 0;
+      const minimo = obterTempoMinimoBeARep(pessoa.area || "");
+      tempo.textContent = (pessoa.tempo || formatarMinutos(minutos)) + " realizados • " + formatarMinutos(Math.max(0, minimo - minutos)) + " restantes";
+      item.appendChild(tempo);
+    }
+    if (pessoaPossuiExcecao(pessoa)) {
+      const excecao = document.createElement("span");
+      excecao.className = "pendencia-tag-excecao";
+      excecao.textContent = "Exceção";
+      item.appendChild(excecao);
+    }
+    fragmento.appendChild(item);
   });
-
+  elemento.appendChild(fragmento);
 }
 
 
