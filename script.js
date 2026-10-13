@@ -114,6 +114,8 @@ let dadosProcessados =
 let dadosApiBrutos =
   [];
 
+
+let areaSelecionada = "";
 let gerenteSelecionado = "";
 let supervisorSelecionado = "";
 let pessoasMesSemFiltro = [];
@@ -481,27 +483,20 @@ function configurarEventos() {
     );
 
 
-  /* =======================================================
-     FILTRO DE GERENTE
-  ======================================================= */
+ 
+/* =======================================================
+   FILTRO DE ÁREA
+======================================================= */
 
-  $("filtro-gerente")
-    ?.addEventListener(
-      "change",
-      () => {
+$("filtro-area")
+  ?.addEventListener("change", () => {
 
-        gerenteSelecionado =
-          $("filtro-gerente").value;
+    areaSelecionada =
+      $("filtro-area").value;
 
-        supervisorSelecionado = "";
+    aplicarFiltrosLideranca();
 
-        atualizarFiltrosLideranca();
-
-        aplicarFiltrosLideranca();
-
-      }
-    );
-
+  });
 
   /* =======================================================
      FILTRO DE SUPERVISOR
@@ -3501,6 +3496,11 @@ function aplicarFiltrosLideranca() {
         pessoa.supervisorUsername
       );
 
+     
+const correspondeArea =
+  !areaSelecionada ||
+  pessoa.area === areaSelecionada;
+
     const correspondeGerente =
       !gerenteSelecionado ||
       gerente === gerenteSelecionado;
@@ -3509,9 +3509,12 @@ function aplicarFiltrosLideranca() {
       !supervisorSelecionado ||
       supervisor === supervisorSelecionado;
 
-    return (
-      correspondeGerente &&
-      correspondeSupervisor
+return (
+  correspondeArea &&
+  correspondeGerente &&
+  correspondeSupervisor
+);
+
     );
 
   });
