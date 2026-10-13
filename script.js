@@ -30,6 +30,70 @@ const AREAS_VALIDAS = [
 
 
 /* =========================================================
+   LIDERANÇAS OFICIAIS — CENTRAL BE A REP
+========================================================= */
+
+const LIDERANCAS_OFICIAIS = {
+  tbaldo: {
+    nome: "THIAGO COUTO BALDO",
+    supervisores: [
+      "patkawashimo",
+      "valferreira",
+      "mmdeldotti"
+    ]
+  },
+
+  melo: {
+    nome: "PATRICIA GOMES MELO",
+    supervisores: [
+      "yaborges",
+      "rmendonca",
+      "proledo",
+      "pedsales",
+      "ebotti"
+    ]
+  },
+
+  aparochi: {
+    nome: "ANDRE PAROCHI",
+    supervisores: [
+      "marcmiguelez"
+    ]
+  },
+
+  fecarvalho: {
+    nome: "FELIPE CARVALHO ABREU DE OLIVEIRA",
+    supervisores: [
+      "taamaral"
+    ]
+  },
+
+  iscarvalho: {
+    nome: "ISAAC MARQUES DE CARVALHO",
+    supervisores: [
+      "thfagundes",
+      "lleme"
+    ]
+  }
+};
+
+const NOMES_SUPERVISORES = {
+  patkawashimo: "PATRICIA SANTOS MACHADO KAWASHIMO",
+  valferreira: "VALDEMIR FERREIRA DA SILVA",
+  mmdeldotti: "MARCELO DELDOTTI DA COSTA",
+  yaborges: "YASMIN DE FREITAS BORGES MARCONDES",
+  rmendonca: "RAUL GOTARDI MENDONCA",
+  proledo: "PAULO DA ROCHA ROLEDO",
+  pedsales: "PEDRO OTAVIO SANTOS SALES",
+  ebotti: "EDUARDO SIQUEIRA BOTTI",
+  marcmiguelez: "MARCELLO ALFONSO PINEIRO MIGUELEZ",
+  taamaral: "TAIS CRISTINA AMARAL SILVA",
+  thfagundes: "THIAGO JOSE FAGUNDES",
+  lleme: "LEANDRO RAMON LEME"
+};
+
+
+/* =========================================================
    ESTADO DA APLICAÇÃO
 ========================================================= */
 
@@ -3259,29 +3323,25 @@ function normalizarUsernameLideranca(valor) {
    NOME DE EXIBIÇÃO DA LIDERANÇA
 ========================================================= */
 
+
 function obterNomeExibicaoLideranca(username) {
 
-  const login =
-    normalizarUsernameLideranca(username);
+  const login = normalizarUsernameLideranca(username);
 
-  if (!login) {
-    return "";
+  if (!login) return "";
+
+  if (LIDERANCAS_OFICIAIS[login]) {
+    return LIDERANCAS_OFICIAIS[login].nome;
   }
 
-  const nome =
-    nomesPorUsername.get(login);
-
-  if (
-    nome &&
-    normalizarUsernameLideranca(nome) !== login
-  ) {
-    return `${nome} (${login})`;
+  if (NOMES_SUPERVISORES[login]) {
+    return NOMES_SUPERVISORES[login];
   }
 
-  return login;
+  const nome = nomesPorUsername.get(login);
 
+  return nome || login;
 }
-
 
 /* =========================================================
    ATUALIZAR OPÇÕES DOS FILTROS
