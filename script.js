@@ -4394,26 +4394,26 @@ function preencherListasComExcecoes() {
   const dados = dadosProcessados;
 
   preencherListaPendencias(
-    "lista-nao-realizaram",
+    "listas-nao",
     dados.naoRealizaram || [],
     "Nenhuma pessoa pendente."
   );
 
   preencherListaPendencias(
-    "lista-processo",
+    "listas-processo",
     dados.processo || [],
     "Nenhuma pessoa em processo.",
     true
   );
 
   preencherListaPendencias(
-    "lista-gemba-pendente",
+    "listas-guemba-pendente",
     dados.guembaPendenteBeARep || [],
     "Nenhuma pessoa com Gemba pendente de Be a Rep."
   );
 
   preencherListaPendencias(
-    "lista-gemba-processo",
+    "listas-guemba-processando",
     dados.guembaProcessandoBeARep || [],
     "Nenhuma pessoa com Gemba e Be a Rep em processo.",
     true
@@ -4424,7 +4424,7 @@ function preencherListasComExcecoes() {
   ===================================================== */
 
   definirTextoElemento(
-    "total-nao-realizaram",
+    "total-nao",
     dados.naoRealizaram?.length || 0
   );
 
@@ -4439,7 +4439,7 @@ function preencherListasComExcecoes() {
   );
 
   definirTextoElemento(
-    "total-gemba-processo",
+    "total-guemba-processando",
     dados.guembaProcessandoBeARep?.length || 0
   );
 
