@@ -90,8 +90,8 @@ const NOMES_SUPERVISORES = {
   taamaral: "TAIS CRISTINA AMARAL SILVA",
   thfagundes: "THIAGO JOSE FAGUNDES",
   lleme: "LEANDRO RAMON LEME",
-  ndeangelo: "NATALIA DE ANGELO",
-  acannataro: "ALEXANDRE CANNATARO DE FIGUEIREDO"
+  acannataro: "ALEXANDRE CANNATARO DE FIGUEIREDO",
+  lucasrodrig: "LUCAS RODRIGUEZ"
 };
 
 
@@ -102,19 +102,23 @@ const NOMES_SUPERVISORES = {
 const NOMES_GERENTES_ADICIONAIS = {
   steribeiro: "STHEPHANY DE SOUSA RIBEIRO BARBOZA",
   jzanotti: "JULIANE ZANOTTI",
-  mdelanda: "MAYCON CESAR DE LANDA"
+  ndeangelo: "NATALIA DE ANGELO"
 };
 
 function gerenteCorrigido(usernameGerente, usernameSupervisor) {
   const gerente = normalizarUsernameLideranca(usernameGerente);
   const supervisor = normalizarUsernameLideranca(usernameSupervisor);
 
+  // Equipes com vínculos gerenciais confirmados.
+  if (["patkawashimo", "valferreira", "mmdeldotti"].includes(supervisor)) return "tbaldo";
   // Supervisores de Isaac, mesmo se a query retornar outro gerente.
   if (supervisor === "thfagundes" || supervisor === "lleme") {
     return "iscarvalho";
   }
-  // Natalia de Angelo responde ao gerente Maycon de Landa.
-  if (supervisor === "ndeangelo") return "mdelanda";
+  // Natalia é gerente. Maycon é vínculo intermediário, não gerente nem supervisor.
+  // Normaliza os registros da estrutura para que sejam encontrados pelo filtro Natalia.
+  if (gerente === "mdelanda" || supervisor === "mdelanda" ||
+      gerente === "ndeangelo" || supervisor === "ndeangelo") return "ndeangelo";
   // Alias antigo do gerente Felipe Abreu.
   if (gerente === "slitoldo") return "fecarvalho";
   return gerente;
@@ -3176,7 +3180,7 @@ function prepararLiderancasDoMes() {
           pessoa.supervisorUsername
         )
       )
-      .filter(login => login && !["clgoncalves", "edgardolinsk"].includes(login))
+      .filter(supervisorValidoParaFiltro)
   );
 
   if (
@@ -3238,6 +3242,18 @@ function obterNomeExibicaoLideranca(username) {
 
 
 
+// Gerentes nunca devem ser oferecidos como supervisores.
+// A base pode registrar a liderança em ambas as colunas.
+const LOGINS_EXCLUIDOS_FILTRO_SUPERVISOR = new Set([
+  ...Object.keys(LIDERANCAS_OFICIAIS),
+  ...Object.keys(NOMES_GERENTES_ADICIONAIS),
+  "slitoldo", "clgoncalves", "edgardolinsk", "mdelanda"
+]);
+
+function supervisorValidoParaFiltro(login) {
+  return Boolean(login) && !LOGINS_EXCLUIDOS_FILTRO_SUPERVISOR.has(login);
+}
+
 function atualizarFiltrosLideranca() {
   const filtroGerente = $("filtro-gerente");
   const filtroSupervisor = $("filtro-supervisor");
@@ -3251,7 +3267,7 @@ function atualizarFiltrosLideranca() {
   // obrigatória no mês/área, não somente a relação histórica oficial.
   const gerentes = [...new Set(pessoas.map(p =>
     normalizarUsernameLideranca(p.gerenteUsername)
-  ).filter(Boolean))].sort((a,b) =>
+  ).filter(login => login && login !== "mdelanda"))].sort((a,b) =>
     obterNomeExibicaoLideranca(a).localeCompare(obterNomeExibicaoLideranca(b),"pt-BR")
   );
 
@@ -3272,7 +3288,7 @@ function atualizarFiltrosLideranca() {
     .filter(p => !gerenteSelecionado ||
       normalizarUsernameLideranca(p.gerenteUsername) === gerenteSelecionado)
     .map(p => normalizarUsernameLideranca(p.supervisorUsername))
-    .filter(login => login && !["clgoncalves", "edgardolinsk"].includes(login)))].sort((a,b) =>
+    .filter(supervisorValidoParaFiltro))].sort((a,b) =>
       obterNomeExibicaoLideranca(a).localeCompare(obterNomeExibicaoLideranca(b),"pt-BR")
     );
 
