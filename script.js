@@ -3204,133 +3204,55 @@ function obterNomeExibicaoLideranca(username) {
 
 
 function atualizarFiltrosLideranca() {
-
   const filtroGerente = $("filtro-gerente");
   const filtroSupervisor = $("filtro-supervisor");
-
-  const normalizar = valor =>
-    String(valor || "").trim().toLowerCase();
-
-  const pessoas = (
-    Array.isArray(pessoasMesSemFiltro)
-      ? pessoasMesSemFiltro
-      : []
-  ).filter(pessoa =>
-    !areaSelecionada ||
-    normalizar(pessoa.area) === normalizar(areaSelecionada)
-  );
-
-  // Gerentes oficiais com pessoas na área selecionada
-  const gerentes = Object.keys(LIDERANCAS_OFICIAIS)
-    .filter(username =>
-      pessoas.some(pessoa =>
-        normalizarUsernameLideranca(
-          pessoa.gerenteUsername
-        ) === username
-      )
-    )
-    .sort((a, b) =>
-      LIDERANCAS_OFICIAIS[a].nome.localeCompare(
-        LIDERANCAS_OFICIAIS[b].nome,
-        "pt-BR"
-      )
+  const pessoas = (Array.isArray(pessoasMesSemFiltro) ? pessoasMesSemFiltro : [])
+    .filter(pessoa =>
+      !areaSelecionada ||
+      normalizarTexto(pessoa.area) === normalizarTexto(areaSelecionada)
     );
 
-  if (
-    gerenteSelecionado &&
-    !gerentes.includes(gerenteSelecionado)
-  ) {
+  // Descoberta dinâmica: qualquer liderança vinculada a uma pessoa
+  // obrigatória no mês/área, não somente a relação histórica oficial.
+  const gerentes = [...new Set(pessoas.map(p =>
+    normalizarUsernameLideranca(p.gerenteUsername)
+  ).filter(Boolean))].sort((a,b) =>
+    obterNomeExibicaoLideranca(a).localeCompare(obterNomeExibicaoLideranca(b),"pt-BR")
+  );
+
+  if (gerenteSelecionado && !gerentes.includes(gerenteSelecionado)) {
     gerenteSelecionado = "";
     supervisorSelecionado = "";
   }
 
   if (filtroGerente) {
-    filtroGerente.innerHTML = "";
-    filtroGerente.add(
-      new Option("Todos os gerentes", "")
+    filtroGerente.replaceChildren(new Option("Todos os gerentes", ""));
+    gerentes.forEach(login =>
+      filtroGerente.add(new Option(obterNomeExibicaoLideranca(login), login))
     );
-
-    gerentes.forEach(username => {
-      filtroGerente.add(
-        new Option(
-          LIDERANCAS_OFICIAIS[username].nome,
-          username
-        )
-      );
-    });
-
     filtroGerente.value = gerenteSelecionado;
   }
 
-  // Supervisores vinculados aos gerentes oficiais
-  const supervisores = [
-    ...new Set(
-      pessoas
-        .filter(pessoa => {
-          const gerente =
-            normalizarUsernameLideranca(
-              pessoa.gerenteUsername
-            );
+  const supervisores = [...new Set(pessoas
+    .filter(p => !gerenteSelecionado ||
+      normalizarUsernameLideranca(p.gerenteUsername) === gerenteSelecionado)
+    .map(p => normalizarUsernameLideranca(p.supervisorUsername))
+    .filter(Boolean))].sort((a,b) =>
+      obterNomeExibicaoLideranca(a).localeCompare(obterNomeExibicaoLideranca(b),"pt-BR")
+    );
 
-          return (
-            LIDERANCAS_OFICIAIS[gerente] &&
-            (
-              !gerenteSelecionado ||
-              gerente === gerenteSelecionado
-            )
-          );
-        })
-        .map(pessoa =>
-          normalizarUsernameLideranca(
-            pessoa.supervisorUsername
-          )
-        )
-        .filter(username => {
-          const gerentesPermitidos =
-            gerenteSelecionado
-              ? [gerenteSelecionado]
-              : Object.keys(LIDERANCAS_OFICIAIS);
-
-          return gerentesPermitidos.some(gerente =>
-            LIDERANCAS_OFICIAIS[gerente]
-              .supervisores.includes(username)
-          );
-        })
-    )
-  ].sort((a, b) =>
-    (NOMES_SUPERVISORES[a] || a).localeCompare(
-      NOMES_SUPERVISORES[b] || b,
-      "pt-BR"
-    )
-  );
-
-  if (
-    supervisorSelecionado &&
-    !supervisores.includes(supervisorSelecionado)
-  ) {
+  if (supervisorSelecionado && !supervisores.includes(supervisorSelecionado)) {
     supervisorSelecionado = "";
   }
 
   if (filtroSupervisor) {
-    filtroSupervisor.innerHTML = "";
-    filtroSupervisor.add(
-      new Option("Todos os supervisores", "")
+    filtroSupervisor.replaceChildren(new Option("Todos os supervisores", ""));
+    supervisores.forEach(login =>
+      filtroSupervisor.add(new Option(obterNomeExibicaoLideranca(login), login))
     );
-
-    supervisores.forEach(username => {
-      filtroSupervisor.add(
-        new Option(
-          NOMES_SUPERVISORES[username] || username,
-          username
-        )
-      );
-    });
-
     filtroSupervisor.value = supervisorSelecionado;
   }
 }
-
-
 
 /* =========================================================
    APLICAR FILTROS DE LIDERANÇA
