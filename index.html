@@ -23,7 +23,7 @@
 
   <link
     rel="stylesheet"
-    href="style.css?v=20260910-04"
+    href="style.css?v=20261013-card01"
   >
 
 
@@ -288,7 +288,7 @@
 
         <!-- HC TOTAL -->
 
-        <article class="metric-card metric-hc">
+        <article class="metric-card metric-hc" data-detalhe="hc" role="button" tabindex="0" title="Ver pessoas">
 
 
           <div class="metric-top">
@@ -328,7 +328,7 @@
 
         <!-- REALIZARAM -->
 
-        <article class="metric-card metric-done">
+        <article class="metric-card metric-done" data-detalhe="realizaram" role="button" tabindex="0" title="Ver pessoas">
 
 
           <div class="metric-top">
@@ -368,7 +368,7 @@
 
         <!-- EM PROCESSO -->
 
-        <article class="metric-card metric-progress">
+        <article class="metric-card metric-progress" data-detalhe="processo" role="button" tabindex="0" title="Ver pessoas">
 
 
           <div class="metric-top">
@@ -408,7 +408,7 @@
 
         <!-- NÃO REALIZARAM -->
 
-        <article class="metric-card metric-pending">
+        <article class="metric-card metric-pending" data-detalhe="nao" role="button" tabindex="0" title="Ver pessoas">
 
 
           <div class="metric-top">
@@ -1723,10 +1723,11 @@
 
   <script
     type="module"
-    src="script.js?v=20260910-04"
+    src="script.js?v=20261013-card01"
   ></script>
 
 
+<div id="detalhe-modal" class="detalhe-overlay oculto" aria-hidden="true"><section class="detalhe-painel" role="dialog" aria-modal="true" aria-labelledby="detalhe-titulo"><header class="detalhe-topo"><div><small>DETALHAMENTO</small><h2 id="detalhe-titulo">Pessoas</h2><p id="detalhe-contexto"></p></div><button id="detalhe-fechar" type="button" aria-label="Fechar">×</button></header><div class="detalhe-busca"><strong id="detalhe-total"></strong><input id="detalhe-pesquisa" type="search" placeholder="Buscar nome ou username"></div><div id="detalhe-lista" class="detalhe-lista"></div></section></div>
 </body>
 
 </html>
