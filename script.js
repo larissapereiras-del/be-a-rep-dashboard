@@ -89,9 +89,36 @@ const NOMES_SUPERVISORES = {
   marcmiguelez: "MARCELLO ALFONSO PINEIRO MIGUELEZ",
   taamaral: "TAIS CRISTINA AMARAL SILVA",
   thfagundes: "THIAGO JOSE FAGUNDES",
-  lleme: "LEANDRO RAMON LEME"
+  lleme: "LEANDRO RAMON LEME",
+  ndeangelo: "NATALIA DE ANGELO",
+  acannataro: "ALEXANDRE CANNATARO DE FIGUEIREDO"
 };
 
+
+/* =========================================================
+   CORREÇÕES CONFIRMADAS DE LIDERANÇA
+   Não altera a fonte de dados nem a contabilização.
+========================================================= */
+const NOMES_GERENTES_ADICIONAIS = {
+  steribeiro: "STHEPHANY DE SOUSA RIBEIRO BARBOZA",
+  jzanotti: "JULIANE ZANOTTI",
+  mdelanda: "MAYCON CESAR DE LANDA"
+};
+
+function gerenteCorrigido(usernameGerente, usernameSupervisor) {
+  const gerente = normalizarUsernameLideranca(usernameGerente);
+  const supervisor = normalizarUsernameLideranca(usernameSupervisor);
+
+  // Supervisores de Isaac, mesmo se a query retornar outro gerente.
+  if (supervisor === "thfagundes" || supervisor === "lleme") {
+    return "iscarvalho";
+  }
+  // Natalia de Angelo responde ao gerente Maycon de Landa.
+  if (supervisor === "ndeangelo") return "mdelanda";
+  // Alias antigo do gerente Felipe Abreu.
+  if (gerente === "slitoldo") return "fecarvalho";
+  return gerente;
+}
 
 /* =========================================================
    ESTADO DA APLICAÇÃO
@@ -2851,6 +2878,11 @@ function processarDadosApi(registros, referencia) {
       ])
     ).toLowerCase();
 
+    const gerenteUsernameAjustado = gerenteCorrigido(
+      gerenteUsername,
+      supervisorUsername
+    );
+
     /* ===================================================
        ÁREA E SETOR
     =================================================== */
@@ -2975,7 +3007,7 @@ function processarDadosApi(registros, referencia) {
 
     return {
       username,
-      gerenteUsername,
+      gerenteUsername: gerenteUsernameAjustado,
       supervisorUsername,
 
       nome: nome || username || "SEM NOME",
@@ -3144,7 +3176,7 @@ function prepararLiderancasDoMes() {
           pessoa.supervisorUsername
         )
       )
-      .filter(Boolean)
+      .filter(login => login && !["clgoncalves", "edgardolinsk"].includes(login))
   );
 
   if (
@@ -3190,6 +3222,9 @@ function obterNomeExibicaoLideranca(username) {
 
   if (NOMES_SUPERVISORES[login]) {
     return NOMES_SUPERVISORES[login];
+  }
+  if (NOMES_GERENTES_ADICIONAIS[login]) {
+    return NOMES_GERENTES_ADICIONAIS[login];
   }
 
   const nome = nomesPorUsername.get(login);
@@ -3237,7 +3272,7 @@ function atualizarFiltrosLideranca() {
     .filter(p => !gerenteSelecionado ||
       normalizarUsernameLideranca(p.gerenteUsername) === gerenteSelecionado)
     .map(p => normalizarUsernameLideranca(p.supervisorUsername))
-    .filter(Boolean))].sort((a,b) =>
+    .filter(login => login && !["clgoncalves", "edgardolinsk"].includes(login)))].sort((a,b) =>
       obterNomeExibicaoLideranca(a).localeCompare(obterNomeExibicaoLideranca(b),"pt-BR")
     );
 
