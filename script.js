@@ -3342,30 +3342,37 @@ function obterNomeExibicaoLideranca(username) {
 ========================================================= */
 
 
+
 function atualizarFiltrosLideranca() {
 
   const filtroGerente = $("filtro-gerente");
   const filtroSupervisor = $("filtro-supervisor");
 
-  const pessoas = Array.isArray(pessoasMesSemFiltro)
-    ? pessoasMesSemFiltro
-    : [];
-
   const normalizar = valor =>
     String(valor || "").trim().toLowerCase();
 
-  const pessoasDaArea = pessoas.filter(pessoa =>
+  const pessoas = (
+    Array.isArray(pessoasMesSemFiltro)
+      ? pessoasMesSemFiltro
+      : []
+  ).filter(pessoa =>
     !areaSelecionada ||
     normalizar(pessoa.area) === normalizar(areaSelecionada)
   );
 
-  // Gerentes oficiais presentes na base e na área
+  // Gerentes oficiais com pessoas na área selecionada
   const gerentes = Object.keys(LIDERANCAS_OFICIAIS)
     .filter(username =>
-      pessoasDaArea.some(pessoa =>
+      pessoas.some(pessoa =>
         normalizarUsernameLideranca(
           pessoa.gerenteUsername
         ) === username
+      )
+    )
+    .sort((a, b) =>
+      LIDERANCAS_OFICIAIS[a].nome.localeCompare(
+        LIDERANCAS_OFICIAIS[b].nome,
+        "pt-BR"
       )
     );
 
@@ -3396,35 +3403,45 @@ function atualizarFiltrosLideranca() {
   }
 
   // Supervisores vinculados aos gerentes oficiais
-  const supervisoresPermitidos = gerenteSelecionado
-    ? LIDERANCAS_OFICIAIS[gerenteSelecionado]
-        ?.supervisores || []
-    : Object.values(LIDERANCAS_OFICIAIS)
-        .flatMap(gerente => gerente.supervisores);
-
   const supervisores = [
-    ...new Set(supervisoresPermitidos)
-  ].filter(username =>
-    pessoasDaArea.some(pessoa => {
+    ...new Set(
+      pessoas
+        .filter(pessoa => {
+          const gerente =
+            normalizarUsernameLideranca(
+              pessoa.gerenteUsername
+            );
 
-      const supervisor =
-        normalizarUsernameLideranca(
-          pessoa.supervisorUsername
-        );
-
-      const gerente =
-        normalizarUsernameLideranca(
-          pessoa.gerenteUsername
-        );
-
-      return (
-        supervisor === username &&
-        (
-          !gerenteSelecionado ||
-          gerente === gerenteSelecionado
+          return (
+            LIDERANCAS_OFICIAIS[gerente] &&
+            (
+              !gerenteSelecionado ||
+              gerente === gerenteSelecionado
+            )
+          );
+        })
+        .map(pessoa =>
+          normalizarUsernameLideranca(
+            pessoa.supervisorUsername
+          )
         )
-      );
-    })
+        .filter(username => {
+          const gerentesPermitidos =
+            gerenteSelecionado
+              ? [gerenteSelecionado]
+              : Object.keys(LIDERANCAS_OFICIAIS);
+
+          return gerentesPermitidos.some(gerente =>
+            LIDERANCAS_OFICIAIS[gerente]
+              .supervisores.includes(username)
+          );
+        })
+    )
+  ].sort((a, b) =>
+    (NOMES_SUPERVISORES[a] || a).localeCompare(
+      NOMES_SUPERVISORES[b] || b,
+      "pt-BR"
+    )
   );
 
   if (
@@ -3452,7 +3469,6 @@ function atualizarFiltrosLideranca() {
     filtroSupervisor.value = supervisorSelecionado;
   }
 }
-
 
   /* =====================================================
      GERENTES DISPONÍVEIS
