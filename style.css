@@ -6714,3 +6714,20 @@ img {
 .pendencia-tempo {font-size:11px; font-weight:700; color:#b46b14;}
 .pendencia-tag-excecao {padding:5px 8px; border-radius:6px; background:#fff0db; color:#9d5e11; font-size:10px; font-weight:800;}
 .empty-list {padding:16px; color:#71809a; background:#f7f9fd; border-radius:10px; font-size:12px;}
+
+/* Navegação e layout refinado — versão unificada */
+html {scroll-behavior:smooth;}
+.central-atalhos {display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:0 2px;margin:-5px 0 17px;}
+.central-atalhos a {display:inline-flex;align-items:center;min-height:36px;padding:9px 15px;border:1px solid #e2e8f4;border-radius:999px;background:#fff;color:#132a6d;font-size:12px;font-weight:800;text-decoration:none;box-shadow:0 3px 12px rgba(7,27,97,.035);}
+.central-atalhos a:hover,.central-atalhos a:focus-visible {border-color:#90b8f2;background:#edf4ff;outline:none;}
+#indicadores,#desempenho,#consulta,#menu-artes {scroll-margin-top:18px;}
+.sync-card-v2 {align-items:stretch;gap:14px;}
+.sync-main {flex:0 1 245px;}
+.sync-actions {flex:1;flex-wrap:wrap;justify-content:flex-end;}
+.sync-actions .filtro-mes-box {flex:1 1 130px;min-width:120px;}
+.sync-actions .filtro-lideranca-box {flex:1 1 190px;min-width:175px;}
+.sync-actions .filtro-mes-box select {min-width:0;width:100%;max-width:100%;}
+.dashboard-kpis-v2 .metric-card {min-height:150px;}
+.performance-card {margin-bottom:18px;}
+@media(max-width:1100px) {.sync-card-v2 {flex-direction:column;}.sync-main {flex:auto;}.sync-actions {justify-content:flex-start;}}
+@media(max-width:700px) {.central-atalhos {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}.central-atalhos a {justify-content:center;text-align:center;font-size:11px;}.sync-actions .filtro-mes-box,.sync-actions .filtro-lideranca-box {min-width:0;width:100%;}}
