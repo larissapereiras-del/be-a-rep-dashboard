@@ -23,7 +23,7 @@
 
   <link
     rel="stylesheet"
-    href="style.css?v=20261013-card01"
+    href="style.css?v=20261013-layout-final"
   >
 
 
@@ -136,7 +136,14 @@
          CONTROLE / SINCRONIZAÇÃO
     ====================================================== -->
 
-    <section class="sync-card sync-card-v2">
+        <nav class="central-atalhos" aria-label="Navegação rápida">
+      <a href="#indicadores">Indicadores</a>
+      <a href="#desempenho">Desempenho</a>
+      <a href="#consulta">Consulta individual</a>
+      <a href="#menu-artes">Artes e pendências</a>
+    </nav>
+
+<section class="sync-card sync-card-v2">
 
 
       <div class="sync-main">
@@ -283,7 +290,7 @@
            INDICADORES PRINCIPAIS
       ==================================================== -->
 
-      <section class="dashboard-kpis-v2">
+      <section id="indicadores" class="dashboard-kpis-v2">
 
 
         <!-- HC TOTAL -->
@@ -606,7 +613,7 @@
            CONSULTA INDIVIDUAL
        ==================================================== -->
 
-      <section class="consulta-card">
+      <section id="consulta" class="consulta-card">
 
         <div class="consulta-header">
           <div>
@@ -733,7 +740,7 @@
            DESEMPENHO POR ÁREA
        ==================================================== -->
 
-      <section class="performance-card">
+      <section id="desempenho" class="performance-card">
 
         <div class="performance-header">
           <div>
@@ -751,26 +758,7 @@
 
         <div id="ranking-areas" class="area-ranking"></div>
 
-        <details class="area-details" open>
-          <summary>
-            <span>Detalhamento por área</span>
-            <small>HC, realizados, processo e pendências</small>
-          </summary>
 
-          <div class="area-details-body">
-            <div class="areas-table">
-              <div class="areas-table-head">
-                <span>ÁREA</span>
-                <span>HC</span>
-                <span>REALIZARAM</span>
-                <span>EM PROCESSO</span>
-                <span>NÃO REALIZARAM</span>
-                <span>%</span>
-              </div>
-              <div id="lista-areas-dashboard"></div>
-            </div>
-          </div>
-        </details>
 
       </section>
 
@@ -1660,7 +1648,7 @@
 
   <script
     type="module"
-    src="script.js?v=20261013-excecoes"
+    src="script.js?v=20261013-layout-final"
   ></script>
 
 
