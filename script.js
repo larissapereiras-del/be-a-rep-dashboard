@@ -4392,29 +4392,36 @@ function preencherListasComExcecoes() {
   }
 
   const dados = dadosProcessados;
+  // Exceções continuam cadastradas, mas não aparecem nas artes nem no PNG.
+  const semExcecoes = pessoas =>
+    (Array.isArray(pessoas) ? pessoas : []).filter(pessoa => !pessoaPossuiExcecao(pessoa));
+  const naoRealizaram = semExcecoes(dados.naoRealizaram);
+  const processo = semExcecoes(dados.processo);
+  const gembaPendente = semExcecoes(dados.guembaPendenteBeARep);
+  const gembaProcessando = semExcecoes(dados.guembaProcessandoBeARep);
 
   preencherListaPendencias(
     "listas-nao",
-    dados.naoRealizaram || [],
+    naoRealizaram,
     "Nenhuma pessoa pendente."
   );
 
   preencherListaPendencias(
     "listas-processo",
-    dados.processo || [],
+    processo,
     "Nenhuma pessoa em processo.",
     true
   );
 
   preencherListaPendencias(
     "listas-guemba-pendente",
-    dados.guembaPendenteBeARep || [],
+    gembaPendente,
     "Nenhuma pessoa com Gemba pendente de Be a Rep."
   );
 
   preencherListaPendencias(
     "listas-guemba-processando",
-    dados.guembaProcessandoBeARep || [],
+    gembaProcessando,
     "Nenhuma pessoa com Gemba e Be a Rep em processo.",
     true
   );
@@ -4425,22 +4432,22 @@ function preencherListasComExcecoes() {
 
   definirTextoElemento(
     "total-nao",
-    dados.naoRealizaram?.length || 0
+    naoRealizaram.length
   );
 
   definirTextoElemento(
     "total-processo",
-    dados.processo?.length || 0
+    processo.length
   );
 
   definirTextoElemento(
     "total-gemba-pendente",
-    dados.guembaPendenteBeARep?.length || 0
+    gembaPendente.length
   );
 
   definirTextoElemento(
     "total-guemba-processando",
-    dados.guembaProcessandoBeARep?.length || 0
+    gembaProcessando.length
   );
 
 }
@@ -4514,7 +4521,7 @@ function preencherListaPendencias(idElemento, pessoas, mensagemVazia, mostrarTem
   const fragmento = document.createDocumentFragment();
   lista.forEach(pessoa => {
     const item = document.createElement("div");
-    item.className = "pendencia-item" + (pessoaPossuiExcecao(pessoa) ? " pendencia-excecao" : "");
+    item.className = "pendencia-item";
     const info = document.createElement("div");
     info.className = "pendencia-info";
     const nome = document.createElement("strong");
@@ -4532,12 +4539,6 @@ function preencherListaPendencias(idElemento, pessoas, mensagemVazia, mostrarTem
       const minimo = obterTempoMinimoBeARep(pessoa.area || "");
       tempo.textContent = (pessoa.tempo || formatarMinutos(minutos)) + " realizados • " + formatarMinutos(Math.max(0, minimo - minutos)) + " restantes";
       item.appendChild(tempo);
-    }
-    if (pessoaPossuiExcecao(pessoa)) {
-      const excecao = document.createElement("span");
-      excecao.className = "pendencia-tag-excecao";
-      excecao.textContent = "Exceção";
-      item.appendChild(excecao);
     }
     fragmento.appendChild(item);
   });
