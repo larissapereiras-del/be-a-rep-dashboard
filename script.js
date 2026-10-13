@@ -501,6 +501,14 @@ $("filtro-area")
      FILTRO DE SUPERVISOR
   ======================================================= */
 
+  /* Atualizar opções e dados ao escolher um gerente */
+  $("filtro-gerente")?.addEventListener("change", () => {
+    gerenteSelecionado = $("filtro-gerente").value;
+    supervisorSelecionado = "";
+    atualizarFiltrosLideranca();
+    aplicarFiltrosLideranca();
+  });
+
   $("filtro-supervisor")
     ?.addEventListener(
       "change",
@@ -1371,6 +1379,7 @@ function criarPessoaLista(
 ========================================================= */
 
 function atualizarTudo() {
+  if (detalheTipoAberto) renderizarDetalheCard();
 
   if (!dadosProcessados) {
     return;
@@ -5696,3 +5705,52 @@ function verificarConfiguracoesDashboard() {
 /* =========================================================
    FIM DAS FUNÇÕES AUXILIARES
 ========================================================= */
+/* Detalhamento dos cards — mesma classificacao usada nos KPIs */
+let detalheTipoAberto = "";
+let detalheFocoAnterior = null;
+function pessoasDoCard(tipo) {
+  const pessoas = Array.isArray(dadosProcessados?.registros) ? dadosProcessados.registros : [];
+  const status = { realizaram:"REALIZOU", processo:"EM_PROCESSO", nao:"NAO_REALIZOU" };
+  return pessoas.filter(p => tipo === "hc" || p.situacao === status[tipo])
+    .slice().sort((a,b) => String(a.nome||"").localeCompare(String(b.nome||""),"pt-BR"));
+}
+function renderizarDetalheCard() {
+  if (!detalheTipoAberto) return;
+  const todas = pessoasDoCard(detalheTipoAberto);
+  const busca = String($("detalhe-pesquisa")?.value||"").trim().toLowerCase();
+  const pessoas = todas.filter(p => `${p.nome||""} ${p.username||""}`.toLowerCase().includes(busca));
+  $("detalhe-total").textContent = `${todas.length} pessoa(s)` + (busca ? ` • ${pessoas.length} encontrada(s)` : "");
+  const lista = $("detalhe-lista"); lista.replaceChildren();
+  if (!pessoas.length) { const e=document.createElement("p");e.className="detalhe-vazio";e.textContent="Nenhuma pessoa encontrada.";lista.append(e);return; }
+  const nomesStatus={REALIZOU:"Realizou",EM_PROCESSO:"Em processo",NAO_REALIZOU:"Não realizou"};
+  pessoas.forEach(p => {
+    const item=document.createElement("div");item.className="detalhe-pessoa";
+    const info=document.createElement("div"), nome=document.createElement("strong"), detalhe=document.createElement("span"), status=document.createElement("b");
+    nome.textContent=p.nome||"SEM NOME";
+    detalhe.textContent=[p.username?`@${p.username}`:"",p.area||"SEM ÁREA",p.setor||"SEM SETOR",`Tempo: ${p.tempo||"0m"}`].filter(Boolean).join(" • ");
+    status.textContent=nomesStatus[p.situacao]||"-";
+    info.append(nome,detalhe);item.append(info,status);lista.append(item);
+  });
+}
+function abrirDetalheCard(tipo) {
+  if (!dadosProcessados) return;
+  detalheFocoAnterior=document.activeElement;
+  detalheTipoAberto=tipo;
+  $("detalhe-titulo").textContent=({hc:"HC Geral",realizaram:"Realizaram",processo:"Em processo",nao:"Não realizaram"})[tipo];
+  $("detalhe-contexto").textContent=[referenciaSelecionada,areaSelecionada||"Todas as áreas",gerenteSelecionado?obterNomeExibicaoLideranca(gerenteSelecionado):"Todos os gerentes",supervisorSelecionado?obterNomeExibicaoLideranca(supervisorSelecionado):"Todos os supervisores"].join(" • ");
+  $("detalhe-pesquisa").value="";renderizarDetalheCard();
+  $("detalhe-modal").classList.remove("oculto");$("detalhe-modal").setAttribute("aria-hidden","false");$("detalhe-fechar").focus();
+}
+function fecharDetalheCard() {
+  $("detalhe-modal").classList.add("oculto");$("detalhe-modal").setAttribute("aria-hidden","true");detalheTipoAberto="";
+  if (detalheFocoAnterior?.focus) detalheFocoAnterior.focus();
+}
+document.querySelectorAll(".metric-card[data-detalhe]").forEach(card=>{
+  const abrir=()=>abrirDetalheCard(card.dataset.detalhe);
+  card.addEventListener("click",abrir);
+  card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();abrir();}});
+});
+$("detalhe-fechar")?.addEventListener("click",fecharDetalheCard);
+$("detalhe-pesquisa")?.addEventListener("input",renderizarDetalheCard);
+$("detalhe-modal")?.addEventListener("click",e=>{if(e.target===$("detalhe-modal"))fecharDetalheCard();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&detalheTipoAberto)fecharDetalheCard();});
