@@ -2267,31 +2267,69 @@ function mostrarPessoaNaoEncontrada(termo) {
    PREENCHER RESUMO
 ========================================================= */
 
+
 function preencherResumo(dados) {
 
-  if (!dados) {
-    return;
-  }
+  if (!dados) return;
 
   const geral = dados.geral || {};
 
-  const hc =
-    Number(geral.hc) || 0;
+  const hc = Number(geral.hc) || 0;
+  const realizaram = Number(geral.realizaram) || 0;
+  const processo = Number(geral.processo) || 0;
+  const naoRealizaram = Number(geral.naoRealizaram) || 0;
 
-  const realizaram =
-    Number(geral.realizaram) || 0;
+  const atualizar = (id, valor) => {
+    const elemento = document.getElementById(id);
 
-  const processo =
-    Number(geral.processo) || 0;
+    if (elemento) {
+      elemento.textContent = valor;
+    }
+  };
 
-  const naoRealizaram =
-    Number(geral.naoRealizaram) || 0;
+  const percentual = quantidade =>
+    hc > 0 ? quantidade / hc : 0;
 
-  const percentual =
-    hc > 0
-      ? realizaram / hc
-      : 0;
+  atualizar("resumo-hc", hc);
+  atualizar("resumo-realizaram", realizaram);
+  atualizar("resumo-processo", processo);
+  atualizar("resumo-nao", naoRealizaram);
 
+  atualizar(
+    "percentual-resumo-realizaram",
+    formatarPorcentagem(percentual(realizaram))
+  );
+
+  atualizar(
+    "percentual-resumo-processo",
+    formatarPorcentagem(percentual(processo))
+  );
+
+  atualizar(
+    "percentual-resumo-nao",
+    formatarPorcentagem(percentual(naoRealizaram))
+  );
+
+  atualizar(
+    "percentual-meta-dashboard",
+    formatarPorcentagem(percentual(realizaram))
+  );
+
+  const barra = document.getElementById(
+    "barra-meta-preenchida"
+  );
+
+  if (barra) {
+    barra.style.width =
+      `${Math.min(100, percentual(realizaram) * 100)}%`;
+  }
+
+  atualizar(
+    "texto-progresso-meta",
+    `Target ${formatarPorcentagem(TARGET)}`
+  );
+
+}
 
   /* =====================================================
      ATUALIZAR INDICADORES DO RESUMO
@@ -2346,36 +2384,71 @@ function preencherResumo(dados) {
    META GERAL DO BE A REP
 ========================================================= */
 
+
 function preencherMeta(dados) {
 
-  if (!dados) {
-    return;
-  }
+  if (!dados) return;
 
   const geral = dados.geral || {};
 
-  const hc =
-    Number(geral.hc) || 0;
-
-  const realizaram =
-    Number(geral.realizaram) || 0;
+  const hc = Number(geral.hc) || 0;
+  const realizaram = Number(geral.realizaram) || 0;
 
   const percentual =
-    hc > 0
-      ? realizaram / hc
-      : 0;
+    hc > 0 ? realizaram / hc : 0;
 
-  const metaQuantidade =
-    Math.ceil(hc * TARGET);
+  const metaQuantidade = Math.ceil(hc * TARGET);
 
-  const faltam =
-    Math.max(
-      0,
-      metaQuantidade - realizaram
-    );
+  const faltam = Math.max(
+    0,
+    metaQuantidade - realizaram
+  );
 
   const atingiuMeta =
     hc > 0 && percentual >= TARGET;
+
+  const atualizar = (id, valor) => {
+    const elemento = document.getElementById(id);
+
+    if (elemento) {
+      elemento.textContent = valor;
+    }
+  };
+
+  atualizar(
+    "situacao-atual",
+    formatarPorcentagem(percentual)
+  );
+
+  atualizar("situacao-faltam", faltam);
+
+  atualizar(
+    "titulo-situacao",
+    atingiuMeta
+      ? "Target atingido!"
+      : "Acompanhamento do target"
+  );
+
+  atualizar(
+    "descricao-situacao",
+    `${realizaram} de ${hc} pessoas realizaram o Be a Rep.`
+  );
+
+  atualizar(
+    "status-meta",
+    atingiuMeta
+      ? "META ATINGIDA"
+      : "ABAIXO DA META"
+  );
+
+  atualizar(
+    "mensagem-meta",
+    atingiuMeta
+      ? "O resultado está dentro do target de 90%."
+      : `Faltam ${faltam} pessoa(s) para atingir o target de 90%.`
+  );
+
+}
 
 
   /* =====================================================
