@@ -3743,32 +3743,109 @@ function converterTempoParaMinutos(valor) {
    Resultado padrão: MM-AAAA
 ========================================================= */
 
+
 function normalizarReferenciaMes(valor) {
 
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) {
+  if (valor === null || valor === undefined || valor === "") {
     return "";
   }
 
-  if (
-    valor instanceof Date &&
-    !Number.isNaN(valor.getTime())
-  ) {
+  if (valor instanceof Date) {
+    if (Number.isNaN(valor.getTime())) return "";
 
-    const mes = String(
-      valor.getMonth() + 1
-    ).padStart(2, "0");
-
-    return `${mes}-${valor.getFullYear()}`;
-
+    return (
+      String(valor.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      valor.getFullYear()
+    );
   }
 
   const texto = String(valor)
     .trim()
-    .toUpperCase();
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  let resultado = texto.match(/^(\d{1,2})[-/](\d{4})$/);
+
+  if (resultado) {
+    const mes = Number(resultado[1]);
+
+    return mes >= 1 && mes <= 12
+      ? `${String(mes).padStart(2, "0")}-${resultado[2]}`
+      : "";
+  }
+
+  resultado = texto.match(/^(\d{4})[-/](\d{1,2})$/);
+
+  if (resultado) {
+    const mes = Number(resultado[2]);
+
+    return mes >= 1 && mes <= 12
+      ? `${String(mes).padStart(2, "0")}-${resultado[1]}`
+      : "";
+  }
+
+  resultado = texto.match(/^(\d{4})-(\d{1,2})-\d{1,2}/);
+
+  if (resultado) {
+    const mes = Number(resultado[2]);
+
+    return mes >= 1 && mes <= 12
+      ? `${String(mes).padStart(2, "0")}-${resultado[1]}`
+      : "";
+  }
+
+  resultado = texto.match(/^\d{1,2}\/(\d{1,2})\/(\d{4})$/);
+
+  if (resultado) {
+    const mes = Number(resultado[1]);
+
+    return mes >= 1 && mes <= 12
+      ? `${String(mes).padStart(2, "0")}-${resultado[2]}`
+      : "";
+  }
+
+  const meses = {
+    JANEIRO: "01",
+    ENERO: "01",
+    FEVEREIRO: "02",
+    FEBRERO: "02",
+    MARCO: "03",
+    MARZO: "03",
+    ABRIL: "04",
+    ABRIL_ES: "04",
+    MAIO: "05",
+    MAYO: "05",
+    JUNHO: "06",
+    JUNIO: "06",
+    JULHO: "07",
+    JULIO: "07",
+    AGOSTO: "08",
+    SETEMBRO: "09",
+    SEPTIEMBRE: "09",
+    SETIEMBRE: "09",
+    OUTUBRO: "10",
+    OCTUBRE: "10",
+    NOVEMBRO: "11",
+    NOVIEMBRE: "11",
+    DEZEMBRO: "12",
+    DICIEMBRE: "12"
+  };
+
+  const ano = texto.match(/\b(?:19|20)\d{2}\b/);
+
+  if (!ano) return "";
+
+  for (const [nome, mes] of Object.entries(meses)) {
+    if (texto.includes(nome)) {
+      return `${mes}-${ano[0]}`;
+    }
+  }
+
+  return "";
+}
+
 
   /* =====================================================
      MM-AAAA OU MM/AAAA
